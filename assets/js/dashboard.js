@@ -174,10 +174,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="dash-section-header"><h3>👤 Personal Information</h3></div>
                         <div class="dash-section-body">
                             <div class="detail-grid">
-                                ${detailItem('bxs-envelope', 'Email', 'shubham.k@email.com')}
-                                ${detailItem('bxs-phone', 'Phone', '+91 98765 43210')}
-                                ${detailItem('bxs-map', 'Location', 'Pune, Maharashtra')}
-                                ${detailItem('bxs-calendar', 'Date of Birth', '15 March 1998')}
+                                ${detailItem('bxs-envelope', 'Email', 'shubham.k@email.com', false, 'val-email')}
+                                ${detailItem('bxs-phone', 'Phone', '+91 98765 43210', false, 'val-phone')}
+                                ${detailItem('bxs-map', 'Location', 'Pune, Maharashtra', false, 'val-location')}
+                                ${detailItem('bxs-calendar', 'Date of Birth', '15 March 1998', false, 'val-dob')}
                             </div>
                         </div>
                     </div>
@@ -186,10 +186,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="dash-section-header"><h3>🎓 Academic Details</h3></div>
                         <div class="dash-section-body">
                             <div class="detail-grid">
-                                ${detailItem('bxs-school', 'Department', 'Computer Engineering')}
-                                ${detailItem('bxs-graduation', 'Graduation Year', '2020')}
-                                ${detailItem('bxs-id-card', 'Roll Number', '2020COMP042')}
-                                ${detailItem('bxs-user-badge', 'Batch Mentor', 'Prof. R. D. More')}
+                                ${detailItem('bxs-school', 'Department', 'Computer Engineering', false, 'val-department')}
+                                ${detailItem('bxs-graduation', 'Graduation Year', '2020', false, 'val-gradYear')}
+                                ${detailItem('bxs-id-card', 'Roll Number', '2020COMP042', false, 'val-rollNumber')}
+                                ${detailItem('bxs-user-badge', 'Batch Mentor', 'Prof. R. D. More', false, 'val-mentor')}
                             </div>
                         </div>
                     </div>
@@ -198,10 +198,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="dash-section-header"><h3>💼 Professional Details</h3></div>
                         <div class="dash-section-body">
                             <div class="detail-grid">
-                                ${detailItem('bxs-briefcase', 'Job Title', 'Software Developer')}
-                                ${detailItem('bxs-business', 'Company', 'Tech Solutions Pvt. Ltd.')}
-                                ${detailItem('bxs-time-five', 'Experience', '2-5 years')}
-                                ${detailItem('bxs-wrench', 'Skills', 'Python, Django, React, AWS')}
+                                ${detailItem('bxs-briefcase', 'Job Title', 'Software Developer', false, 'val-jobTitle')}
+                                ${detailItem('bxs-business', 'Company', 'Tech Solutions Pvt. Ltd.', false, 'val-company')}
+                                ${detailItem('bxs-time-five', 'Experience', '2-5 years', false, 'val-experience')}
+                                ${detailItem('bxs-wrench', 'Skills', 'Python, Django, React, AWS', false, 'val-skills')}
                             </div>
                         </div>
                     </div>
@@ -210,8 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="dash-section-header"><h3>🔗 Social Links</h3></div>
                         <div class="dash-section-body">
                             <div class="detail-grid">
-                                ${detailItem('bxl-linkedin', 'LinkedIn', 'linkedin.com/in/shubhamk', true)}
-                                ${detailItem('bxl-github', 'GitHub', 'github.com/shubhamk', true)}
+                                ${detailItem('bxl-linkedin', 'LinkedIn', 'linkedin.com/in/shubhamk', true, 'val-linkedin')}
+                                ${detailItem('bxl-github', 'GitHub', 'github.com/shubhamk', true, 'val-github')}
                             </div>
                         </div>
                     </div>
@@ -225,25 +225,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="edit-modal-overlay" id="editProfileModalBox">
                     <div class="edit-modal">
                         <div class="edit-modal-header">
-                            <h3>Edit Profile</h3>
+                            <h3>Edit Complete Profile</h3>
                             <button class="edit-modal-close" onclick="closeEditProfile()"><i class="bx bx-x"></i></button>
                         </div>
                         <div class="edit-modal-body">
-                            <div class="edit-form-group">
-                                <label>Job Title</label>
-                                <input type="text" id="editJobTitle" value="Software Developer">
+                            <h4 class="edit-modal-section-title">Personal Information</h4>
+                            <div class="edit-modal-grid">
+                                <div class="edit-form-group"><label>Email</label><input type="email" id="editEmail" value="${document.getElementById('val-email')?.textContent || 'shubham.k@email.com'}"></div>
+                                <div class="edit-form-group"><label>Phone</label><input type="text" id="editPhone" value="${document.getElementById('val-phone')?.textContent || '+91 98765 43210'}"></div>
+                                <div class="edit-form-group"><label>Location</label><input type="text" id="editLocation" value="${document.getElementById('val-location')?.textContent || 'Pune, Maharashtra'}"></div>
+                                <div class="edit-form-group"><label>Date of Birth</label><input type="text" id="editDOB" value="${document.getElementById('val-dob')?.textContent || '15 March 1998'}"></div>
                             </div>
-                            <div class="edit-form-group">
-                                <label>Company</label>
-                                <input type="text" id="editCompany" value="Tech Solutions Pvt. Ltd.">
+                            
+                            <h4 class="edit-modal-section-title">Academic Details</h4>
+                            <div class="edit-modal-grid">
+                                <div class="edit-form-group"><label>Department</label><input type="text" id="editDepartment" value="${document.getElementById('val-department')?.textContent || 'Computer Engineering'}"></div>
+                                <div class="edit-form-group"><label>Graduation Year</label><input type="text" id="editGradYear" value="${document.getElementById('val-gradYear')?.textContent || '2020'}"></div>
+                                <div class="edit-form-group"><label>Roll Number</label><input type="text" id="editRollNumber" value="${document.getElementById('val-rollNumber')?.textContent || '2020COMP042'}"></div>
+                                <div class="edit-form-group"><label>Batch Mentor</label><input type="text" id="editMentor" value="${document.getElementById('val-mentor')?.textContent || 'Prof. R. D. More'}"></div>
                             </div>
-                            <div class="edit-form-group">
-                                <label>Location</label>
-                                <input type="text" id="editLocation" value="Pune, Maharashtra">
+
+                            <h4 class="edit-modal-section-title">Professional Details</h4>
+                            <div class="edit-modal-grid">
+                                <div class="edit-form-group"><label>Job Title</label><input type="text" id="editJobTitle" value="${document.getElementById('val-jobTitle')?.textContent || 'Software Developer'}"></div>
+                                <div class="edit-form-group"><label>Company</label><input type="text" id="editCompany" value="${document.getElementById('val-company')?.textContent || 'Tech Solutions Pvt. Ltd.'}"></div>
+                                <div class="edit-form-group"><label>Experience</label><input type="text" id="editExperience" value="${document.getElementById('val-experience')?.textContent || '2-5 years'}"></div>
+                                <div class="edit-form-group"><label>Skills</label><input type="text" id="editSkills" value="${document.getElementById('val-skills')?.textContent || 'Python, Django, React, AWS'}"></div>
                             </div>
-                            <div class="edit-form-group">
-                                <label>Experience</label>
-                                <input type="text" id="editExperience" value="2-5 years">
+
+                            <h4 class="edit-modal-section-title">Social Links</h4>
+                            <div class="edit-modal-grid" style="margin-bottom: 0;">
+                                <div class="edit-form-group"><label>LinkedIn</label><input type="text" id="editLinkedin" value="${document.getElementById('val-linkedin')?.textContent || 'linkedin.com/in/shubhamk'}"></div>
+                                <div class="edit-form-group"><label>GitHub</label><input type="text" id="editGithub" value="${document.getElementById('val-github')?.textContent || 'github.com/shubhamk'}"></div>
                             </div>
                         </div>
                         <div class="edit-modal-footer">
@@ -254,6 +267,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             document.body.insertAdjacentHTML('beforeend', modalHTML);
+        } else {
+            // Update modal values naturally if it already exists
+            document.getElementById('editEmail').value = document.getElementById('val-email')?.textContent || '';
+            document.getElementById('editPhone').value = document.getElementById('val-phone')?.textContent || '';
+            document.getElementById('editLocation').value = document.getElementById('val-location')?.textContent || '';
+            document.getElementById('editDOB').value = document.getElementById('val-dob')?.textContent || '';
+            document.getElementById('editDepartment').value = document.getElementById('val-department')?.textContent || '';
+            document.getElementById('editGradYear').value = document.getElementById('val-gradYear')?.textContent || '';
+            document.getElementById('editRollNumber').value = document.getElementById('val-rollNumber')?.textContent || '';
+            document.getElementById('editMentor').value = document.getElementById('val-mentor')?.textContent || '';
+            document.getElementById('editJobTitle').value = document.getElementById('val-jobTitle')?.textContent || '';
+            document.getElementById('editCompany').value = document.getElementById('val-company')?.textContent || '';
+            document.getElementById('editExperience').value = document.getElementById('val-experience')?.textContent || '';
+            document.getElementById('editSkills').value = document.getElementById('val-skills')?.textContent || '';
+            document.getElementById('editLinkedin').value = document.getElementById('val-linkedin')?.textContent || '';
+            document.getElementById('editGithub').value = document.getElementById('val-github')?.textContent || '';
         }
         document.getElementById('editProfileModalBox').classList.add('active');
     };
@@ -263,21 +292,41 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.saveEditProfile = function() {
-        showToast('Profile saved successfully!', 'success');
+        showToast('Profile saved successfully! 🎉', 'success');
         
-        // Update DOM Elements to reflect changes immediately
+        // Update Header
         const newJob = document.getElementById('editJobTitle').value;
         const newComp = document.getElementById('editCompany').value;
-        const newLoc = document.getElementById('editLocation').value;
-        const newExp = document.getElementById('editExperience').value;
-        
         const roleEl = document.querySelector('.profile-role');
         const compEl = document.querySelector('.profile-company');
-        
         if (roleEl) roleEl.textContent = newJob;
         if (compEl) compEl.innerHTML = `<i class='bx bxs-business'></i> ${newComp}`;
+
+        // Helper to update text content safely
+        const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
         
-        // Close modal
+        // Personal
+        setVal('val-email', document.getElementById('editEmail').value);
+        setVal('val-phone', document.getElementById('editPhone').value);
+        setVal('val-location', document.getElementById('editLocation').value);
+        setVal('val-dob', document.getElementById('editDOB').value);
+        
+        // Academic
+        setVal('val-department', document.getElementById('editDepartment').value);
+        setVal('val-gradYear', document.getElementById('editGradYear').value);
+        setVal('val-rollNumber', document.getElementById('editRollNumber').value);
+        setVal('val-mentor', document.getElementById('editMentor').value);
+        
+        // Professional
+        setVal('val-jobTitle', newJob);
+        setVal('val-company', newComp);
+        setVal('val-experience', document.getElementById('editExperience').value);
+        setVal('val-skills', document.getElementById('editSkills').value);
+        
+        // Social
+        setVal('val-linkedin', document.getElementById('editLinkedin').value);
+        setVal('val-github', document.getElementById('editGithub').value);
+
         closeEditProfile();
     };
 
@@ -288,25 +337,29 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
             <div class="page-title-bar">
                 <div><h1>Alumni Network</h1><p>Connect with graduates across the globe.</p></div>
-                <span id="networkCount" style="color:var(--text-muted);font-size:14px;font-weight:600;">${APP_DATA.topAlumni.length} alumni found</span>
+                <span id="networkCount" style="color:var(--primary);font-size:15px;font-weight:700;background:var(--bg-secondary);padding:6px 12px;border-radius:20px;border:1px solid var(--border);">${APP_DATA.topAlumni.length} Alumni Found</span>
             </div>
 
             <div class="filter-bar">
-                <div class="filter-input">
+                <div class="filter-input" style="min-width: 250px;">
                     <i class='bx bx-search'></i>
                     <input type="text" placeholder="Search by name, company, or role..." id="networkSearch" oninput="filterNetwork()">
                 </div>
+                <select id="roleFilter" onchange="filterNetwork()">
+                    <option value="">All Roles</option>
+                    ${[...new Set(APP_DATA.topAlumni.map(a => a.role))].sort().map(r => `<option value="${r}">${r}</option>`).join('')}
+                </select>
                 <select id="batchFilter" onchange="filterNetwork()">
                     <option value="">All Batches</option>
-                    ${[...new Set(APP_DATA.topAlumni.map(a => a.batch))].sort().map(b => `<option>${b}</option>`).join('')}
+                    ${[...new Set(APP_DATA.topAlumni.map(a => a.batch))].sort((x,y)=>y-x).map(b => `<option value="${b}">${b}</option>`).join('')}
                 </select>
                 <select id="companyFilter" onchange="filterNetwork()">
                     <option value="">All Companies</option>
-                    ${[...new Set(APP_DATA.topAlumni.map(a => a.company))].sort().map(c => `<option>${c}</option>`).join('')}
+                    ${[...new Set(APP_DATA.topAlumni.map(a => a.company))].sort().map(c => `<option value="${c}">${c}</option>`).join('')}
                 </select>
             </div>
 
-            <div class="network-grid" id="networkGrid">
+            <div class="network-grid" id="networkGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
                 ${APP_DATA.topAlumni.map(a => networkCard(a)).join('')}
             </div>
         `;
@@ -315,16 +368,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const search = (document.getElementById('networkSearch')?.value || '').toLowerCase();
         const batch = document.getElementById('batchFilter')?.value || '';
         const company = document.getElementById('companyFilter')?.value || '';
+        const role = document.getElementById('roleFilter')?.value || '';
+        
         document.querySelectorAll('.network-card').forEach(card => {
-            const matchSearch = !search || card.dataset.name.includes(search) || card.dataset.company.toLowerCase().includes(search);
+            const matchSearch = !search || card.dataset.name.includes(search) || card.dataset.company.toLowerCase().includes(search) || (card.dataset.role || '').toLowerCase().includes(search);
             const matchBatch = !batch || card.dataset.batch === batch;
             const matchCompany = !company || card.dataset.company === company;
-            card.style.display = (matchSearch && matchBatch && matchCompany) ? '' : 'none';
+            const matchRole = !role || card.dataset.role === role;
+            card.style.display = (matchSearch && matchBatch && matchCompany && matchRole) ? '' : 'none';
         });
+        
         // Update count
-        const visible = document.querySelectorAll('.network-card[style=""], .network-card:not([style])').length;
+        const visibleElements = Array.from(document.querySelectorAll('.network-card')).filter(el => el.style.display !== 'none');
+        const visible = visibleElements.length;
         const countSpan = document.getElementById('networkCount');
-        if (countSpan) countSpan.textContent = visible + ' alumni found';
+        if (countSpan) countSpan.textContent = visible + ' Alumni Found';
     };
     window.toggleBookmark = function(id) {
         if (bookmarkedAlumni.has(id)) { bookmarkedAlumni.delete(id); showToast('Removed from bookmarks', 'info'); }
@@ -821,10 +879,10 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>`;
     }
 
-    function detailItem(icon, label, value, isLink = false) {
+    function detailItem(icon, label, value, isLink = false, id = '') {
         return `<div class="detail-item">
             <div class="di-icon"><i class='bx ${icon}'></i></div>
-            <div><div class="di-label">${label}</div><div class="di-value" ${isLink ? 'style="color:var(--primary);"' : ''}>${value}</div></div>
+            <div><div class="di-label">${label}</div><div class="di-value" ${id ? `id="${id}"` : ''} ${isLink ? 'style="color:var(--primary);"' : ''}>${value}</div></div>
         </div>`;
     }
 
@@ -848,7 +906,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function networkCard(a) {
         const bookmarked = bookmarkedAlumni.has(a.id);
-        return `<div class="network-card" data-name="${a.name.toLowerCase()}" data-batch="${a.batch}" data-company="${a.company}">
+        return `<div class="network-card" data-name="${a.name.toLowerCase()}" data-batch="${a.batch}" data-company="${a.company}" data-role="${a.role}">
             <img src="${a.avatar}" alt="${a.name}">
             <div class="nc-info">
                 <h4>${a.name}</h4>
