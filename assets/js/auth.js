@@ -200,3 +200,56 @@ function previewPhoto(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+// ===== AI RESUME PARSER (MOCK) =====
+function handleResumeDrop(e) {
+    e.preventDefault();
+    const box = document.getElementById('aiResumeBox');
+    const loader = document.getElementById('aiResumeLoader');
+    box.style.borderColor = 'var(--primary)';
+    
+    // Attempt to grab the file either from drag or the file input
+    const file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+    if(!file) return;
+    if(file.type !== 'application/pdf') {
+        showToast('Please upload a PDF document for best AI parsing.', 'error');
+        box.style.borderColor = 'var(--border)';
+        return;
+    }
+
+    loader.style.display = 'block';
+
+    setTimeout(() => {
+        loader.style.display = 'none';
+        box.classList.add('success');
+        box.querySelector('h4').textContent = 'Extraction Complete! ✅';
+        box.querySelector('p').textContent = `Parsed: ${file.name}`;
+        
+        // --- AUTO FILL LOGIC (Simulated NLP Extraction) ---
+        // Fill Personal
+        const inputs = document.querySelectorAll('#step1 input[type="text"]');
+        if(inputs[0]) inputs[0].value = 'Alexander';
+        if(inputs[1]) inputs[1].value = 'Innovator';
+        
+        const tel = document.querySelector('#step1 input[type="tel"]');
+        if(tel) tel.value = '+91 9876543210';
+        
+        // Fill Academic (Step 2)
+        const ac_selects = document.querySelectorAll('#step2 select');
+        if(ac_selects[0]) ac_selects[0].value = 'Computer Engineering';
+        if(ac_selects[1]) ac_selects[1].value = '2022';
+        
+        // Fill Professional (Step 3)
+        const prof_inputs = document.querySelectorAll('#step3 input[type="text"]');
+        if(prof_inputs[0]) prof_inputs[0].value = 'Senior Machine Learning Engineer';
+        if(prof_inputs[1]) prof_inputs[1].value = 'Amazon Web Services';
+        if(prof_inputs[2]) prof_inputs[2].value = 'Python, TensorFlow, System Design, React';
+        if(prof_inputs[3]) prof_inputs[3].value = 'Bangalore';
+        if(prof_inputs[4]) prof_inputs[4].value = 'Karnataka';
+
+        const prof_selects = document.querySelectorAll('#step3 select');
+        if(prof_selects[0]) prof_selects[0].value = '2-5 years';
+        
+        showToast('AI successfully populated your profile details!', 'success');
+    }, 2000);
+}

@@ -229,6 +229,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             <button class="edit-modal-close" onclick="closeEditProfile()"><i class="bx bx-x"></i></button>
                         </div>
                         <div class="edit-modal-body">
+                            
+                            <div style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: 24px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 24px; transition: all 0.3s ease;" id="aiResumeBoxProfile" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'; this.style.background='rgba(79, 70, 229, 0.05)';" ondragleave="this.style.borderColor='var(--border)'; this.style.background='transparent';" ondrop="handleResumeDropProfile(event)">
+                                <i class='bx bx-brain' style="font-size:32px; color:var(--primary); margin-bottom:8px;"></i>
+                                <h4 style="color:var(--text-primary); margin-bottom:4px;">Auto-Update Profile via AI</h4>
+                                <p style="font-size:13px; color:var(--text-muted); text-align:center;">Drag & Drop your new PDF resume here to auto-fill the fields below!</p>
+                                <label class="btn btn-secondary btn-sm" style="margin-top:16px; cursor:pointer;">
+                                    Upload Document
+                                    <input type="file" accept=".pdf" style="display:none;" onchange="handleResumeDropProfile({target: this, preventDefault:()=>{}})">
+                                </label>
+                                <div id="aiResumeLoaderProfile" style="display:none; margin-top:16px; color:var(--primary); font-size:13px; font-weight:600;"><i class='bx bx-loader-alt bx-spin'></i> AI is rewriting your profile...</div>
+                            </div>
+                            
                             <h4 class="edit-modal-section-title">Personal Information</h4>
                             <div class="edit-modal-grid">
                                 <div class="edit-form-group"><label>Email</label><input type="email" id="editEmail" value="${document.getElementById('val-email')?.textContent || 'shubham.k@email.com'}"></div>
@@ -328,6 +340,40 @@ document.addEventListener('DOMContentLoaded', () => {
         setVal('val-github', document.getElementById('editGithub').value);
 
         closeEditProfile();
+    };
+
+    window.handleResumeDropProfile = function(e) {
+        e.preventDefault();
+        const box = document.getElementById('aiResumeBoxProfile');
+        const loader = document.getElementById('aiResumeLoaderProfile');
+        box.style.borderColor = 'var(--primary)';
+        
+        const file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+        if(!file) return;
+        if(file.type !== 'application/pdf') {
+            showToast('Please upload a PDF document.', 'error');
+            box.style.borderColor = 'var(--border)';
+            return;
+        }
+
+        loader.style.display = 'block';
+
+        setTimeout(() => {
+            loader.style.display = 'none';
+            box.style.borderColor = '#10b981';
+            box.style.background = 'rgba(16, 185, 129, 0.05)';
+            box.querySelector('h4').textContent = 'Profile Extracted! ✅';
+            box.querySelector('p').textContent = `Parsed data from: ${file.name}`;
+            
+            // Mock AI Filling logic
+            if(document.getElementById('editJobTitle')) document.getElementById('editJobTitle').value = 'Lead AI Architect';
+            if(document.getElementById('editCompany')) document.getElementById('editCompany').value = 'OpenAI';
+            if(document.getElementById('editExperience')) document.getElementById('editExperience').value = '10+ years';
+            if(document.getElementById('editSkills')) document.getElementById('editSkills').value = 'Python, PyTorch, LLMs, Scalable Systems';
+            if(document.getElementById('editLocation')) document.getElementById('editLocation').value = 'San Francisco, CA';
+            
+            showToast('AI magically updated your profile!', 'success');
+        }, 2000);
     };
 
     // ============================================
