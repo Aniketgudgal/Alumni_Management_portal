@@ -1037,4 +1037,77 @@ document.addEventListener('DOMContentLoaded', () => {
             </label>
         </div>`;
     }
+
+    // ============================================
+    // AI COPILOT INITIALIZATION
+    // ============================================
+    function initAICopilot() {
+        if(document.getElementById('aiCopilotBtn')) return;
+        const aiHTML = `
+            <button class="ai-copilot-btn" id="aiCopilotBtn" onclick="document.getElementById('aiCopilotPanel').classList.toggle('active')">
+                <i class='bx bxs-bot'></i>
+            </button>
+            <div class="ai-copilot-panel" id="aiCopilotPanel">
+                <div class="ai-header">
+                    <h3><i class='bx bxs-magic-wand'></i> AI Copilot</h3>
+                    <button class="ai-close" onclick="document.getElementById('aiCopilotPanel').classList.remove('active')"><i class='bx bx-x'></i></button>
+                </div>
+                <div class="ai-body" id="aiBody">
+                    <div class="ai-msg bot">Hello! I can help you find alumni, skills, or companies naturally. Try asking: "Who works at Amazon in Data?"</div>
+                </div>
+                <div class="ai-footer">
+                    <input type="text" id="aiInput" placeholder="Ask AI..." onkeypress="if(event.key==='Enter') executeAIQuery()">
+                    <button onclick="executeAIQuery()"><i class='bx bxs-send'></i></button>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', aiHTML);
+    }
+    
+    window.executeAIQuery = function() {
+        const input = document.getElementById('aiInput');
+        const q = input.value.trim().toLowerCase();
+        if(!q) return;
+        
+        const body = document.getElementById('aiBody');
+        body.innerHTML += `<div class="ai-msg user">${input.value}</div>`;
+        input.value = '';
+        
+        // Mock AI Processing Animation
+        const loadingId = 'aiLoad_' + Date.now();
+        body.innerHTML += `<div class="ai-msg bot" id="${loadingId}"><i class='bx bx-loader-alt bx-spin'></i> AI analyzing network graph...</div>`;
+        body.scrollTop = body.scrollHeight;
+        
+        setTimeout(() => {
+            const el = document.getElementById(loadingId);
+            if(el) el.remove();
+            
+            let found = APP_DATA.topAlumni.filter(a => 
+                (q.includes(a.company.toLowerCase()) || q.includes(a.role.toLowerCase()) || a.tags.some(t => q.includes(t.toLowerCase())))
+            );
+            
+            let reply = '';
+            if(found.length > 0) {
+                reply += `<div class="ai-msg bot">I found ${found.length} matching alumni! Here they are:</div>`;
+                found.forEach(a => {
+                    reply += `
+                    <div class="ai-alumni-card">
+                        <img src="${a.avatar}" alt="img">
+                        <div style="flex:1">
+                            <h4>${a.name}</h4>
+                            <p>${a.role} @ ${a.company}</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="connectAlumni('${a.name.replace(/'/g, "\\'")}', '${a.batch}', this)" style="padding:4px 8px;font-size:11px;">Connect</button>
+                    </div>`;
+                });
+            } else {
+                reply = `<div class="ai-msg bot">I couldn't find anyone specifically matching that request right now. Try searching by company like 'Google' or role like 'Data'.</div>`;
+            }
+            body.innerHTML += reply;
+            body.scrollTop = body.scrollHeight;
+        }, 1200);
+    };
+
+    // Delay init slightly to ensure DOM is ready
+    setTimeout(() => initAICopilot(), 500);
 });

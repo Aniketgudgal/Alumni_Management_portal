@@ -84,6 +84,35 @@
                                 <h3>Personal Information</h3>
                             </div>
 
+                            <div class="ai-resume-parser" id="aiResumeBox" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'; this.style.background='rgba(79, 70, 229, 0.05)';" ondragleave="this.style.borderColor='var(--border)'; this.style.background='transparent';" ondrop="handleResumeDrop(event)">
+                                <i class='bx bx-brain' style="font-size:32px; color:var(--primary); margin-bottom:8px;"></i>
+                                <h4 style="color:var(--text-primary); margin-bottom:4px;">AI Auto-Fill with Resume</h4>
+                                <p style="font-size:13px; color:var(--text-muted); text-align:center;">Drag & Drop your PDF resume here, and our AI will automatically extract your details, jobs, and skills!</p>
+                                <label class="btn btn-secondary btn-sm" style="margin-top:16px; cursor:pointer;">
+                                    Browse Document
+                                    <input type="file" accept=".pdf" style="display:none;" onchange="handleResumeDrop({target: this, preventDefault:()=>{}})">
+                                </label>
+                                <div class="ai-resume-loader" id="aiResumeLoader" style="display:none; margin-top:16px; color:var(--primary); font-size:13px; font-weight:600;"><i class='bx bx-loader-alt bx-spin'></i> AI is extracting node data...</div>
+                            </div>
+                            
+                            <style>
+                                .ai-resume-parser {
+                                    border: 2px dashed var(--border);
+                                    border-radius: var(--radius-lg);
+                                    padding: 30px 20px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    justify-content: center;
+                                    margin-bottom: 24px;
+                                    transition: all 0.3s ease;
+                                }
+                                .ai-resume-parser.success {
+                                    border-color: #10b981;
+                                    background: rgba(16, 185, 129, 0.05);
+                                }
+                            </style>
+
                             <div class="photo-upload">
                                 <div class="photo-preview" id="photoPreview">
                                     <i class='bx bxs-camera'></i>
