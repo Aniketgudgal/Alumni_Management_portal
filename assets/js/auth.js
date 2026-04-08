@@ -71,6 +71,12 @@ function handleLogin(e) {
         return;
     }
 
+    // Dummy credential validation
+    if (email !== 'shubham@alumni.com' || password !== 'password123') {
+        showToast('Invalid credentials. Please use shubham@alumni.com and password123', 'error');
+        return;
+    }
+
     const btn = e.target.querySelector('.btn-submit');
     btn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Signing in...';
     btn.disabled = true;
