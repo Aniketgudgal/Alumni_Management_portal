@@ -908,14 +908,15 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="page-title-bar"><div><h1>🏆 Top Alumni</h1><p>Celebrating our most distinguished graduates.</p></div></div>
             <div class="alumni-cards-grid">
                 ${APP_DATA.topAlumni.map(a => `
-                    <div class="alumni-card" style="cursor:pointer;" onclick="viewAlumniProfile('${a.name.replace(/'/g, "\\'")}')">
+                    <div class="alumni-card">
                         <img src="${a.avatar}" alt="${a.name}" class="alumni-avatar">
                         <h3 class="alumni-name">${a.name}</h3>
                         <p class="alumni-role">${a.role}</p>
                         <p class="alumni-company"><i class='bx bxs-business'></i> ${a.company} &bull; Batch ${a.batch}</p>
                         <div class="alumni-tags">${a.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
-                        <div class="card-actions" onclick="event.stopPropagation()">
+                        <div class="card-actions">
                             <button class="btn btn-primary btn-sm" onclick="connectAlumni('${a.name.replace(/'/g, "\\'")}', '${a.batch}', this)">Connect</button>
+                            <button class="btn btn-secondary btn-sm" onclick="viewAlumniProfile('${a.name.replace(/'/g, "\\'")}')">View Info</button>
                             <button class="btn btn-secondary btn-sm" onclick="navigateTo('chat')"><i class='bx bx-message-dots'></i></button>
                         </div>
                     </div>
@@ -1085,17 +1086,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function networkCard(a) {
         const bookmarked = bookmarkedAlumni.has(a.id);
-        return `<div class="network-card" style="cursor:pointer;" onclick="viewAlumniProfile('${a.name.replace(/'/g, "\\'")}')" data-name="${a.name.toLowerCase()}" data-batch="${a.batch}" data-company="${a.company}" data-role="${a.role}">
+        return `<div class="network-card" data-name="${a.name.toLowerCase()}" data-batch="${a.batch}" data-company="${a.company}" data-role="${a.role}">
             <img src="${a.avatar}" alt="${a.name}">
             <div class="nc-info">
                 <h4>${a.name}</h4>
                 <p>${a.role} at ${a.company}</p>
                 <span class="nc-batch">Batch ${a.batch}</span>
             </div>
-            <div style="display:flex;gap:6px;margin-left:auto;" onclick="event.stopPropagation()">
+            <div style="display:flex;gap:6px;margin-left:auto;align-items:center;">
                 <button class="topbar-icon-btn bookmark-btn" data-id="${a.id}" onclick="toggleBookmark(${a.id})" data-tooltip="Bookmark">
                     <i class='bx ${bookmarked ? 'bxs-bookmark' : 'bx-bookmark'}'></i>
                 </button>
+                <button class="btn btn-secondary btn-sm" onclick="viewAlumniProfile('${a.name.replace(/'/g, "\\'")}')">View Info</button>
                 <button class="btn btn-primary btn-sm" onclick="connectAlumni('${a.name.replace(/'/g, "\\'")}', '${a.batch}', this)"><i class='bx bx-user-plus'></i></button>
             </div>
         </div>`;
