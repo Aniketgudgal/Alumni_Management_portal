@@ -220,7 +220,65 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
     window.toggleEditProfile = function() {
-        showToast('Profile editing mode coming with backend integration!', 'info');
+        if (!document.getElementById('editProfileModalBox')) {
+            const modalHTML = `
+                <div class="edit-modal-overlay" id="editProfileModalBox">
+                    <div class="edit-modal">
+                        <div class="edit-modal-header">
+                            <h3>Edit Profile</h3>
+                            <button class="edit-modal-close" onclick="closeEditProfile()"><i class="bx bx-x"></i></button>
+                        </div>
+                        <div class="edit-modal-body">
+                            <div class="edit-form-group">
+                                <label>Job Title</label>
+                                <input type="text" id="editJobTitle" value="Software Developer">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Company</label>
+                                <input type="text" id="editCompany" value="Tech Solutions Pvt. Ltd.">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Location</label>
+                                <input type="text" id="editLocation" value="Pune, Maharashtra">
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Experience</label>
+                                <input type="text" id="editExperience" value="2-5 years">
+                            </div>
+                        </div>
+                        <div class="edit-modal-footer">
+                            <button class="btn btn-secondary" onclick="closeEditProfile()">Cancel</button>
+                            <button class="btn btn-primary" onclick="saveEditProfile()">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+        document.getElementById('editProfileModalBox').classList.add('active');
+    };
+
+    window.closeEditProfile = function() {
+        document.getElementById('editProfileModalBox').classList.remove('active');
+    };
+
+    window.saveEditProfile = function() {
+        showToast('Profile saved successfully!', 'success');
+        
+        // Update DOM Elements to reflect changes immediately
+        const newJob = document.getElementById('editJobTitle').value;
+        const newComp = document.getElementById('editCompany').value;
+        const newLoc = document.getElementById('editLocation').value;
+        const newExp = document.getElementById('editExperience').value;
+        
+        const roleEl = document.querySelector('.profile-role');
+        const compEl = document.querySelector('.profile-company');
+        
+        if (roleEl) roleEl.textContent = newJob;
+        if (compEl) compEl.innerHTML = `<i class='bx bxs-business'></i> ${newComp}`;
+        
+        // Close modal
+        closeEditProfile();
     };
 
     // ============================================
@@ -230,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
             <div class="page-title-bar">
                 <div><h1>Alumni Network</h1><p>Connect with graduates across the globe.</p></div>
-                <span style="color:var(--text-muted);font-size:14px;">${APP_DATA.topAlumni.length} alumni found</span>
+                <span id="networkCount" style="color:var(--text-muted);font-size:14px;font-weight:600;">${APP_DATA.topAlumni.length} alumni found</span>
             </div>
 
             <div class="filter-bar">
@@ -265,6 +323,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         // Update count
         const visible = document.querySelectorAll('.network-card[style=""], .network-card:not([style])').length;
+        const countSpan = document.getElementById('networkCount');
+        if (countSpan) countSpan.textContent = visible + ' alumni found';
     };
     window.toggleBookmark = function(id) {
         if (bookmarkedAlumni.has(id)) { bookmarkedAlumni.delete(id); showToast('Removed from bookmarks', 'info'); }
@@ -272,7 +332,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = document.querySelector(`.bookmark-btn[data-id="${id}"] i`);
         if (btn) btn.className = bookmarkedAlumni.has(id) ? 'bx bxs-bookmark' : 'bx bx-bookmark';
     };
-    window.connectAlumni = function(name) {
+    window.connectAlumni = function(name, btn) {
+        if (btn) {
+            btn.innerHTML = '<i class="bx bx-check"></i> Pending';
+            btn.classList.add('btn-secondary');
+            btn.classList.remove('btn-primary');
+            btn.disabled = true;
+        }
         showToast(`Connection request sent to ${name}!`, 'success');
     };
 
@@ -443,7 +509,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.markAllRead = function() {
         document.querySelectorAll('.activity-item').forEach(item => {
             item.style.opacity = '0.5';
+            item.style.filter = 'grayscale(100%)';
         });
+        document.querySelectorAll('.nav-badge, .notif-dot').forEach(badge => badge.style.display = 'none');
         showToast('All notifications marked as read', 'success');
     };
     window.dismissNotif = function(i) {
@@ -577,8 +645,21 @@ document.addEventListener('DOMContentLoaded', () => {
     window.filterDashGallery = function(category, btn) {
         document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
-        document.querySelectorAll('#dashGalleryGrid .gallery-item').forEach(item => {
-            item.style.display = (category === 'All' || item.dataset.category === category) ? '' : 'none';
+        const items = document.querySelectorAll('#dashGalleryGrid .gallery-item');
+        items.forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                if (category === 'All' || item.dataset.category === category) {
+                    item.style.display = '';
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'scale(1)';
+                    }, 50);
+                } else {
+                    item.style.display = 'none';
+                }
+            }, 300);
         });
     };
 
@@ -597,7 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="alumni-company"><i class='bx bxs-business'></i> ${a.company} &bull; Batch ${a.batch}</p>
                         <div class="alumni-tags">${a.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
                         <div class="card-actions">
-                            <button class="btn btn-primary btn-sm" onclick="connectAlumni('${a.name}')">Connect</button>
+                            <button class="btn btn-primary btn-sm" onclick="connectAlumni('${a.name}', this)">Connect</button>
                             <button class="btn btn-secondary btn-sm" onclick="navigateTo('chat')"><i class='bx bx-message-dots'></i></button>
                         </div>
                     </div>
@@ -778,7 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="topbar-icon-btn bookmark-btn" data-id="${a.id}" onclick="toggleBookmark(${a.id})" data-tooltip="Bookmark">
                     <i class='bx ${bookmarked ? 'bxs-bookmark' : 'bx-bookmark'}'></i>
                 </button>
-                <button class="btn btn-primary btn-sm" onclick="connectAlumni('${a.name}')"><i class='bx bx-user-plus'></i></button>
+                <button class="btn btn-primary btn-sm" onclick="connectAlumni('${a.name}', this)"><i class='bx bx-user-plus'></i></button>
             </div>
         </div>`;
     }

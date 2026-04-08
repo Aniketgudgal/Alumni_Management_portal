@@ -1066,9 +1066,15 @@
     }
     .chat-layout {
         grid-template-columns: 1fr;
+        height: auto;
     }
     .chat-contacts {
-        display: none;
+        max-height: 250px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+    .chat-main {
+        height: 500px;
     }
     .profile-overview {
         grid-template-columns: 1fr;
@@ -1082,9 +1088,30 @@
     }
     .dash-sidebar.open {
         transform: translateX(0);
+        box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    }
+    .dash-sidebar-header h2,
+    .sidebar-user,
+    .nav-section-label,
+    .dash-nav-link span,
+    .dash-nav-link .nav-badge {
+        display: block; /* or appropriate flex/etc. */
+    }
+    .sidebar-user { display: block; }
+    .nav-section-label { display: block; }
+    .dash-nav-link span { display: inline; }
+    .dash-nav-link .nav-badge { display: block; }
+    
+    .dash-nav-link {
+        justify-content: flex-start;
+        padding: 11px 16px;
+    }
+    .dash-nav-link i {
+        margin-right: 0px;
+        font-size: 20px;
     }
     .dash-main {
-        margin-left: 0;
+        margin-left: 0 !important;
     }
     .sidebar-toggle {
         display: block;
@@ -1105,4 +1132,218 @@
         flex-direction: column;
         gap: 12px;
     }
+}
+
+/* === Filter Bar === */
+.filter-bar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.filter-input {
+    flex: 1;
+    min-width: 250px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.filter-input i {
+    position: absolute;
+    left: 16px;
+    color: var(--text-muted);
+    font-size: 20px;
+}
+
+.filter-input input, .filter-bar select {
+    width: 100%;
+    padding: 12px 16px 12px 48px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    font-size: 14px;
+    color: var(--text-primary);
+    outline: none;
+    transition: var(--transition-fast);
+}
+
+.filter-bar select {
+    padding-left: 16px;
+    flex: 0 1 auto;
+    min-width: 160px;
+    cursor: pointer;
+}
+
+.filter-input input:focus, .filter-bar select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* === Job Board === */
+.jobs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.job-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    transition: var(--transition);
+}
+
+.job-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+}
+
+.job-logo {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.job-info {
+    flex: 1;
+}
+
+.job-info h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.job-company {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.job-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.job-tags span {
+    background: var(--bg-body);
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .job-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .job-card .btn {
+        width: 100%;
+        margin-top: 12px;
+    }
+}
+
+/* === Edit Profile Modal === */
+.edit-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: var(--z-modal);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.edit-modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s ease forwards;
+}
+.edit-modal {
+    background: var(--bg-card);
+    width: 100%;
+    max-width: 600px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: scaleIn 0.3s ease forwards;
+}
+.edit-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.edit-modal-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+}
+.edit-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+.edit-modal-close:hover {
+    color: var(--accent);
+}
+.edit-modal-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.edit-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.edit-form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.edit-form-group input, .edit-form-group select {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-body);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+}
+.edit-form-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    outline: none;
+}
+.edit-modal-footer {
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
 }
