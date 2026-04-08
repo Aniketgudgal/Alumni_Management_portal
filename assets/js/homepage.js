@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${a.tags.map(t => `<span class="tag">${t}</span>`).join('')}
                 </div>
                 <div class="card-actions">
-                    <a href="dashboard.html" class="btn btn-primary btn-sm">View Profile</a>
+                    <a href="pages/alumni/profile.html" class="btn btn-primary btn-sm">View Profile</a>
                     <a href="${a.linkedin}" class="btn btn-secondary btn-sm" data-tooltip="LinkedIn"><i class='bx bxl-linkedin'></i></a>
                 </div>
             </div>
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 a.batch.includes(query)
             );
             const suggestionsHTML = filtered.slice(0, 5).map(a => `
-                <div class="suggestion-item" onclick="window.location.href='dashboard.html'">
+                <div class="suggestion-item" onclick="window.location.href='pages/alumni/profile.html'">
                     <img src="${a.avatar}" alt="${a.name}">
                     <div class="s-info">
                         <h5>${a.name}</h5>
