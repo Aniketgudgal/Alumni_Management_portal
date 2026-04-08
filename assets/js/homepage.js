@@ -129,6 +129,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
+    // ===== RENDER JOBS PREVIEW =====
+    const jobsPreviewGrid = document.getElementById('jobsPreviewGrid');
+    if (jobsPreviewGrid && APP_DATA.jobs) {
+        jobsPreviewGrid.innerHTML = APP_DATA.jobs.slice(0, 3).map((job, i) => `
+            <div class="job-card animate-fadeInUp delay-${(i % 3) + 1}" style="background:var(--bg-body); padding:24px; border-radius:var(--radius-lg); border:1px solid var(--border); transition:all 0.3s ease;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+                    <div style="width:48px; height:48px; background:var(--primary); color:#fff; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px;">
+                        <i class='bx bxs-buildings'></i>
+                    </div>
+                    <span class="badge ${job.type === 'Full-time' ? 'badge-primary' : 'badge-accent'}">${job.type}</span>
+                </div>
+                <h3 style="font-size:18px; margin-bottom:4px;">${job.title}</h3>
+                <p style="color:var(--primary); font-weight:600; margin-bottom:16px;">${job.company} &bull; ${job.location}</p>
+                <div style="display:flex; gap:16px; font-size:13px; color:var(--text-muted); margin-bottom:20px;">
+                    <span><i class='bx bx-briefcase'></i> ${job.experience}</span>
+                    <span><i class='bx bx-time'></i> ${job.postedDate}</span>
+                </div>
+                <div style="filter: blur(4px); user-select: none;">
+                   <button class="btn btn-primary btn-sm" style="width:100%;">Apply Now</button>
+                </div>
+                <p style="font-size:11px; text-align:center; color:#ef4444; margin-top:8px; font-weight:600;">Login required to apply</p>
+            </div>
+        `).join('');
+    }
+
     // ===== RENDER GALLERY =====
     const galleryTabs = document.getElementById('galleryTabs');
     const galleryGrid = document.getElementById('galleryGrid');
