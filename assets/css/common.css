@@ -1934,3 +1934,26 @@ input, select, textarea { font-family: inherit; }
 .skeleton-text.sm { width: 60%; }
 .skeleton-text.md { width: 80%; }
 .skeleton-text.lg { width: 100%; }
+/* Additional Mobile Global Polish */
+@media (max-width: 768px) {
+    .hero-image-wrapper { width: 100%; height: auto; aspect-ratio: 1/1; max-width: 380px; margin: 0 auto; }
+    .hero-image-wrapper .main-circle { width: 90%; height: 90%; }
+    .hero-image-wrapper .main-circle i { font-size: 100px; }
+    
+    .floating-card { padding: 10px 14px; }
+    .floating-card.card-1 { right: -5%; }
+    .floating-card.card-2 { left: -5%; }
+    .floating-card.card-3 { right: 5%; bottom: -15%; }
+    
+    .about-features { grid-template-columns: 1fr; }
+    .about-image-box { aspect-ratio: auto; height: 260px; }
+    
+    .section-title { font-size: 26px; }
+    .hero { padding-top: 100px; padding-bottom: 60px; }
+    
+    .hero-buttons .btn { width: 100%; text-align: center; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+    .floating-card { display: none; } /* Hide floating cards on very small phones to prevent overflow */
+}
