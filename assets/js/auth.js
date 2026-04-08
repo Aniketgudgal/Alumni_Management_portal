@@ -23,6 +23,35 @@ function togglePassword(inputId, btn) {
     }
 }
 
+// ===== PASSWORD STRENGTH METER =====
+function checkPasswordStrength(password) {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    return strength; // 0-5
+}
+
+function updateStrengthMeter(inputId) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const meter = document.getElementById('strengthMeter');
+    const label = document.getElementById('strengthLabel');
+    if (!meter || !label) return;
+
+    const strength = checkPasswordStrength(input.value);
+    const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#10b981'];
+    const labels = ['Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'];
+    const width = (strength / 5) * 100;
+
+    meter.style.width = width + '%';
+    meter.style.background = colors[strength - 1] || '#e2e8f0';
+    label.textContent = input.value ? (labels[strength - 1] || 'Very Weak') : '';
+    label.style.color = colors[strength - 1] || '#94a3b8';
+}
+
 // ===== LOGIN HANDLER =====
 function handleLogin(e) {
     e.preventDefault();
@@ -36,23 +65,29 @@ function handleLogin(e) {
         return;
     }
 
-    // Simulate login (static mode)
+    // Email format validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('Please enter a valid email address', 'error');
+        return;
+    }
+
     const btn = e.target.querySelector('.btn-submit');
     btn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Signing in...';
     btn.disabled = true;
 
     setTimeout(() => {
-        // Store mock session
-        localStorage.setItem('alumni_portal_user', JSON.stringify({
+        setUser({
             email: email,
             role: role,
-            name: role === 'admin' ? 'Admin User' : 'Alumni User',
+            name: role === 'admin' ? 'Admin User' : 'Shubham Kulkarni',
+            batch: '2020',
+            department: 'Computer Engineering',
             loggedIn: true
-        }));
+        });
 
         showToast('Login successful! Redirecting...', 'success');
         setTimeout(() => {
-            window.location.href = 'dashboard.html';
+            window.location.href = '../alumni/dashboard.html';
         }, 1000);
     }, 1500);
 }
@@ -61,11 +96,13 @@ function handleLogin(e) {
 let currentStep = 1;
 
 function nextStep(step) {
+    // Basic validation before proceeding
+    if (!validateStep(currentStep)) return;
+
     document.getElementById(`step${currentStep}`).style.display = 'none';
     document.getElementById(`step${step}`).style.display = 'block';
     updateProgress(step);
     currentStep = step;
-    // Scroll to top of form
     document.querySelector('.auth-form-panel').scrollTop = 0;
 }
 
@@ -75,6 +112,23 @@ function prevStep(step) {
     updateProgress(step);
     currentStep = step;
     document.querySelector('.auth-form-panel').scrollTop = 0;
+}
+
+function validateStep(step) {
+    const stepEl = document.getElementById(`step${step}`);
+    const requiredInputs = stepEl.querySelectorAll('input[required], select[required]');
+    let valid = true;
+
+    requiredInputs.forEach(inp => {
+        if (!inp.value.trim()) {
+            inp.style.borderColor = '#ef4444';
+            inp.addEventListener('input', () => inp.style.borderColor = '', { once: true });
+            valid = false;
+        }
+    });
+
+    if (!valid) showToast('Please fill in all required fields', 'error');
+    return valid;
 }
 
 function updateProgress(activeStep) {
@@ -93,9 +147,9 @@ function updateProgress(activeStep) {
 
     lines.forEach((line, i) => {
         line.classList.remove('active', 'completed');
-        if (i + 1 < activeStep - 1) {
+        if (i < activeStep - 2) {
             line.classList.add('completed');
-        } else if (i + 1 === activeStep - 1) {
+        } else if (i === activeStep - 2) {
             line.classList.add('active');
         }
     });
@@ -110,6 +164,11 @@ function handleRegistration(e) {
 
     if (password && confirmPassword && password.value !== confirmPassword.value) {
         showToast('Passwords do not match!', 'error');
+        return;
+    }
+
+    if (password && password.value.length < 8) {
+        showToast('Password must be at least 8 characters', 'error');
         return;
     }
 
@@ -129,53 +188,15 @@ function handleRegistration(e) {
 function previewPhoto(input) {
     const preview = document.getElementById('photoPreview');
     if (input.files && input.files[0]) {
+        // Validate file size (max 2MB)
+        if (input.files[0].size > 2 * 1024 * 1024) {
+            showToast('Photo must be less than 2MB', 'error');
+            return;
+        }
         const reader = new FileReader();
         reader.onload = function(e) {
             preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
         };
         reader.readAsDataURL(input.files[0]);
     }
-}
-
-// ===== TOAST NOTIFICATION =====
-function showToast(message, type = 'info') {
-    // Remove existing toast
-    const existing = document.querySelector('.toast-notification');
-    if (existing) existing.remove();
-
-    const toast = document.createElement('div');
-    toast.className = `toast-notification toast-${type}`;
-    toast.innerHTML = `
-        <i class='bx ${type === 'success' ? 'bx-check-circle' : type === 'error' ? 'bx-error-circle' : 'bx-info-circle'}'></i>
-        <span>${message}</span>
-    `;
-
-    // Toast styles
-    Object.assign(toast.style, {
-        position: 'fixed',
-        bottom: '24px',
-        right: '24px',
-        padding: '14px 24px',
-        borderRadius: '12px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px',
-        fontSize: '14px',
-        fontWeight: '600',
-        fontFamily: "'Outfit', sans-serif",
-        zIndex: '9999',
-        animation: 'slideInRight 0.4s ease forwards',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-        background: type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6',
-        color: '#fff'
-    });
-
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(30px)';
-        toast.style.transition = 'all 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
 }
