@@ -87,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${a.tags.map(t => `<span class="tag">${t}</span>`).join('')}
                 </div>
                 <div class="card-actions">
-                    <a href="pages/alumni/profile.html" class="btn btn-primary btn-sm">View Profile</a>
-                    <a href="${a.linkedin}" class="btn btn-secondary btn-sm" data-tooltip="LinkedIn"><i class='bx bxl-linkedin'></i></a>
+                    <button class="btn btn-primary btn-sm" onclick="openHomepageAlumniModal('${a.name.replace(/'/g, "\\'")}')">View Info</button>
+                    <a href="${a.linkedin}" class="btn btn-secondary btn-sm" data-tooltip="LinkedIn" target="_blank"><i class='bx bxl-linkedin'></i></a>
                 </div>
             </div>
         `).join('');
@@ -322,3 +322,42 @@ function scrollTestimonials(dir) {
         track.scrollBy({ left: dir * 400, behavior: 'smooth' });
     }
 }
+
+// ===== HOMEPAGE ALUMNI MODAL (PUBLIC VIEW) =====
+window.openHomepageAlumniModal = function(name) {
+    const a = APP_DATA.topAlumni.find(x => x.name === name);
+    if(!a) return;
+    
+    const existing = document.getElementById('viewAlumniModalBox');
+    if(existing) existing.remove();
+
+    const modalHTML = `
+        <div class="edit-modal-overlay active" id="viewAlumniModalBox" style="align-items:center; justify-content:center; z-index:99999;">
+            <div class="edit-modal" style="max-width:450px; text-align:center;">
+                <div class="edit-modal-header" style="justify-content: flex-end; border-bottom: none; padding-bottom: 0;">
+                    <button class="edit-modal-close" onclick="document.getElementById('viewAlumniModalBox').remove()"><i class="bx bx-x"></i></button>
+                </div>
+                <div class="edit-modal-body" style="padding-top:0;">
+                    <img src="${a.avatar}" style="width:100px; height:100px; border-radius:50%; margin-bottom:16px; border:3px solid var(--primary-light);">
+                    <h2 style="font-size:24px; margin-bottom:4px; font-weight:700;">${a.name}</h2>
+                    <p style="color:var(--primary); font-weight:600; margin-bottom:8px;">${a.role} at ${a.company}</p>
+                    <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">Class of ${a.batch}</p>
+                    
+                    <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:30px;">
+                        ${a.tags.map(t => `<span style="background:rgba(79,70,229,0.1); padding:6px 12px; border-radius:20px; font-size:12px; font-weight:600; color:var(--primary); border:1px solid var(--primary-light);">${t}</span>`).join('')}
+                    </div>
+                    
+                    <div style="background:var(--bg-secondary); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom:20px;">
+                        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;"><strong>Want to connect with ${a.name.split(' ')[0]}?</strong><br>Join the alumni network to access direct messaging, mentorship, and full professional profiles!</p>
+                        <div style="display:flex; gap:12px; justify-content:center;">
+                            <a href="pages/auth/login.html" class="btn btn-primary" style="flex:1;">
+                                <i class='bx bx-log-in'></i> Login to Connect
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+};
