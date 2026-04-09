@@ -364,7 +364,10 @@
                                     <div class="sp-info-item"><i class='bx bx-envelope'></i> <span id="dispEmail">shubham@example.com</span></div>
                                     <div class="sp-info-item"><i class='bx bx-phone'></i> <span id="dispPhone">+91 98765 43210</span></div>
                                     <div class="sp-info-item"><i class='bx bx-map'></i> <span id="dispLocation">Pune, India</span></div>
-                                    <div class="sp-info-item"><i class='bx bxl-linkedin-square' style="color:#0a66c2;"></i> <a href="#" class="sp-info-link" id="dispLinkedIn">linkedin.com/in/shubham-k</a></div>
+                                    
+                                    <div id="dispSocialLinks" style="display:flex; flex-direction:column; gap:15px; margin-top:5px;">
+                                        <div class="sp-info-item"><i class='bx bxl-linkedin-square' style="color:#0a66c2;"></i> <a href="#" class="sp-info-link" target="_blank">linkedin.com/in/shubham-k</a></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -536,7 +539,25 @@
                 <div class="form-group"><label>Email Address</label><input type="email" class="form-control" id="inpEmail" value="shubham@example.com"></div>
                 <div class="form-group"><label>Phone Number</label><input type="text" class="form-control" id="inpPhone" value="+91 98765 43210"></div>
                 <div class="form-group"><label>Location / City</label><input type="text" class="form-control" id="inpLoc" value="Pune, India"></div>
-                <div class="form-group"><label>LinkedIn Username</label><input type="text" class="form-control" id="inpLinked" value="linkedin.com/in/shubham-k"></div>
+                
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px dashed var(--profile-border);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <label style="margin:0; font-size:14px; font-weight:700; color:var(--text-primary);">Social Links</label>
+                        <button type="button" class="btn-secondary" style="padding: 4px 10px; font-size: 12px; border-radius: 6px;" onclick="addSocialLinkField()"><i class='bx bx-plus'></i> Add Link</button>
+                    </div>
+                    <div id="socialLinksInpContainer" style="display:flex; flex-direction:column; gap:10px;">
+                        <div class="social-inp-row" style="display:flex; gap:10px; align-items:center;">
+                            <select class="form-control social-platform" style="width: 140px;">
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="github">GitHub</option>
+                                <option value="twitter">Twitter / X</option>
+                                <option value="portfolio">Portfolio</option>
+                            </select>
+                            <input type="text" class="form-control social-url" value="linkedin.com/in/shubham-k" placeholder="URL">
+                            <i class='bx bx-trash' style="color:var(--text-muted); cursor:pointer; font-size:18px;" onclick="this.parentElement.remove()"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" style="padding: 8px 16px;" onclick="closeModal()">Cancel</button>
@@ -667,13 +688,54 @@
             showToast('Personal info updated successfully', 'success');
         }
 
+        function addSocialLinkField() {
+            const cont = document.getElementById('socialLinksInpContainer');
+            const row = document.createElement('div');
+            row.className = 'social-inp-row';
+            row.style = 'display:flex; gap:10px; align-items:center;';
+            row.innerHTML = `
+                <select class="form-control social-platform" style="width: 140px;">
+                    <option value="linkedin">LinkedIn</option>
+                    <option value="github">GitHub</option>
+                    <option value="twitter">Twitter / X</option>
+                    <option value="portfolio">Portfolio</option>
+                </select>
+                <input type="text" class="form-control social-url" placeholder="URL">
+                <i class='bx bx-trash' style="color:var(--text-muted); cursor:pointer; font-size:18px;" onclick="this.parentElement.remove()"></i>
+            `;
+            cont.appendChild(row);
+        }
+
         function saveContact() {
             document.getElementById('dispEmail').innerText = document.getElementById('inpEmail').value;
             document.getElementById('dispPhone').innerText = document.getElementById('inpPhone').value;
             document.getElementById('dispLocation').innerText = document.getElementById('inpLoc').value;
-            document.getElementById('dispLinkedIn').innerText = document.getElementById('inpLinked').value;
+            
+            // Process dynamic social links
+            const dispLinks = document.getElementById('dispSocialLinks');
+            dispLinks.innerHTML = '';
+            
+            const rows = document.querySelectorAll('.social-inp-row');
+            rows.forEach(row => {
+                const platform = row.querySelector('.social-platform').value;
+                const url = row.querySelector('.social-url').value.trim();
+                
+                if(url) {
+                    let iconHtml = '';
+                    if(platform === 'linkedin') iconHtml = "<i class='bx bxl-linkedin-square' style='color:#0a66c2;'></i>";
+                    else if(platform === 'github') iconHtml = "<i class='bx bxl-github' style='color:var(--text-primary);'></i>";
+                    else if(platform === 'twitter') iconHtml = "<i class='bx bxl-twitter' style='color:#1da1f2;'></i>";
+                    else iconHtml = "<i class='bx bx-globe' style='color:#10b981;'></i>";
+                    
+                    const item = document.createElement('div');
+                    item.className = 'sp-info-item';
+                    item.innerHTML = `${iconHtml} <a href="${url.startsWith('http') ? url : 'https://'+url}" class="sp-info-link" target="_blank">${url}</a>`;
+                    dispLinks.appendChild(item);
+                }
+            });
+
             closeModal();
-            showToast('Contact info saved', 'success');
+            showToast('Contact & Social info saved', 'success');
         }
 
         function saveSummary() {
