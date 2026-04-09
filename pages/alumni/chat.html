@@ -475,55 +475,45 @@
 
                     <!-- Main Chat Area -->
                     <div class="sc-main">
-                        <div class="sc-main-header">
-                            <div class="sc-mh-profile">
-                                <button class="sc-mobile-back" onclick="closeMobileChat()"><i class='bx bx-arrow-back'></i></button>
-                                <div class="sc-avatar">
-                                    <img src="" id="chatMainAvatar" alt="Avatar">
-                                    <span class="sc-online" id="chatMainOnline" style="display:none;"></span>
-                                </div>
-                                <div class="sc-mh-info">
-                                    <h3 id="chatMainName">Select a chat</h3>
-                                    <span class="sc-mh-status" id="chatMainStatus">Online</span>
-                                </div>
-                            </div>
-                            <div class="sc-mh-actions">
-                                <button class="sc-action-btn"><i class='bx bxs-phone'></i></button>
-                                <button class="sc-action-btn"><i class='bx bxs-video'></i></button>
-                                <button class="sc-action-btn"><i class='bx bx-dots-horizontal-rounded'></i></button>
-                            </div>
+                        <!-- Empty State -->
+                        <div id="chatEmptyState" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center;">
+                            <i class='bx bx-message-square-dots' style="font-size:72px; margin-bottom:15px; color:#4f46e5; opacity:0.15;"></i>
+                            <h3 style="font-size:20px; font-weight:700; color:var(--text-primary); margin-bottom:5px;">Your Messages</h3>
+                            <p style="font-size:14px; color:var(--text-muted);">Select a conversation from the sidebar to view your chat.</p>
                         </div>
-
-                        <div class="sc-messages" id="chatMessages">
-                            <div class="sc-date-divider"><span>Today</span></div>
-                            <!-- Messages populated here -->
-                            <div class="sc-msg-wrap received">
-                                <div class="sc-bubble">Hey Shubham! Checking in regarding the hackathon this weekend. Are we still on to discuss the architecture?
-                                    <div class="sc-msg-meta">10:42 AM</div>
+                        <!-- Active State -->
+                        <div id="chatActiveState" style="display:none; flex-direction:column; height:100%;">
+                            <div class="sc-main-header">
+                                <div class="sc-mh-profile">
+                                    <button class="sc-mobile-back" onclick="closeMobileChat()"><i class='bx bx-arrow-back'></i></button>
+                                    <div class="sc-avatar">
+                                        <img src="" id="chatMainAvatar" alt="Avatar">
+                                        <span class="sc-online" id="chatMainOnline" style="display:none;"></span>
+                                    </div>
+                                    <div class="sc-mh-info">
+                                        <h3 id="chatMainName">Select a chat</h3>
+                                        <span class="sc-mh-status" id="chatMainStatus">Online</span>
+                                    </div>
+                                </div>
+                                <div class="sc-mh-actions">
+                                    <button class="sc-action-btn"><i class='bx bxs-phone'></i></button>
+                                    <button class="sc-action-btn"><i class='bx bxs-video'></i></button>
+                                    <button class="sc-action-btn"><i class='bx bx-dots-horizontal-rounded'></i></button>
                                 </div>
                             </div>
-                            <div class="sc-msg-wrap sent">
-                                <div class="sc-bubble">Hi Priya! Yes absolutely. I've drafted some initial diagrams. Let's hop on a call at 5 PM if that works!
-                                    <div class="sc-msg-meta">10:45 AM <i class="bx bx-check-double" style="color:#22c55e;"></i></div>
-                                </div>
+
+                            <div class="sc-messages" id="chatMessages">
+                                <!-- Messages populated here via JS -->
                             </div>
 
-                            <div class="sc-msg-wrap received typing-bubble" id="typingIndicator">
-                                <div class="sc-bubble" style="padding: 14px 18px; display: flex; gap: 4px;">
-                                    <div class="typing-dot"></div>
-                                    <div class="typing-dot"></div>
-                                    <div class="typing-dot"></div>
+                            <div class="sc-input-area">
+                                <i class='bx bx-paperclip sc-attach' title="Attach File"></i>
+                                <i class='bx bx-smile sc-attach' title="Emojis" style="display:none;"></i>
+                                <div class="sc-input-box">
+                                    <input type="text" id="chatInputMessage" placeholder="Type your message..." autocomplete="off">
                                 </div>
+                                <button class="sc-send-btn" id="sendBtn" title="Send"><i class='bx bxs-send'></i></button>
                             </div>
-                        </div>
-
-                        <div class="sc-input-area">
-                            <i class='bx bx-paperclip sc-attach' title="Attach File"></i>
-                            <i class='bx bx-smile sc-attach' title="Emojis" style="display:none;"></i>
-                            <div class="sc-input-box">
-                                <input type="text" id="chatInputMessage" placeholder="Type your message..." autocomplete="off">
-                            </div>
-                            <button class="sc-send-btn" id="sendBtn" title="Send"><i class='bx bxs-send'></i></button>
                         </div>
                     </div>
                 </div>
@@ -548,7 +538,7 @@
             { id: 5, name: "Hackathon Team", avatar: "https://ui-avatars.com/api/?name=HT&background=f59e0b&color=fff", lastMsg: "We need to fix the deployment bug.", time: "Sunday", unread: 0, online: false, type: "group" }
         ];
 
-        let currentActiveId = 1;
+        let currentActiveId = null;
 
         // Populate Contact List
         function renderContacts(filter = 'all', searchQuery = '') {
@@ -591,6 +581,9 @@
             const user = chatData.find(c => c.id === id);
             if(user) {
                 user.unread = 0; // mark read
+                
+                document.getElementById('chatEmptyState').style.display = 'none';
+                document.getElementById('chatActiveState').style.display = 'flex';
                 
                 // Update Main Header
                 document.getElementById('chatMainName').textContent = user.name;
@@ -695,7 +688,6 @@
         // Initial Render
         document.addEventListener('DOMContentLoaded', () => {
             renderContacts();
-            selectContact(1);
         });
     </script>
 </body>

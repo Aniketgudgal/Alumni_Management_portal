@@ -4,16 +4,224 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile | Alumni Management Portal</title>
-    <meta name="description" content="Alumni Dashboard - Manage your profile, network with alumni, chat with batchmates, and explore opportunities.">
+    <meta name="description" content="Manage your professional profile and resume">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="../../assets/css/common.css">
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        /* Standalone Profile CSS */
+        :root {
+            --profile-glass: rgba(255, 255, 255, 0.95);
+            --profile-border: rgba(0,0,0,0.08);
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.04);
+            --shadow-hover: 0 15px 35px rgba(79, 70, 229, 0.12);
+        }
+
+        [data-theme="dark"] :root {
+            --profile-glass: rgba(30, 30, 45, 0.95);
+            --profile-border: rgba(255,255,255,0.08);
+        }
+
+        .sp-container {
+            padding: 10px 0 40px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            animation: fadeIn 0.4s ease;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px; margin-bottom: 5px;
+        }
+        .page-header h1 { font-size: 26px; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 10px;}
+        .page-header h1 i { color: #4f46e5; }
+        .page-header p { font-size: 14px; color: var(--text-secondary); margin-top: 5px; }
+
+        .btn-action {
+            background: #4f46e5; color: #fff; border: none; padding: 12px 24px; border-radius: 12px;
+            font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25); transition: all 0.3s;
+        }
+        .btn-action:hover { background: #4338ca; transform: translateY(-2px); }
+
+        /* Two Column Layout */
+        .sp-grid {
+            display: grid;
+            grid-template-columns: 1fr 2.2fr;
+            gap: 25px;
+        }
+
+        .sp-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--profile-border);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Left Side Card - Personal Info */
+        .sp-hero-header {
+            height: 120px;
+            background: linear-gradient(135deg, #1f2937, #4f46e5);
+            position: relative;
+        }
+        .sp-hero-body {
+            padding: 0 25px 25px 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .sp-avatar-box {
+            position: relative;
+            width: 130px; height: 130px;
+            margin-top: -65px;
+            margin-bottom: 15px;
+        }
+        .sp-avatar-box img {
+            width: 100%; height: 100%; border-radius: 50%;
+            border: 5px solid var(--bg-card);
+            object-fit: cover; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .sp-avatar-edit {
+            position: absolute; bottom: 5px; right: 5px;
+            background: #4f46e5; color: #fff; width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            border: 3px solid var(--bg-card); box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s;
+        }
+        .sp-avatar-edit:hover { transform: scale(1.1); }
+
+        .sp-hero-body h2 { font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 5px; }
+        .sp-hero-role { font-size: 15px; color: var(--primary); font-weight: 600; margin-bottom: 8px; }
+        .sp-hero-company { font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 20px;}
+
+        .sp-stats-row {
+            display: flex; justify-content: space-around; width: 100%; gap: 10px;
+            padding-top: 20px; border-top: 1px solid var(--profile-border); border-bottom: 1px solid var(--profile-border); padding-bottom: 20px; margin-bottom: 20px;
+        }
+        .sp-stat-item { display: flex; flex-direction: column; align-items: center; }
+        .sp-stat-num { font-size: 20px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+        .sp-stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+
+        .sp-info-list { width: 100%; display: flex; flex-direction: column; gap: 15px; text-align: left; }
+        .sp-info-item { display: flex; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 14px; }
+        .sp-info-item i { font-size: 18px; color: var(--text-muted); width: 20px; text-align: center; }
+        .sp-info-link { color: #4f46e5; font-weight: 600; text-decoration: none; }
+        .sp-info-link:hover { text-decoration: underline; }
+
+        /* Right Side Content */
+        .sec-header {
+            padding: 20px 25px; border-bottom: 1px solid var(--profile-border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .sec-header h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 10px;}
+        .sec-header h3 i { color: #4f46e5; font-size: 22px; }
+        .sec-action { color: #4f46e5; background: rgba(79,70,229,0.1); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: all 0.2s; border: none; }
+        .sec-action:hover { background: #4f46e5; color: #fff; transform: translateY(-2px); }
+        .sec-body { padding: 25px; color: var(--text-secondary); font-size: 14.5px; line-height: 1.6; }
+
+        /* Timeline (Experience) */
+        .exp-timeline { position: relative; padding-left: 30px; display: flex; flex-direction: column; gap: 20px; }
+        .exp-timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--profile-border); }
+        
+        .exp-item { position: relative; }
+        .exp-dot { position: absolute; left: -30px; top: 4px; width: 18px; height: 18px; background: #fff; border: 4px solid #4f46e5; border-radius: 50%; box-shadow: 0 0 0 4px var(--bg-card); z-index: 1; }
+        .exp-item h4 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+        .exp-comp { font-size: 14px; font-weight: 600; color: #4f46e5; margin-bottom: 4px; }
+        .exp-time { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;}
+
+        /* Skills */
+        .skills-wrapper { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill-tag { padding: 8px 16px; border-radius: 20px; background: rgba(79,70,229,0.06); color: #4f46e5; font-size: 13px; font-weight: 600; border: 1px solid rgba(79,70,229,0.15); transition: all 0.2s; }
+        .skill-tag:hover { background: #4f46e5; color: #fff; }
+
+        /* Beautiful Resume Section */
+        .resume-panel {
+            background: var(--bg-body); border-radius: 16px; border: 1px solid var(--profile-border);
+            display: flex; overflow: hidden; height: 350px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+        }
+        
+        .resume-viewer {
+            flex: 1;
+            background: #e5e7eb;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        [data-theme="dark"] .resume-viewer { background: #111827; }
+        
+        /* Fake PDF visuals */
+        .pdf-mockup {
+            width: 80%; height: 95%; background: #fff; border-radius: 4px 4px 0 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); border: 1px solid #d1d5db;
+            padding: 20px; display: flex; flex-direction: column; gap: 10px;
+            position: relative; 
+        }
+        .pdf-mockup-header { height: 20px; background: #e5e7eb; width: 60%; border-radius: 4px; margin-bottom: 10px; }
+        .pdf-mockup-line { height: 8px; background: #f3f4f6; width: 100%; border-radius: 4px; }
+        .pdf-mockup-line.short { width: 70%; }
+        .pdf-mockup-line.shorter { width: 40%; }
+        
+        .resume-overlay {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .resume-viewer:hover .resume-overlay { opacity: 1; }
+
+        .resume-sidebar {
+            width: 320px; padding: 25px; background: var(--bg-card);
+            border-left: 1px solid var(--profile-border);
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .resume-sidebar h4 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .resume-sidebar p { font-size: 13px; color: var(--text-secondary); margin-bottom: 25px; line-height: 1.5; }
+        
+        .resume-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); margin-bottom: 25px; padding: 12px; background: var(--bg-body); border-radius: 10px; border: 1px dashed var(--profile-border); }
+        .resume-meta i { font-size: 20px; color: #ef4444; }
+
+        .btn-full { width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; transition: all 0.2s; font-size: 14px;}
+        .btn-black { background: var(--text-primary); color: var(--bg-card); margin-bottom: 12px; }
+        .btn-black:hover { transform: translateY(-2px); box-shadow: var(--shadow-soft); opacity: 0.9;}
+        .btn-outline { background: transparent; border: 1px solid var(--profile-border); color: var(--text-primary); }
+        .btn-outline:hover { background: var(--bg-body); }
+
+        /* Responsive Overrides */
+        @media (max-width: 1024px) {
+            .sp-grid { grid-template-columns: 1fr; }
+            .sp-hero-header { height: 160px; }
+            .sp-card.left-nav { flex-direction: row; flex-wrap: wrap; }
+            .sp-hero-body { border-right: 1px solid var(--profile-border); width: 350px; }
+            .sp-left-bottom { flex: 1; padding: 25px; }
+            .sp-stats-row { border-top: none; padding-top: 0; }
+        }
+        @media (max-width: 800px) {
+            .resume-panel { flex-direction: column; height: auto; }
+            .resume-sidebar { width: 100%; border-left: none; border-top: 1px solid var(--profile-border); }
+            .resume-viewer { height: 300px; }
+            .sp-card.left-nav { flex-direction: column; }
+            .sp-hero-body { border-right: none; width: 100%; border-bottom: 1px solid var(--profile-border); }
+        }
+        @media (max-width: 480px) {
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .sec-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
 
     <div class="dashboard-layout">
-
-        <!-- ========== SIDEBAR ========== -->
+        <!-- Sidebar -->
         <aside class="dash-sidebar" id="dashSidebar">
             <div class="dash-sidebar-header">
                 <a href="../../index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
@@ -27,111 +235,246 @@
                     <img src="https://i.pravatar.cc/150?img=3" alt="User Avatar" id="sidebarAvatar">
                     <div class="user-meta">
                         <h4 id="sidebarUserName">Shubham K.</h4>
-                        <span id="sidebarUserRole">Alumni � Batch 2020</span>
+                        <span id="sidebarUserRole">Alumni   Batch 2020</span>
                     </div>
                 </div>
             </div>
 
             <nav class="dash-nav">
                 <span class="nav-section-label">Main</span>
-                <a href="dashboard.html" class="dash-nav-link active" data-view="overview">
-                    <i class='bx bxs-dashboard'></i>
-                    <span>Overview</span>
-                </a>
-                <a href="profile.html" class="dash-nav-link active" data-view="profile">
-                    <i class='bx bxs-user-circle'></i>
-                    <span>My Profile</span>
-                </a>
-                <a href="network.html" class="dash-nav-link" data-view="network">
-                    <i class='bx bxs-contact'></i>
-                    <span>Alumni Network</span>
-                </a>
+                <a href="dashboard.html" class="dash-nav-link" data-view="overview"><i class='bx bxs-dashboard'></i><span>Overview</span></a>
+                <a href="profile.html" class="dash-nav-link active" data-view="profile"><i class='bx bxs-user-circle'></i><span>My Profile</span></a>
+                <a href="network.html" class="dash-nav-link" data-view="network"><i class='bx bxs-contact'></i><span>Alumni Network</span></a>
 
                 <span class="nav-section-label">Communication</span>
-                <a href="chat.html" class="dash-nav-link" data-view="chat">
-                    <i class='bx bxs-message-dots'></i>
-                    <span>Messages</span>
-                    <span class="nav-badge">3</span>
-                </a>
-                <a href="notifications.html" class="dash-nav-link" data-view="notifications">
-                    <i class='bx bxs-bell-ring'></i>
-                    <span>Notifications</span>
-                    <span class="nav-badge">5</span>
-                </a>
+                <a href="chat.html" class="dash-nav-link" data-view="chat"><i class='bx bxs-message-dots'></i><span>Messages</span><span class="nav-badge">3</span></a>
+                <a href="notifications.html" class="dash-nav-link" data-view="notifications"><i class='bx bxs-bell-ring'></i><span>Notifications</span><span class="nav-badge">5</span></a>
 
                 <span class="nav-section-label">Discover</span>
-                <a href="events.html" class="dash-nav-link" data-view="events">
-                    <i class='bx bxs-calendar-event'></i>
-                    <span>Events</span>
-                </a>
-                <a href="jobs.html" class="dash-nav-link" data-view="jobs">
-                    <i class='bx bxs-briefcase'></i>
-                    <span>Job Board</span>
-                </a>
-                <a href="gallery.html" class="dash-nav-link" data-view="gallery">
-                    <i class='bx bxs-photo-album'></i>
-                    <span>Gallery</span>
-                </a>
-                <a href="mentorship.html" class="dash-nav-link" data-view="mentorship">
-                    <i class='bx bxs-user-voice'></i>
-                    <span>Mentorship</span>
-                </a>
+                <a href="events.html" class="dash-nav-link" data-view="events"><i class='bx bxs-calendar-event'></i><span>Events</span></a>
+                <a href="jobs.html" class="dash-nav-link" data-view="jobs"><i class='bx bxs-briefcase'></i><span>Job Board</span></a>
+                <a href="gallery.html" class="dash-nav-link" data-view="gallery"><i class='bx bxs-photo-album'></i><span>Gallery</span></a>
+                <a href="mentorship.html" class="dash-nav-link" data-view="mentorship"><i class='bx bxs-user-voice'></i><span>Mentorship</span></a>
 
                 <span class="nav-section-label">Settings</span>
-                <a href="settings.html" class="dash-nav-link" data-view="settings">
-                    <i class='bx bxs-cog'></i>
-                    <span>Settings</span>
-                </a>
+                <a href="settings.html" class="dash-nav-link" data-view="settings"><i class='bx bxs-cog'></i><span>Settings</span></a>
             </nav>
 
             <div class="dash-sidebar-footer">
-                <a href="#" class="dash-nav-link" id="logoutBtn">
-                    <i class='bx bx-log-out'></i>
-                    <span>Logout</span>
-                </a>
+                <a href="#" class="dash-nav-link" id="logoutBtn"><i class='bx bx-log-out'></i><span>Logout</span></a>
             </div>
         </aside>
 
-        <!-- ========== MAIN CONTENT ========== -->
+        <!-- Main Content -->
         <main class="dash-main">
-
             <!-- Topbar -->
             <header class="dash-topbar">
                 <div style="display:flex;align-items:center;gap:16px;">
-                    <button class="sidebar-toggle" onclick="document.getElementById('dashSidebar').classList.toggle('open')">
-                        <i class='bx bx-menu'></i>
-                    </button>
-                    <div class="dash-search">
-                        <i class='bx bx-search'></i>
-                        <input type="text" placeholder="Search alumni, events, jobs..." id="dashSearchInput">
-                    </div>
+                    <button class="sidebar-toggle" onclick="document.getElementById('dashSidebar').classList.toggle('open')"><i class='bx bx-menu'></i></button>
+                    <div class="dash-search"><i class='bx bx-search'></i><input type="text" placeholder="Search alumni, events, jobs..." id="dashSearchInput"></div>
                 </div>
                 <div class="dash-topbar-actions">
-                    <button class="topbar-icon-btn" title="Notifications" data-tooltip="Notifications" onclick="navigateTo('notifications')">
-                        <i class='bx bxs-bell'></i>
-                        <span class="notif-dot"></span>
-                    </button>
-                    <button class="topbar-icon-btn" title="Settings" data-tooltip="Settings" onclick="navigateTo('settings')">
-                        <i class='bx bxs-cog'></i>
-                    </button>
+                    <button class="topbar-icon-btn" title="Notifications" onclick="navigateTo('notifications')"><i class='bx bxs-bell'></i><span class="notif-dot"></span></button>
+                    <button class="topbar-icon-btn" title="Settings" onclick="navigateTo('settings')"><i class='bx bxs-cog'></i></button>
                     <div class="topbar-profile" id="topbarProfile">
-                        <img src="https://i.pravatar.cc/150?img=3" alt="Profile">
-                        <span>Shubham</span>
-                        <i class='bx bx-chevron-down'></i>
+                        <img src="https://i.pravatar.cc/150?img=3" alt="Profile"><span>Shubham</span><i class='bx bx-chevron-down'></i>
                     </div>
                 </div>
             </header>
 
-            <!-- Dynamic View Container -->
-            <div class="dash-view" id="dashViewContainer" data-page="profile">
-                <!-- Rendered by dashboard.js -->
+            <!-- Container rendered natively -->
+            <div class="dash-view" id="dashViewContainer" data-page="profile" data-standalone="true" style="opacity: 1; transform: translateY(0);">
+                
+                <div class="sp-container">
+
+                    <div class="page-header">
+                        <div>
+                            <h1><i class='bx bxs-user-badge'></i> My Profile</h1>
+                            <p>Manage your professional identity, view your resume, and update your career trajectory.</p>
+                        </div>
+                        <button class="btn-action" onclick="alertMsg('Profile Edit Form Opened')"><i class='bx bx-edit-alt'></i> Edit Profile</button>
+                    </div>
+
+                    <div class="sp-grid">
+                        
+                        <!-- Left Side: Core Identity -->
+                        <div class="sp-card left-nav">
+                            <div class="sp-hero-header"></div>
+                            <div class="sp-hero-body">
+                                <div class="sp-avatar-box">
+                                    <img src="https://i.pravatar.cc/150?img=3" alt="Shubham Kulkarni">
+                                    <div class="sp-avatar-edit" onclick="alertMsg('Avatar Uploader Clicked')"><i class='bx bx-camera'></i></div>
+                                </div>
+                                <h2>Shubham Kulkarni</h2>
+                                <div class="sp-hero-role">Senior Full-Stack Engineer</div>
+                                <div class="sp-hero-company"><i class='bx bxs-buildings'></i> Tech Solutions Pvt. Ltd.</div>
+
+                                <div class="sp-stats-row">
+                                    <div class="sp-stat-item">
+                                        <div class="sp-stat-num">500+</div>
+                                        <div class="sp-stat-label">Connections</div>
+                                    </div>
+                                    <div class="sp-stat-item">
+                                        <div class="sp-stat-num">124</div>
+                                        <div class="sp-stat-label">Profile Views</div>
+                                    </div>
+                                    <div class="sp-stat-item">
+                                        <div class="sp-stat-num">14</div>
+                                        <div class="sp-stat-label">Endorsements</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="sp-left-bottom" style="padding: 0 25px 25px 25px;">
+                                <div class="sp-info-list">
+                                    <div class="sp-info-item"><i class='bx bx-envelope'></i> shubham@example.com</div>
+                                    <div class="sp-info-item"><i class='bx bx-map'></i> Pune, India</div>
+                                    <div class="sp-info-item"><i class='bx bxl-linkedin-square' style="color:#0a66c2;"></i> <a href="#" class="sp-info-link">linkedin.com/in/shubham-k</a></div>
+                                    <div class="sp-info-item"><i class='bx bxl-github' style="color:var(--text-primary);"></i> <a href="#" class="sp-info-link">github.com/shubh-dev</a></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Details & Resume -->
+                        <div style="display:flex; flex-direction:column; gap:25px;">
+                            
+                            <!-- Resume Module -->
+                            <div class="sp-card">
+                                <div class="sec-header">
+                                    <h3><i class='bx bxs-file-pdf'></i> Resume & Portfolio</h3>
+                                    <button class="sec-action" title="Update Resume" onclick="alertMsg('Upload New Resume Module')"><i class='bx bx-cloud-upload'></i></button>
+                                </div>
+                                <div class="sec-body" style="padding: 20px;">
+                                    
+                                    <div class="resume-panel">
+                                        <!-- Interactive Mock Viewer -->
+                                        <div class="resume-viewer">
+                                            <div class="pdf-mockup">
+                                                <div class="pdf-mockup-header"></div>
+                                                <div class="pdf-mockup-line" style="margin-top:20px;"></div>
+                                                <div class="pdf-mockup-line"></div>
+                                                <div class="pdf-mockup-line short"></div>
+                                                
+                                                <div class="pdf-mockup-header" style="margin-top:25px; width:40%;"></div>
+                                                <div class="pdf-mockup-line"></div>
+                                                <div class="pdf-mockup-line short"></div>
+                                            </div>
+
+                                            <div class="resume-overlay">
+                                                <button class="btn-action" onclick="alertMsg('Previewing Resume Document')"><i class='bx bx-fullscreen'></i> View Full Screen</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Resume Info Sidebar -->
+                                        <div class="resume-sidebar">
+                                            <h4>Shubham_Kulkarni_Resume.pdf</h4>
+                                            <p>This is your primary curriculum vitae visible to hiring managers and recruiters tracking alumni job boards.</p>
+                                            
+                                            <div class="resume-meta">
+                                                <i class='bx bxs-file-pdf'></i>
+                                                <div style="display:flex; flex-direction:column;">
+                                                    <span style="font-weight:600; color:var(--text-primary); font-size:13px;">Last Updated: Oct 2025</span>
+                                                    <span>Size: 1.2 MB</span>
+                                                </div>
+                                            </div>
+
+                                            <button class="btn-full btn-black" onclick="alertMsg('Downloading Resume Source')"><i class='bx bx-download'></i> Download PDF</button>
+                                            <button class="btn-full btn-outline" onclick="alertMsg('Copying Public Sharable Link')"><i class='bx bx-link-alt'></i> Share public link</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- About & Experience -->
+                            <div class="sp-card">
+                                <div class="sec-header">
+                                    <h3><i class='bx bx-notepad'></i> Professional Summary</h3>
+                                </div>
+                                <div class="sec-body">
+                                    Experienced software engineer with a strong background in developing scalable web applications. Passionate about system architecture, cloud technologies, and mentoring junior developers. Adept at leading cross-functional teams in agile environments to deliver high-quality products on schedule. Always looking to leverage technology to solve complex real-world problems.
+                                </div>
+                            </div>
+
+                            <div class="sp-card">
+                                <div class="sec-header">
+                                    <h3><i class='bx bx-briefcase-alt-2'></i> Career Trajectory</h3>
+                                    <button class="sec-action" title="Add Experience"><i class='bx bx-plus'></i></button>
+                                </div>
+                                <div class="sec-body">
+                                    <div class="exp-timeline">
+                                        
+                                        <div class="exp-item">
+                                            <div class="exp-dot"></div>
+                                            <h4>Senior Full-Stack Engineer</h4>
+                                            <div class="exp-comp">Tech Solutions Pvt. Ltd.</div>
+                                            <div class="exp-time"><i class='bx bx-calendar'></i> Jan 2024 - Present • 2 yrs</div>
+                                            <p>Leading the core architecture team building microservices using Node.js and React. Successfully reduced server response time by 40% through efficient caching strategies.</p>
+                                        </div>
+
+                                        <div class="exp-item">
+                                            <div class="exp-dot"></div>
+                                            <h4>Software Developer II</h4>
+                                            <div class="exp-comp">InnovateX Technologies</div>
+                                            <div class="exp-time"><i class='bx bx-calendar'></i> Jun 2021 - Dec 2023 • 2.5 yrs</div>
+                                            <p>Developed and maintained multiple client-facing SPAs. Integrated complex authentication pipelines and mentored two junior interns.</p>
+                                        </div>
+
+                                        <div class="exp-item">
+                                            <div class="exp-dot"></div>
+                                            <h4>Junior Developer Analyst</h4>
+                                            <div class="exp-comp">Global Systems Inc.</div>
+                                            <div class="exp-time"><i class='bx bx-calendar'></i> Aug 2020 - May 2021 • 10 mos</div>
+                                            <p>Started immediately post-graduation. Worked on SQL optimization, database indexing, and bug fixes for older legacy CRM systems.</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Skills -->
+                            <div class="sp-card">
+                                <div class="sec-header">
+                                    <h3><i class='bx bx-slider'></i> Technical Skills</h3>
+                                    <button class="sec-action" title="Edit Skills"><i class='bx bx-edit-alt'></i></button>
+                                </div>
+                                <div class="sec-body">
+                                    <div class="skills-wrapper">
+                                        <span class="skill-tag">JavaScript / TypeScript</span>
+                                        <span class="skill-tag">React.js</span>
+                                        <span class="skill-tag">Node.js</span>
+                                        <span class="skill-tag">Python</span>
+                                        <span class="skill-tag">PostgreSQL</span>
+                                        <span class="skill-tag">MongoDB</span>
+                                        <span class="skill-tag">AWS (EC2, S3, RDS)</span>
+                                        <span class="skill-tag">Docker Containerization</span>
+                                        <span class="skill-tag">Redis Caching</span>
+                                        <span class="skill-tag">Agile Scrum</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="../../assets/js/data.js"></script>
     <script src="../../assets/js/common.js"></script>
     <script src="../../assets/js/dashboard.js"></script>
+
+    <script>
+        function alertMsg(msg) {
+            if(typeof showToast !== 'undefined') {
+                showToast(msg, 'success');
+            } else {
+                alert(msg);
+            }
+        }
+    </script>
 </body>
 </html>
-
