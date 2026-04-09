@@ -565,22 +565,22 @@
                 const item = document.createElement('div');
                 item.className = 'sc-item' + (c.id === currentActiveId ? ' active' : '');
                 item.onclick = () => selectContact(c.id);
-                item.innerHTML = \`
+                item.innerHTML = `
                     <div class="sc-avatar">
-                        <img src="\${c.avatar}" alt="\${c.name}">
-                        \${c.online ? '<span class="sc-online"></span>' : ''}
+                        <img src="${c.avatar}" alt="${c.name}">
+                        ${c.online ? '<span class="sc-online"></span>' : ''}
                     </div>
                     <div class="sc-info">
                         <div class="sc-name-row">
-                            <div class="sc-name">\${c.name}</div>
-                            <div class="sc-time">\${c.time}</div>
+                            <div class="sc-name">${c.name}</div>
+                            <div class="sc-time">${c.time}</div>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div class="sc-msg">\${c.lastMsg}</div>
-                            \${c.unread > 0 ? \`<div class="sc-unread">\${c.unread}</div>\` : ''}
+                            <div class="sc-msg">${c.lastMsg}</div>
+                            ${c.unread > 0 ? `<div class="sc-unread">${c.unread}</div>` : ''}
                         </div>
                     </div>
-                \`;
+                `;
                 list.appendChild(item);
             });
         }
@@ -601,9 +601,9 @@
 
                 // Clear dummy messages with generic setup
                 const msgBox = document.getElementById('chatMessages');
-                msgBox.innerHTML = \`<div class="sc-date-divider"><span>Today</span></div>
+                msgBox.innerHTML = `<div class="sc-date-divider"><span>Today</span></div>
                 <div class="sc-msg-wrap received">
-                    <div class="sc-bubble">\${user.lastMsg}
+                    <div class="sc-bubble">${user.lastMsg}
                         <div class="sc-msg-meta">10:00 AM</div>
                     </div>
                 </div>
@@ -611,7 +611,7 @@
                     <div class="sc-bubble" style="padding: 14px 18px; display: flex; gap: 4px;">
                         <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
                     </div>
-                </div>\`;
+                </div>`;
                 
                 // Re-render contacts to show active state & cleared unread bubble
                 renderContacts();
@@ -656,10 +656,10 @@
             const typing = document.getElementById('typingIndicator');
             const myMsg = document.createElement('div');
             myMsg.className = 'sc-msg-wrap sent';
-            myMsg.innerHTML = \`
-                <div class="sc-bubble">\${text}
-                    <div class="sc-msg-meta">\${timeString} <i class="bx bx-check-double" style="color:#22c55e;"></i></div>
-                </div>\`;
+            myMsg.innerHTML = `
+                <div class="sc-bubble">${text}
+                    <div class="sc-msg-meta">${timeString} <i class="bx bx-check-double" style="color:#22c55e;"></i></div>
+                </div>`;
             
             msgContainer.insertBefore(myMsg, typing);
             chatInput.value = '';
@@ -677,10 +677,10 @@
                     
                     const replyMsg = document.createElement('div');
                     replyMsg.className = 'sc-msg-wrap received';
-                    replyMsg.innerHTML = \`
-                        <div class="sc-bubble">\${replyText}
-                            <div class="sc-msg-meta">\${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
-                        </div>\`;
+                    replyMsg.innerHTML = `
+                        <div class="sc-bubble">${replyText}
+                            <div class="sc-msg-meta">${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
+                        </div>`;
                     msgContainer.insertBefore(replyMsg, typing);
                     msgContainer.scrollTop = msgContainer.scrollHeight;
                 }, 1500);
