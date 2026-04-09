@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Init
     renderView(currentPage);
     setupLogout();
+    setupMobileSidebar();
 
     // ===== NAV CLICK HANDLER =====
     navLinks.forEach(link => {
@@ -49,6 +50,34 @@ document.addEventListener('DOMContentLoaded', () => {
     window.navigateTo = function(view) {
         window.location.href = view + '.html';
     };
+
+    // ===== MOBILE SIDEBAR BACKDROP =====
+    function setupMobileSidebar() {
+        if (!document.getElementById('sidebarBackdrop')) {
+            const backdrop = document.createElement('div');
+            backdrop.className = 'sidebar-backdrop';
+            backdrop.id = 'sidebarBackdrop';
+            backdrop.addEventListener('click', () => {
+                document.getElementById('dashSidebar')?.classList.remove('open');
+                backdrop.classList.remove('active');
+            });
+            document.body.appendChild(backdrop);
+        }
+        // Observe sidebar open/close
+        const sidebar = document.getElementById('dashSidebar');
+        if (sidebar) {
+            const origToggle = sidebar.classList.toggle.bind(sidebar.classList);
+            const observer = new MutationObserver(() => {
+                const backdrop = document.getElementById('sidebarBackdrop');
+                if (sidebar.classList.contains('open')) {
+                    backdrop?.classList.add('active');
+                } else {
+                    backdrop?.classList.remove('active');
+                }
+            });
+            observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+        }
+    }
 
     // ===== RENDER VIEW =====
     function renderView(view) {
@@ -111,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${statCard('bxs-briefcase-alt-2', 'amber', APP_DATA.stats.jobPostings, 'Job Postings')}
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+            <div class="overview-two-col">
                 <div class="dash-section">
                     <div class="dash-section-header">
                         <h3>📅 Upcoming Events</h3>
