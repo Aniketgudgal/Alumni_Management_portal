@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </select>
             </div>
 
-            <div class="network-grid" id="networkGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+            <div class="network-grid" id="networkGrid">
                 ${APP_DATA.topAlumni.map(a => networkCard(a)).join('')}
             </div>
         `;
@@ -1193,7 +1193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             ${a.tags.map(t => `<span style="background:var(--bg-body); padding:6px 12px; border-radius:20px; font-size:12px; font-weight:600; color:var(--text-secondary); border:1px solid var(--border);">${t}</span>`).join('')}
                         </div>
                         
-                        <div style="display:flex; gap:16px; justify-content:center;">
+                        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
                             <button class="btn btn-primary" onclick="connectAlumni('${a.name.replace(/'/g,"\\'")}', '${a.batch}', this)">
                                 <i class='bx bx-user-plus'></i> Connect
                             </button>
