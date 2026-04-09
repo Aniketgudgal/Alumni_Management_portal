@@ -183,6 +183,13 @@
         @keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
 
+        /* Marquee */
+        .brand-marquee { padding: 30px 0; border-top: 1px solid var(--landing-border); border-bottom: 1px solid var(--landing-border); overflow: hidden; background: rgba(15,23,42,0.6); backdrop-filter: blur(5px); }
+        .marquee-track { display: inline-flex; white-space: nowrap; animation: scrollMarquee 30s linear infinite; padding: 0 25px; }
+        .marquee-track span { display: inline-flex; align-items: center; gap: 15px; font-size: 20px; font-weight: 700; color: var(--text-muted); opacity: 0.8; margin-right: 50px; }
+        .marquee-track span i { font-size: 24px; color: var(--brand-secondary);}
+        @keyframes scrollMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
         /* Section Spacing */
         .land-section { padding: 100px 0; position: relative; border-top: 1px solid var(--landing-border);}
 
@@ -209,6 +216,11 @@
         #alumniGrid .alumni-role { color: var(--text-secondary); font-size: 14px; margin-bottom: 5px; }
         #alumniGrid .alumni-company { color: var(--brand-secondary)!important; font-size: 13px; font-weight: 600; text-transform: uppercase;}
         #alumniGrid .tag { background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); }
+        #alumniGrid .card-actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+        #alumniGrid .btn-primary { background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;}
+        #alumniGrid .btn-primary:hover { box-shadow: 0 5px 15px rgba(79,70,229,0.3); transform: translateY(-2px);}
+        #alumniGrid .btn-secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px; color: white; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        #alumniGrid .btn-secondary:hover { background: rgba(255,255,255,0.2); }
         
         /* Jobs Grid Override for Inline CSS */
         #jobsPreviewGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
@@ -234,7 +246,22 @@
         .footer-col ul li a { color: var(--text-muted); text-decoration: none; transition: color 0.2s;}
         .footer-col ul li a:hover { color: var(--brand-secondary); }
 
+        /* Modal Overrides for Homepage JS Injections */
+        .edit-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 999999 !important; }
+        .edit-modal-overlay.active { opacity: 1 !important; pointer-events: auto !important; }
+        .edit-modal { background: var(--landing-surface)!important; border: 1px solid var(--landing-border)!important; border-radius: 20px!important; width: 90%!important; max-width:450px!important; margin: auto; padding: 30px!important; transform: translateY(20px); transition: 0.3s; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.5)!important;}
+        .edit-modal-overlay.active .edit-modal { transform: translateY(0); }
+        .edit-modal-close { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.1); border: none; color: #fff; width: 35px; height: 35px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .edit-modal-close:hover { background: #ef4444; }
+
+        /* Preloader */
+        .page-preloader { position: fixed; inset: 0; background: var(--landing-bg); z-index: 9999999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s; }
+        .page-preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .loader-spin { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--brand-secondary); border-radius: 50%; animation: loaderSpin 1s linear infinite; }
+        @keyframes loaderSpin { to { transform: rotate(360deg); } }
+
         /* Responsive */
+        .mobile-toggle { display: none; background: transparent; border: none; font-size: 32px; color: #fff; cursor: pointer; }
         @media(max-width: 1024px) {
             .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 60px;}
             .hero-text-content h1 { font-size: 50px; }
@@ -246,7 +273,11 @@
             .footer-grid { grid-template-columns: 1fr 1fr; }
         }
         @media(max-width: 768px) {
-            .land-menu { display: none; }
+            .mobile-toggle { display: block; }
+            .land-nav-inner { position: relative; }
+            .land-menu { display: flex; position: absolute; top: 60px; left: -100%; width: 100%; background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(15px); flex-direction: column; align-items: center; padding: 30px 0; gap: 20px; transition: all 0.3s ease; border-bottom: 1px solid var(--landing-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity:0;}
+            .land-menu.active { left: 0; opacity: 1;}
+            .land-actions { display: none; }
             .hero-text-content h1 { font-size: 40px; }
             #whyJoinGrid, #alumniGrid, #jobsPreviewGrid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; text-align: center; }
@@ -256,6 +287,9 @@
 </head>
 <body>
 
+    <!-- Preloader -->
+    <div class="page-preloader" id="preloader"><div class="loader-spin"></div></div>
+
     <!-- Transparent Fixed Header -->
     <nav class="land-navbar" id="mainNav">
         <div class="premium-container land-nav-inner">
@@ -263,16 +297,21 @@
                 <i class='bx bxs-graduation'></i>
                 <h2>AlumniPortal</h2>
             </a>
-            <div class="land-menu">
-                <a href="#about">About</a>
-                <a href="#network">Network</a>
-                <a href="#jobs">Job Board</a>
-                <a href="#events">Events</a>
+            <div class="land-menu" id="navMenu">
+                <a href="#about" onclick="document.getElementById('navMenu').classList.remove('active')">About</a>
+                <a href="#network" onclick="document.getElementById('navMenu').classList.remove('active')">Network</a>
+                <a href="#jobs" onclick="document.getElementById('navMenu').classList.remove('active')">Job Board</a>
+                <a href="#events" onclick="document.getElementById('navMenu').classList.remove('active')">Events</a>
+                <!-- Mobile only login visible -->
+                <a href="pages/auth/login.html" class="land-btn land-btn-primary" style="display:inline-block; margin-top:10px; width:80%; text-align:center;">Member Login</a>
             </div>
             <div class="land-actions">
                 <a href="pages/auth/login.html" class="land-btn land-btn-ghost">Log In</a>
                 <a href="pages/auth/register.html" class="land-btn land-btn-primary">Register Now</a>
             </div>
+            <button class="mobile-toggle" onclick="document.getElementById('navMenu').classList.toggle('active')">
+                <i class='bx bx-menu-alt-right'></i>
+            </button>
         </div>
     </nav>
 
@@ -298,15 +337,15 @@
 
                 <div class="hero-stats-row">
                     <div class="h-stat">
-                        <h4>12k+</h4>
+                        <h4 class="stat-number">12,000+</h4>
                         <p>Global Alumni</p>
                     </div>
                     <div class="h-stat">
-                        <h4>350+</h4>
+                        <h4 class="stat-number">350+</h4>
                         <p>Partner Firms</p>
                     </div>
                     <div class="h-stat">
-                        <h4>$2M+</h4>
+                        <h4 class="stat-number">200+</h4>
                         <p>Alumni Startups</p>
                     </div>
                 </div>
@@ -348,6 +387,11 @@
             </div>
         </div>
     </section>
+
+    <!-- Companies Marquee -->
+    <div class="brand-marquee">
+        <div class="marquee-track" id="marqueeContent"></div>
+    </div>
 
     <!-- Why Join -->
     <section class="land-section" id="about">
