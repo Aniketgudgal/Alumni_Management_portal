@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 events: renderEvents,
                 jobs: renderJobs,
                 gallery: renderGallery,
-                topalumni: renderTopAlumni,
+                topalumni: renderNetwork,
                 mentorship: renderMentorship,
                 settings: renderSettings
             };
@@ -520,10 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const CURRENT_USER_BATCH = '2020'; // Mocking user context
 
     window.connectAlumni = function(name, batch, btn) {
-        if (batch !== CURRENT_USER_BATCH) {
-            showToast(`Action Denied: You can only connect with alumni from your own batch (${CURRENT_USER_BATCH}).`, 'error');
-            return;
-        }
         if (btn) {
             btn.innerHTML = '<i class="bx bx-check"></i> Pending';
             btn.classList.add('btn-secondary');
@@ -561,7 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="chat-list" id="chatContactList">
                         ${APP_DATA.chatContacts
                             .filter(c => !c.isGroup || c.name.includes(CURRENT_USER_BATCH))
-                            .map((c, i) => chatContactItem(c, i === 2)).join('')}
+                            .map((c, i) => chatContactItem(c, i === 0)).join('')}
                     </div>
                 </div>
                 <div class="chat-main" id="chatMainArea">
@@ -963,13 +959,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="dash-section">
                 <div class="dash-section-header"><h3>👨‍🏫 Your Batch Mentor</h3></div>
                 <div class="dash-section-body">
-                    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-                        <img src="https://ui-avatars.com/api/?name=Prof+R+D+More&background=4f46e5&color=fff&size=80" alt="Mentor" style="width:80px;height:80px;border-radius:50%;">
-                        <div>
+                    <div class="mentor-card-flex" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+                        <img src="https://ui-avatars.com/api/?name=Prof+R+D+More&background=4f46e5&color=fff&size=80" alt="Mentor" style="width:80px;height:80px;border-radius:50%;flex-shrink:0;">
+                        <div style="flex:1;min-width:200px;">
                             <h3 style="font-size:20px;font-weight:700;">Prof. R. D. More</h3>
                             <p style="color:var(--primary);font-weight:500;">Batch Mentor - Computer Engineering</p>
                             <p style="color:var(--text-muted);font-size:14px;margin-top:4px;">Assigned batches: 2019, 2020, 2021</p>
-                            <div style="display:flex;gap:8px;margin-top:12px;">
+                            <div class="mentor-actions" style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
                                 <button class="btn btn-primary btn-sm" onclick="navigateTo('chat')"><i class='bx bxs-envelope'></i> Message Mentor</button>
                                 <button class="btn btn-secondary btn-sm" onclick="showToast('Call feature coming soon!', 'info')"><i class='bx bxs-phone'></i> Call</button>
                             </div>
@@ -990,6 +986,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="dash-section" style="margin-top:24px;">
                 <div class="dash-section-header"><h3>📅 Mentorship Schedule</h3></div>
                 <div class="dash-section-body">
+                    <div class="table-responsive">
                     <table style="width:100%;border-collapse:collapse;">
                         <thead>
                             <tr style="border-bottom:2px solid var(--border);">
@@ -1020,6 +1017,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         `;
@@ -1155,12 +1153,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function settingToggle(title, desc, checked) {
         const id = title.replace(/\s+/g, '_').toLowerCase();
-        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);">
-            <div>
+        return `<div class="setting-toggle">
+            <div style="flex:1;min-width:0;">
                 <h4 style="font-size:15px;font-weight:600;">${title}</h4>
                 <p style="font-size:13px;color:var(--text-muted);">${desc}</p>
             </div>
-            <label style="position:relative;display:inline-block;width:48px;height:26px;cursor:pointer;">
+            <label style="position:relative;display:inline-block;width:48px;height:26px;cursor:pointer;flex-shrink:0;">
                 <input type="checkbox" ${checked ? 'checked' : ''} id="${id}" style="opacity:0;width:0;height:0;" onchange="showToast('${title} ' + (this.checked ? 'enabled' : 'disabled'), 'success')">
                 <span style="position:absolute;inset:0;background:${checked ? 'var(--primary)' : 'var(--border)'};border-radius:26px;transition:all 0.3s ease;" onclick="this.previousElementSibling.click(); this.style.background = this.previousElementSibling.checked ? 'var(--primary)' : 'var(--border)'; var dot = this.querySelector('span'); if(dot) dot.style.transform = this.previousElementSibling.checked ? 'translateX(22px)' : 'translateX(0)';"><span style="position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:all 0.3s ease;${checked ? 'transform:translateX(22px);' : ''}"></span></span>
             </label>
