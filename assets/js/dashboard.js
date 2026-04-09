@@ -644,8 +644,10 @@ document.addEventListener('DOMContentLoaded', () => {
             { sender: 'me', text: 'Hi! Great to connect with you here.', time: '10:02 AM' }
         ];
         // Re-render contacts + main
-        document.querySelectorAll('.chat-contact-item').forEach(c => c.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+        document.querySelectorAll('.chat-contact-item').forEach(c => {
+            c.classList.remove('active');
+            if (parseInt(c.dataset.id) === id) c.classList.add('active');
+        });
         const chatMain = document.getElementById('chatMainArea');
         if (chatMain) {
             chatMain.innerHTML = renderChatMain();
