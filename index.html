@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Management Portal | DVVPCOE Ahmednagar</title>
+    <meta name="description" content="Connect with fellow alumni, explore networking opportunities, and stay updated with events.">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/common.css">
+    <style>
+        /* ========================================================= */
+        /*  PREMIUM STANDALONE LANDING PAGE OVERRIDES (Dark Theme)   */
+        /* ========================================================= */
+        
+        :root {
+            /* Premium Overrides */
+            --brand-primary: #4f46e5;
+            --brand-secondary: #06b6d4;
+            --landing-bg: #0f172a;
+            --landing-surface: #1e293b;
+            --landing-glass: rgba(30, 41, 59, 0.75);
+            --landing-border: rgba(255, 255, 255, 0.1);
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+
+            /* Override Common.css Variables for JS Compatibility */
+            --bg-body: var(--landing-bg);
+            --bg-card: var(--landing-surface);
+            --bg-secondary: var(--landing-surface);
+            --primary: #a5b4fc;
+            --primary-light: rgba(79, 70, 229, 0.2);
+            --border: var(--landing-border);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        body {
+            background-color: var(--landing-bg);
+            color: var(--text-light);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            margin: 0; padding: 0;
+        }
+
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
+
+        /* General Utilities */
+        .premium-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(79, 70, 229, 0.15);
+            color: #818cf8;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(79, 70, 229, 0.3);
+        }
+
+        .section-heading {
+            font-size: 42px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .section-subheading {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+
+        /* Navbar Overrides */
+        .land-navbar {
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            padding: 20px 0; transition: all 0.4s ease;
+            background: transparent;
+        }
+        .land-navbar.scrolled {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--landing-border);
+            padding: 15px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .land-nav-inner {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .land-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
+        .land-brand i { font-size: 28px; color: var(--brand-secondary); }
+        .land-brand h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin:0;}
+        
+        .land-menu { display: flex; gap: 30px; }
+        .land-menu a { color: var(--text-light); text-decoration: none; font-weight: 500; transition: color 0.3s; font-size: 15px;}
+        .land-menu a:hover { color: var(--brand-secondary); }
+        
+        .land-actions { display: flex; gap: 15px; }
+        .land-btn { padding: 10px 22px; border-radius: 10px; font-weight: 600; text-decoration: none; transition: all 0.3s; font-size: 14px;}
+        .land-btn-ghost { color: #fff; background: rgba(255,255,255,0.05); border: 1px solid var(--landing-border); }
+        .land-btn-ghost:hover { background: rgba(255,255,255,0.1); }
+        .land-btn-primary { background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); color: #fff; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); border:none;}
+        .land-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(79, 70, 229, 0.4); }
+
+        /* Dynamic Hero Section */
+        .land-hero {
+            position: relative;
+            padding: 180px 0 100px 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        /* Background Glows */
+        .hero-glow-1 { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(79,70,229,0.3) 0%, transparent 70%); top: -200px; left: -200px; z-index: -1; }
+        .hero-glow-2 { position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(6,182,212,0.25) 0%, transparent 70%); bottom: -100px; right: -100px; z-index: -1; }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .hero-text-content h1 {
+            font-size: 65px; font-weight: 800; line-height: 1.1; margin-bottom: 25px; color: #fff;
+        }
+        .hero-text-content h1 span {
+            background: linear-gradient(135deg, #a5b4fc, #67e8f9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-text-content p { font-size: 18px; color: var(--text-muted); margin-bottom: 40px; line-height: 1.7; max-width: 550px;}
+        
+        .hero-action-group { display: flex; gap: 20px; align-items: center; margin-bottom: 50px; }
+        .btn-massive { padding: 18px 36px; border-radius: 12px; font-size: 16px; display: inline-flex; align-items: center; gap: 10px; }
+        
+        .hero-stats-row { display: flex; gap: 40px; border-top: 1px solid var(--landing-border); padding-top: 30px; }
+        .h-stat h4 { font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 5px; }
+        .h-stat p { font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
+
+        /* Hero Visual Glass Card */
+        .hero-visual { position: relative; }
+        .glass-hero-card {
+            background: var(--landing-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--landing-border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
+        }
+        .ghc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--landing-border);}
+        .ghc-header h3 { font-size: 18px; color: #fff; }
+        .ghc-live { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #10b981; background: rgba(16,185,129,0.1); padding: 5px 12px; border-radius: 20px;}
+        .ghc-live span { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite;}
+        
+        /* Floating Elements */
+        .float-blob {
+            position: absolute; right: -30px; top: 100px; background: rgba(6,182,212,0.1);
+            border: 1px solid rgba(6,182,212,0.3); border-radius: 16px; padding: 15px;
+            display: flex; align-items: center; gap: 15px; z-index: 3;
+            backdrop-filter: blur(10px); animation: floatUp 6s ease-in-out infinite;
+        }
+        .float-blob i { font-size: 24px; color: #06b6d4; background: rgba(6,182,212,0.2); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center;}
+
+        @keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+
+        /* Section Spacing */
+        .land-section { padding: 100px 0; position: relative; border-top: 1px solid var(--landing-border);}
+
+        /* Customizing the JS injected components via CSS Hooks */
+        
+        /* Why Join Grid */
+        #whyJoinGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        #whyJoinGrid .why-card {
+            background: var(--landing-surface); border: 1px solid var(--landing-border); border-radius: 20px; padding: 35px 30px;
+            transition: all 0.3s;
+        }
+        #whyJoinGrid .why-card:hover { transform: translateY(-10px); border-color: rgba(79,70,229,0.5); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+        #whyJoinGrid .why-card i { font-size: 40px; color: var(--brand-secondary); margin-bottom: 20px; display: block;}
+        #whyJoinGrid .why-card h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 15px;}
+        #whyJoinGrid .why-card p { color: var(--text-muted); line-height: 1.6; font-size: 15px;}
+
+        /* Alumni Cards */
+        #alumniGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
+        #alumniGrid .alumni-card {
+            background: var(--landing-surface)!important; border-radius: 20px; padding: 25px; text-align: center; border: 1px solid var(--landing-border)!important; box-shadow: none!important; color:var(--text-primary);
+        }
+        #alumniGrid .alumni-avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--brand-primary); margin-bottom: 15px; padding: 3px;}
+        #alumniGrid .alumni-name { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 5px;}
+        #alumniGrid .alumni-role { color: var(--text-secondary); font-size: 14px; margin-bottom: 5px; }
+        #alumniGrid .alumni-company { color: var(--brand-secondary)!important; font-size: 13px; font-weight: 600; text-transform: uppercase;}
+        #alumniGrid .tag { background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Jobs Grid Override for Inline CSS */
+        #jobsPreviewGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        #jobsPreviewGrid .job-card { background: var(--landing-glass)!important; border: 1px solid var(--landing-border)!important; color:var(--text-primary); }
+        #jobsPreviewGrid .job-card:hover { border-color: var(--brand-secondary)!important; background: var(--landing-surface)!important;}
+        
+        /* Events Grid */
+        #eventsGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+        #eventsGrid .event-card {
+            display: flex; background: var(--landing-surface)!important; border: 1px solid var(--landing-border)!important; border-radius: 20px; overflow: hidden; box-shadow: none!important;
+        }
+        #eventsGrid .event-banner { padding: 30px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 110px;}
+        #eventsGrid .event-date-badge .month { color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 700; text-transform: uppercase; display:block; text-align:center;}
+        #eventsGrid .event-date-badge .day { color: #fff; font-size: 32px; font-weight: 800; display:block; text-align:center;}
+        #eventsGrid .event-body { padding: 30px; flex: 1; color:var(--text-secondary);}
+        #eventsGrid .event-body h3 { font-size: 20px; color: #fff; margin-bottom: 10px;}
+
+        /* Footer */
+        .land-footer { padding: 80px 0 40px 0; background: #0b1120; border-top: 1px solid var(--landing-border);}
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px;}
+        .footer-col h4 { color: #fff; font-size: 18px; margin-bottom: 25px; font-weight: 700;}
+        .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;}
+        .footer-col ul li a { color: var(--text-muted); text-decoration: none; transition: color 0.2s;}
+        .footer-col ul li a:hover { color: var(--brand-secondary); }
+
+        /* Responsive */
+        @media(max-width: 1024px) {
+            .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 60px;}
+            .hero-text-content h1 { font-size: 50px; }
+            .hero-text-content p { margin: 0 auto 40px auto; }
+            .hero-action-group { justify-content: center; }
+            .hero-stats-row { justify-content: center; }
+            #whyJoinGrid, #alumniGrid, #jobsPreviewGrid { grid-template-columns: repeat(2, 1fr); }
+            #eventsGrid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media(max-width: 768px) {
+            .land-menu { display: none; }
+            .hero-text-content h1 { font-size: 40px; }
+            #whyJoinGrid, #alumniGrid, #jobsPreviewGrid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Transparent Fixed Header -->
+    <nav class="land-navbar" id="mainNav">
+        <div class="premium-container land-nav-inner">
+            <a href="#" class="land-brand">
+                <i class='bx bxs-graduation'></i>
+                <h2>AlumniPortal</h2>
+            </a>
+            <div class="land-menu">
+                <a href="#about">About</a>
+                <a href="#network">Network</a>
+                <a href="#jobs">Job Board</a>
+                <a href="#events">Events</a>
+            </div>
+            <div class="land-actions">
+                <a href="pages/auth/login.html" class="land-btn land-btn-ghost">Log In</a>
+                <a href="pages/auth/register.html" class="land-btn land-btn-primary">Register Now</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ultra Premium Hero Section -->
+    <section class="land-hero">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        
+        <div class="premium-container hero-grid">
+            <div class="hero-text-content">
+                <div class="section-badge">DVVPCOE Official Network</div>
+                <h1>Connect, Inspire &<br><span>Elevate Your Career.</span></h1>
+                <p>Join an exclusive global network of highly successful engineering graduates. Unlock premium job referrals, seek world-class mentorship, and build lifelong professional relationships today.</p>
+                
+                <div class="hero-action-group">
+                    <a href="pages/auth/register.html" class="land-btn-primary btn-massive">
+                        Get Started <i class='bx bx-right-arrow-alt'></i>
+                    </a>
+                    <a href="#network" class="land-btn-ghost btn-massive" style="border:none; color:var(--text-muted);">
+                        <i class='bx bx-play-circle' style="font-size:24px;"></i> See How It Works
+                    </a>
+                </div>
+
+                <div class="hero-stats-row">
+                    <div class="h-stat">
+                        <h4>12k+</h4>
+                        <p>Global Alumni</p>
+                    </div>
+                    <div class="h-stat">
+                        <h4>350+</h4>
+                        <p>Partner Firms</p>
+                    </div>
+                    <div class="h-stat">
+                        <h4>$2M+</h4>
+                        <p>Alumni Startups</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Glass Visual Mockup -->
+            <div class="hero-visual">
+                <div class="glass-hero-card">
+                    <div class="ghc-header">
+                        <h3>Live Network Activity</h3>
+                        <div class="ghc-live"><span></span> Active Now</div>
+                    </div>
+                    
+                    <!-- Native DOM structured feed items matching aesthetic -->
+                    <div style="display:flex; gap:15px; margin-bottom:20px; align-items:center;">
+                        <img src="https://i.pravatar.cc/150?img=12" style="width:50px; height:50px; border-radius:50%; border:2px solid var(--brand-secondary);" alt="User">
+                        <div>
+                            <p style="margin:0; font-weight:600; font-size:15px; color:#fff;">Rahul Verma <span style="color:var(--text-muted); font-size:13px; font-weight:400;">just joined.</span></p>
+                            <p style="margin:0; color:var(--brand-secondary); font-size:13px;">Class of 2021</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:15px; margin-bottom:20px; align-items:center;">
+                        <img src="https://i.pravatar.cc/150?img=33" style="width:50px; height:50px; border-radius:50%; border:2px solid var(--brand-primary);" alt="User">
+                        <div>
+                            <p style="margin:0; font-weight:600; font-size:15px; color:#fff;">Sneha Patil <span style="color:var(--text-muted); font-size:13px; font-weight:400;">posted a job.</span></p>
+                            <p style="margin:0; color:var(--text-muted); font-size:13px;">Software Engineer at Google</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="float-blob">
+                    <i class='bx bxs-briefcase'></i>
+                    <div>
+                        <p style="margin:0; font-size:13px; font-weight:700; color:#fff;">New Job Alert</p>
+                        <p style="margin:0; font-size:11px; color:#06b6d4;">Frontend Developer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Join -->
+    <section class="land-section" id="about">
+        <div class="premium-container">
+            <div style="text-align: center;">
+                <div class="section-badge">Benefits</div>
+                <h2 class="section-heading">Why Choose The Network?</h2>
+                <p class="section-subheading" style="margin:0 auto 50px auto;">A highly curated environment tailored specially for the professional advancement of our esteemed graduates.</p>
+            </div>
+            
+            <!-- Injected by JS (Common format used to match CSS) -->
+            <div id="whyJoinGrid"></div>
+        </div>
+    </section>
+
+    <!-- Top Alumni Network -->
+    <section class="land-section" style="background: rgba(15, 23, 42, 0.5);" id="network">
+        <div class="premium-container">
+            <div class="section-badge">Spotlight</div>
+            <h2 class="section-heading">Illustrious Alumni</h2>
+            <p class="section-subheading">Connect directly with distinguished leaders making an impact across top-tier multinational corporations.</p>
+            
+            <div id="alumniGrid"></div>
+            
+            <div style="text-align:center; margin-top: 50px;">
+                <a href="pages/auth/register.html" class="land-btn-ghost btn-massive" style="display:inline-flex;">View Full Directory <i class='bx bx-right-arrow-alt'></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Job Board Snippet -->
+    <section class="land-section" id="jobs">
+        <div class="premium-container">
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:50px;">
+                <div>
+                    <div class="section-badge">Opportunities</div>
+                    <h2 class="section-heading" style="margin-bottom:0;">Exclusive Job Board</h2>
+                </div>
+                <a href="pages/auth/register.html" class="land-btn-primary" style="padding:12px 24px; border-radius:10px; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">Unlock All Jobs <i class='bx bx-lock-open'></i></a>
+            </div>
+            
+            <div id="jobsPreviewGrid"></div>
+        </div>
+    </section>
+
+    <!-- Events -->
+    <section class="land-section" style="background: rgba(15, 23, 42, 0.5);" id="events">
+        <div class="premium-container">
+            <div class="section-badge">Upcoming</div>
+            <h2 class="section-heading">Gatherings & Summits</h2>
+            
+            <div id="eventsGrid"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="land-footer">
+        <div class="premium-container">
+            <div class="footer-grid">
+                <div class="footer-col" style="grid-column: span 2;">
+                    <a href="#" class="land-brand" style="margin-bottom: 20px; display:inline-flex;">
+                        <i class='bx bxs-graduation' style="font-size:32px;"></i>
+                        <h2 style="font-size:26px;">AlumniPortal</h2>
+                    </a>
+                    <p style="color:var(--text-muted); max-width:80%; line-height:1.7; margin-bottom:25px;">The premiere ecosystem for building advanced careers, fostering life-long mentorship, and cementing the legacy of engineering graduates.</p>
+                    <div style="display:flex; gap:15px;">
+                        <a href="#" style="width:40px; height:40px; background:rgba(255,255,255,0.05); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; transition:all 0.3s;"><i class='bx bxl-linkedin'></i></a>
+                        <a href="#" style="width:40px; height:40px; background:rgba(255,255,255,0.05); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; transition:all 0.3s;"><i class='bx bxl-twitter'></i></a>
+                        <a href="#" style="width:40px; height:40px; background:rgba(255,255,255,0.05); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; transition:all 0.3s;"><i class='bx bxl-instagram'></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Ecosystem</h4>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#network">Network Directory</a></li>
+                        <li><a href="#jobs">Careers & Jobs</a></li>
+                        <li><a href="#events">Upcoming Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="pages/auth/login.html">Member Login</a></li>
+                        <li><a href="#">Contact Administration</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align:center; padding-top: 30px; border-top:1px solid var(--landing-border); color:var(--text-muted); font-size:14px;">
+                &copy; 2026 DVVPCOE Alumni Management Portal. Developed securely.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS Hooks -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/homepage.js"></script>
+
+    <script>
+        // Smooth scroll styling for nav
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
