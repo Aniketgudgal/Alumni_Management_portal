@@ -1133,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function chatContactItem(c, isActive = false) {
-        return `<div class="chat-contact-item ${isActive ? 'active' : ''}" onclick="selectChatContact(${c.id})" data-group="${c.isGroup}" data-name="${c.name}">
+        return `<div class="chat-contact-item ${isActive ? 'active' : ''}" onclick="selectChatContact(${c.id})" data-group="${c.isGroup}" data-name="${c.name}" data-id="${c.id}">
             <div style="position:relative">
                 <img src="${c.avatar}" alt="${c.name}" class="cc-avatar">
                 ${c.online ? '<span class="cc-status"></span>' : ''}
