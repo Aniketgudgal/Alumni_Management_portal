@@ -65,15 +65,22 @@ function handleLogin(e) {
         return;
     }
 
-    // Email format validation
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         showToast('Please enter a valid email address', 'error');
         return;
     }
 
-    // Dummy credential validation
-    if (email !== 'shubham@alumni.com' || password !== 'password123') {
-        showToast('Invalid credentials. Please use shubham@alumni.com and password123', 'error');
+    // Role-based credential validation
+    const credentials = {
+        alumni:      { email: 'shubham@alumni.com',          password: 'password123' },
+        mentor:      { email: 'mentor@dvvpcoe.edu.in',       password: 'password123' },
+        coordinator: { email: 'coordinator@dvvpcoe.edu.in',  password: 'password123' },
+        admin:       { email: 'admin@dvvpcoe.edu.in',        password: 'password123' }
+    };
+
+    const cred = credentials[role] || credentials.alumni;
+    if (email !== cred.email || password !== cred.password) {
+        showToast(`Invalid credentials. Use ${cred.email} / ${cred.password}`, 'error');
         return;
     }
 
@@ -81,19 +88,36 @@ function handleLogin(e) {
     btn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Signing in...';
     btn.disabled = true;
 
+    // Role-based user profiles
+    const userProfiles = {
+        alumni:      { name: 'Shubham Kulkarni', batch: '2020', department: 'Computer Engineering' },
+        mentor:      { name: 'Prof. R. D. More', batch: '', department: 'Computer Engineering' },
+        coordinator: { name: 'Dr. Anjali Mehta', batch: '', department: 'Computer Engineering' },
+        admin:       { name: 'Principal Admin', batch: '', department: 'All Departments' }
+    };
+
+    // Role-based dashboard routing
+    const dashboardRoutes = {
+        alumni:      '../alumni/dashboard.html',
+        mentor:      '../mentor/dashboard.html',
+        coordinator: '../coordinator/dashboard.html',
+        admin:       '../admin/dashboard.html'
+    };
+
     setTimeout(() => {
+        const profile = userProfiles[role] || userProfiles.alumni;
         setUser({
             email: email,
             role: role,
-            name: role === 'admin' ? 'Admin User' : 'Shubham Kulkarni',
-            batch: '2020',
-            department: 'Computer Engineering',
+            name: profile.name,
+            batch: profile.batch,
+            department: profile.department,
             loggedIn: true
         });
 
         showToast('Login successful! Redirecting...', 'success');
         setTimeout(() => {
-            window.location.href = '../alumni/dashboard.html';
+            window.location.href = dashboardRoutes[role] || dashboardRoutes.alumni;
         }, 1000);
     }, 1500);
 }
