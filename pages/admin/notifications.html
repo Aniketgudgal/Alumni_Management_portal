@@ -25,28 +25,51 @@
         <main class="dash-main">
             <header class="dash-topbar"><div style="display:flex;align-items:center;gap:16px;"><button class="sidebar-toggle" onclick="document.getElementById('dashSidebar').classList.toggle('open')"><i class='bx bx-menu'></i></button><div class="dash-search"><i class='bx bx-search'></i><input type="text" placeholder="Search..."></div></div><div class="dash-topbar-actions"><div class="topbar-profile"><img src="https://ui-avatars.com/api/?name=Admin&background=ef4444&color=fff" alt="Admin"><span>Admin</span><i class='bx bx-chevron-down'></i></div></div></header>
             <div class="dash-view" style="opacity:1;transform:translateY(0);">
-                <div class="page-title-bar"><div><h1>📢 Notifications & Announcements</h1><p>Send global announcements and manage notifications.</p></div>
-                    <button class="btn btn-primary btn-sm" id="sendAnnouncementBtn"><i class='bx bx-megaphone'></i> Send Announcement</button></div>
-                <!-- Compose Section -->
-                <div class="dash-section" style="margin-bottom:24px;">
-                    <div class="dash-section-header"><h3>✍️ Compose Announcement</h3></div>
-                    <div class="dash-section-body">
-                        <div class="edit-form-group" style="margin-bottom:16px;"><label>Title</label><input type="text" id="annTitle" placeholder="Announcement title..." style="padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-body);font-size:14px;width:100%;"></div>
-                        <div class="edit-form-group" style="margin-bottom:16px;"><label>Message</label><textarea id="annMessage" rows="4" placeholder="Write your announcement..." style="padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-body);font-size:14px;width:100%;resize:vertical;font-family:inherit;"></textarea></div>
-                        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-                            <select style="padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);font-size:14px;background:var(--bg-body);">
-                                <option>All Users</option><option>All Alumni</option><option>All Mentors</option><option>All Coordinators</option><option>Computer Engineering</option><option>Information Technology</option>
-                            </select>
-                            <button class="btn btn-primary btn-sm" onclick="sendAnnouncement()"><i class='bx bx-send'></i> Send Now</button>
-                            <button class="btn btn-secondary btn-sm" onclick="showToast('Email sent to all users','success')"><i class='bx bx-envelope'></i> Email All</button>
-                        </div>
+                <!-- Premium Admin Hero -->
+                <div class="admin-hero" style="position:relative; overflow:hidden; border-radius:var(--radius-lg); padding:26px 40px; margin-bottom:24px; background:linear-gradient(135deg, #ef4444 0%, #7f1d1d 100%); display:flex; align-items:center; justify-content:space-between; color:white; box-shadow:var(--shadow-lg);">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:url('data:image/svg+xml;utf8,<svg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22><path d=%22M54.627 0l.83.83-54.627 54.627-.83-.83L54.627 0zM30.627 0l.83.83-30.627 30.627-.83-.83L30.627 0zM60 25.373l-.83.83-33.797 33.797-.83-.83 34.627-34.627z%22 fill=%22rgba(255,255,255,0.05)%22 fill-rule=%22evenodd%22/></svg>'); z-index:1;"></div>
+                    <div style="position:relative; z-index:2; max-width:600px;">
+                        <span style="background:rgba(255,255,255,0.2); padding:6px 12px; border-radius:20px; font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; display:inline-block; backdrop-filter:blur(4px);">Global Comm Relay</span>
+                        <h2 style="font-size:28px; font-weight:800; margin-bottom:8px;">Broadcast Network</h2>
+                        <p style="font-size:15px; color:rgba(255,255,255,0.9); line-height:1.5;">Transmit announcements instantly across all roles and monitor systemic workflow telemetry.</p>
                     </div>
                 </div>
-                <!-- Recent Notifications -->
-                <div class="dash-section">
-                    <div class="dash-section-header"><h3>🔔 System Notifications</h3><button class="btn btn-ghost btn-sm" onclick="document.querySelectorAll('.notif-item').forEach(i=>i.classList.add('read')); showToast('All marked read','success')">Mark All Read</button></div>
-                    <div class="dash-section-body" style="padding:0;">
-                        <div class="notif-list" id="notifList"></div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+                    <!-- Compose Card -->
+                    <div class="dash-section" style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-sm);">
+                        <div class="dash-section-header" style="margin-bottom:24px;">
+                            <h3 style="font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px;"><i class='bx bxs-megaphone' style="color:#ef4444;"></i> Formulate Transmission</h3>
+                        </div>
+                        <div class="edit-form-group" style="margin-bottom:16px;">
+                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Subject Title</label>
+                            <input type="text" id="annTitle" placeholder="e.g. Infrastructure Maintenance Notice" style="padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-body);font-size:14px;width:100%;">
+                        </div>
+                        <div class="edit-form-group" style="margin-bottom:16px;">
+                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Payload Content</label>
+                            <textarea id="annMessage" rows="6" placeholder="Message details and requirements..." style="padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-body);font-size:14px;width:100%;resize:none;font-family:inherit;line-height:1.6;"></textarea>
+                        </div>
+                        <div class="edit-form-group" style="margin-bottom:24px;">
+                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Target Routing Matrix</label>
+                            <select style="padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-md);font-size:14px;background:var(--bg-body);width:100%;">
+                                <option>General Feed - All Entities</option>
+                                <option>Alumni Mainframe Only</option>
+                                <option>Faculty Coordinators Matrix</option>
+                                <option>Node Level - Engineering</option>
+                            </select>
+                        </div>
+                        <div style="display:flex;gap:12px;">
+                            <button class="btn btn-primary" onclick="sendAnnouncement()" style="flex:1;background:#ef4444;border-color:#ef4444;padding:12px;"><i class='bx bx-send'></i> Transmit Global</button>
+                        </div>
+                    </div>
+
+                    <!-- Telemetry Logs -->
+                    <div class="dash-section" style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-sm);">
+                        <div class="dash-section-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+                            <h3 style="font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px;"><i class='bx bx-pulse' style="color:#ef4444;"></i> System Telemetry</h3>
+                            <button class="btn btn-secondary btn-sm" onclick="document.querySelectorAll('.notif-item').forEach(i=>i.style.opacity='0.4'); showToast('Telemetry isolated','success')">Clear Cache</button>
+                        </div>
+                        <div id="notifList" style="display:flex;flex-direction:column;gap:12px;max-height:500px;overflow-y:auto;padding-right:8px;"></div>
                     </div>
                 </div>
             </div>
@@ -60,11 +83,13 @@
 
         const colorMap = { green: '#dcfce7;color:#16a34a', blue: '#e0f2fe;color:#0ea5e9', purple: '#eef2ff;color:#4f46e5', amber: '#fef3c7;color:#d97706', red: '#fff1f2;color:#f43f5e' };
         document.getElementById('notifList').innerHTML = APP_DATA.systemLogs.map((l, i) => `
-            <div class="notif-item" id="notif-${i}">
-                <div class="notif-unread-dot"></div>
+            <div class="notif-item" id="notif-${i}" style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg-body);border-radius:var(--radius-md);border:1px solid var(--border);transition:var(--transition-fast);">
                 <div class="notif-icon" style="width:40px;height:40px;min-width:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;background:${(colorMap[l.color]||colorMap.blue).split(';')[0]};${(colorMap[l.color]||colorMap.blue).split(';')[1]}"><i class='bx ${l.icon}'></i></div>
-                <div class="notif-content"><h4>${l.action}</h4><p>${l.user} · ${l.role}</p><span class="notif-time"><i class='bx bx-time-five'></i> ${l.time}</span></div>
-                <button class="notif-dismiss" onclick="document.getElementById('notif-${i}').style.display='none'" title="Dismiss"><i class='bx bx-x'></i></button>
+                <div class="notif-content" style="flex:1;">
+                    <h4 style="font-size:14px;font-weight:700;margin-bottom:2px;color:var(--text-color);">${l.action}</h4>
+                    <p style="font-size:12px;color:var(--text-muted);">${l.user} · ${l.role}</p>
+                </div>
+                <span class="notif-time" style="font-size:11px;color:var(--text-secondary);"><i class='bx bx-time-five'></i> ${l.time}</span>
             </div>`).join('');
 
         function sendAnnouncement() {
