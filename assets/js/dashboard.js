@@ -971,7 +971,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="gallery-grid" id="dashGalleryGrid">
                 ${APP_DATA.galleryItems.map(item => `
-                    <div class="gallery-item" style="background:linear-gradient(135deg, ${item.color}, ${item.color}bb);" data-category="${item.category}">
+                    <div class="gallery-item" style="background:linear-gradient(135deg, ${item.color}, ${item.color}bb);" data-category="${item.category}" onclick="window.openGalleryModal('${item.category}', '${item.color}')">
                         <i class='bx bxs-image'></i>
                         <div class="gallery-overlay"><span><i class='bx bx-expand'></i> ${item.category}</span></div>
                     </div>
@@ -998,6 +998,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }, 300);
         });
+    };
+
+    window.openGalleryModal = function(category, color) {
+        if (!document.getElementById('galleryLightboxModal')) {
+            const modalHTML = `
+                <div class="edit-modal-overlay" id="galleryLightboxModal" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);">
+                    <div class="edit-modal" style="background: transparent; border: none; box-shadow: none; max-width: 900px; padding: 20px;">
+                        <button class="edit-modal-close" style="position: absolute; right: 10px; top: 10px; color: #fff; font-size: 32px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 10;" onclick="window.closeGalleryModal()"><i class="bx bx-x"></i></button>
+                        <div id="galleryLightboxContent" style="width: 100%; height: 60vh; border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.5);">
+                            <i class='bx bxs-image' style="font-size: 100px; color: #fff; opacity: 0.5;"></i>
+                            <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 30px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); color: #fff;">
+                                <h3 id="galleryLightboxTitle" style="font-size: 28px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Image Title</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+        
+        const content = document.getElementById('galleryLightboxContent');
+        const title = document.getElementById('galleryLightboxTitle');
+        const modal = document.getElementById('galleryLightboxModal');
+        
+        content.style.background = `linear-gradient(135deg, ${color}, ${color}dd)`;
+        title.innerText = category + " Highlight";
+        modal.classList.add('active');
+    };
+
+    window.closeGalleryModal = function() {
+        const m = document.getElementById('galleryLightboxModal');
+        if (m) m.classList.remove('active');
     };
 
     // ============================================
