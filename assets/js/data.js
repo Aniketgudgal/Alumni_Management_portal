@@ -89,7 +89,12 @@ const APP_DATA = {
             avatar: "https://i.pravatar.cc/150?img=1",
             tags: ["Design", "Research"],
             linkedin: "#"
-        }
+        },
+        { id: 7, name: "Prashant Patil", role: "Software Engineer II", company: "Amazon", batch: "2019", avatar: "https://i.pravatar.cc/150?img=15", tags: ["Backend", "Java"], linkedin: "#", email: "prashant.p@example.com", phone: "+91 9876543221" },
+        { id: 8, name: "Kavita Deshmukh", role: "Data Engineer", company: "TCS", batch: "2020", avatar: "https://i.pravatar.cc/150?img=16", tags: ["Big Data", "Python"], linkedin: "#", email: "kavita.d@example.com", phone: "+91 9876543222" },
+        { id: 9, name: "Rahul Jadhav", role: "DevOps Engineer", company: "Wipro", batch: "2019", avatar: "https://i.pravatar.cc/150?img=17", tags: ["CI/CD", "AWS"], linkedin: "#", email: "rahul.j@example.com", phone: "+91 9876543223" },
+        { id: 10, name: "Anita Mane", role: "Frontend Developer", company: "Infosys", batch: "2020", avatar: "https://i.pravatar.cc/150?img=18", tags: ["React", "UI"], linkedin: "#", email: "anita.m@example.com", phone: "+91 9876543224" },
+        { id: 11, name: "Siddharth Wakchaure", role: "Security Analyst", company: "Cognizant", batch: "2020", avatar: "https://i.pravatar.cc/150?img=19", tags: ["Cybersec", "Network"], linkedin: "#", email: "sid.w@example.com", phone: "+91 9876543225" }
     ],
 
     // Events
