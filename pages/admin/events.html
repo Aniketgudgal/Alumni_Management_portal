@@ -26,7 +26,7 @@
             <header class="dash-topbar"><div style="display:flex;align-items:center;gap:16px;"><button class="sidebar-toggle" onclick="document.getElementById('dashSidebar').classList.toggle('open')"><i class='bx bx-menu'></i></button><div class="dash-search"><i class='bx bx-search'></i><input type="text" placeholder="Search events..."></div></div><div class="dash-topbar-actions"><button class="topbar-icon-btn" onclick="window.location.href='notifications.html'"><i class='bx bxs-bell'></i><span class="notif-dot"></span></button><div class="topbar-profile"><img src="https://ui-avatars.com/api/?name=Admin&background=ef4444&color=fff" alt="Admin"><span>Admin</span><i class='bx bx-chevron-down'></i></div></div></header>
             <div class="dash-view" style="opacity:1;transform:translateY(0);">
                 <div class="page-title-bar"><div><h1>📅 Event Management</h1><p>Create, approve, and manage global and department events.</p></div>
-                    <button class="btn btn-primary btn-sm" onclick="const name = prompt('Event Title:'); if(name) showToast('Event ' + name + ' created successfully!', 'success');"><i class='bx bx-plus'></i> Create Event</button></div>
+                    <button class="btn btn-primary btn-sm" onclick="document.getElementById('eventModal').style.display='flex'"><i class='bx bx-plus'></i> Create Event</button></div>
                 <div class="dash-stats-row">
                     <div class="dash-stat-card"><div class="stat-icon purple"><i class='bx bxs-calendar'></i></div><div class="stat-info"><h3>3</h3><p>Total Events</p></div></div>
                     <div class="dash-stat-card"><div class="stat-icon green"><i class='bx bxs-calendar-check'></i></div><div class="stat-info"><h3>2</h3><p>Upcoming</p></div></div>
@@ -34,6 +34,42 @@
                 </div>
                 <div id="eventsContainer"></div>
             </div>
+            </div>
+            
+            <!-- Event Creation Modal -->
+            <div id="eventModal" class="dashboard-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+                <div style="background:var(--bg-card);width:100%;max-width:550px;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-xl);position:relative;">
+                    <button onclick="document.getElementById('eventModal').style.display='none'" style="position:absolute;top:20px;right:20px;background:none;border:none;font-size:24px;color:var(--text-muted);cursor:pointer;"><i class='bx bx-x'></i></button>
+                    <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text-color);">Create Global Event</h2>
+                    <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px;">Publish an event visible to the entire Alumni network.</p>
+                    <form onsubmit="event.preventDefault(); showToast('Event deployed globally', 'success'); this.reset(); document.getElementById('eventModal').style.display='none';">
+                        <div class="edit-form-group" style="margin-bottom:16px;">
+                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Event Title</label>
+                            <input type="text" required placeholder="e.g. Annual Alumni Meet 2026" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                            <div class="edit-form-group">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Date</label>
+                                <input type="date" required style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;color:var(--text-secondary);">
+                            </div>
+                            <div class="edit-form-group">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Time</label>
+                                <input type="time" required style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;color:var(--text-secondary);">
+                            </div>
+                        </div>
+                        <div class="edit-form-group" style="margin-bottom:16px;">
+                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Location</label>
+                            <input type="text" required placeholder="e.g. Main Auditorium / Zoom Link" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                        </div>
+                        <div class="edit-form-group" style="margin-bottom:24px;">
+                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Description</label>
+                            <textarea required rows="3" placeholder="Brief details about the event agenda..." style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;resize:none;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;background:#ef4444;border-color:#ef4444;"><i class='bx bx-calendar-check'></i> Publish Event</button>
+                    </form>
+                </div>
+            </div>
+            
         </main>
     </div>
     <script src="../../assets/js/data.js"></script>
@@ -49,8 +85,8 @@
                     <div style="min-width:65px;text-align:center;background:rgba(79,70,229,0.1);color:#4f46e5;border-radius:12px;padding:10px;"><div style="font-size:11px;font-weight:700;text-transform:uppercase;">${month}</div><div style="font-size:24px;font-weight:800;line-height:1;">${day}</div></div>
                     <div style="flex:1;min-width:200px;"><h4 style="font-size:16px;font-weight:700;margin-bottom:4px;">${ev.title}</h4><p style="font-size:13px;color:var(--text-muted);margin-bottom:4px;"><i class='bx bx-map'></i> ${ev.location} · <i class='bx bx-time-five'></i> ${ev.time}</p><p style="font-size:13px;color:var(--text-secondary);">${ev.description}</p></div>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                        <button class="btn btn-secondary btn-sm" onclick="showToast('Editing event...','info')"><i class='bx bx-edit'></i> Edit</button>
-                        <button class="btn btn-secondary btn-sm" style="color:#ef4444;" onclick="showToast('Event deleted','error')"><i class='bx bx-trash'></i> Delete</button>
+                        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('eventModal').style.display='flex'"><i class='bx bx-edit'></i> Edit</button>
+                        <button class="btn btn-secondary btn-sm" style="color:#ef4444;border-color:#ef4444;" onclick="if(confirm('Permanently delete this event?')) showToast('Event deleted','error')"><i class='bx bx-trash'></i> Delete</button>
                     </div>
                 </div>
             </div>`;

@@ -99,27 +99,29 @@
             </header>
 
             <div class="dash-view" style="opacity:1; transform:translateY(0);">
-                <div class="dh-container" style="max-width:1400px; margin:0 auto; padding:10px 0 40px; display:flex; flex-direction:column; gap:25px; animation:fadeIn 0.4s ease;">
+            <div class="dash-view" style="opacity:1; transform:translateY(0);">
+                
+                <div class="page-title-bar">
+                    <div><h1>👑 Super Admin Dashboard</h1><p>Full oversight of 6 departments, 12 mentors, and all platform operations.</p></div>
+                </div>
 
-                    <!-- Admin Hero -->
-                    <div class="dh-hero admin-hero" style="position:relative; overflow:hidden;">
-                        <div class="dh-hero-content" style="position:relative; z-index:2; color:#fff;">
-                            <span class="admin-badge">👑 Super Admin Panel</span>
-                            <h1 class="dh-hero-title" style="margin-top:8px;">System Command Center</h1>
-                            <p class="dh-hero-subtitle">Full oversight of 6 departments, 12 mentors, 12,500+ alumni, and all platform operations.</p>
-                        </div>
-                        <div class="dh-hero-actions" style="position:relative; z-index:2;">
-                            <button class="dh-btn-white" onclick="window.location.href='departments.html'"><i class='bx bx-building-house'></i> Manage Departments</button>
-                        </div>
+                <!-- Admin Hero -->
+                <div class="admin-hero" style="position:relative; overflow:hidden; border-radius:var(--radius-lg); padding:40px; margin-bottom:24px; background:linear-gradient(135deg, #ef4444 0%, #7f1d1d 100%); display:flex; align-items:center; justify-content:space-between; color:white; box-shadow:var(--shadow-lg);">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:url('data:image/svg+xml;utf8,<svg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22><path d=%22M54.627 0l.83.83-54.627 54.627-.83-.83L54.627 0zM30.627 0l.83.83-30.627 30.627-.83-.83L30.627 0zM60 25.373l-.83.83-33.797 33.797-.83-.83 34.627-34.627z%22 fill=%22rgba(255,255,255,0.05)%22 fill-rule=%22evenodd%22/></svg>'); z-index:1;"></div>
+                    <div style="position:relative; z-index:2; max-width:600px;">
+                        <span style="background:rgba(255,255,255,0.2); padding:6px 12px; border-radius:20px; font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; display:inline-block; backdrop-filter:blur(4px);">System Command Center</span>
+                        <h1 style="font-size:32px; font-weight:800; margin-bottom:12px; line-height:1.2;">Platform Infrastructure Online</h1>
+                        <p style="font-size:16px; opacity:0.9; line-height:1.5;">Manage global settings, parse system logs, and oversee the job approval network pipeline across all nodes.</p>
                     </div>
+                </div>
 
-                    <!-- Global Stats -->
-                    <div class="dh-stats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
-                        <div class="dh-stat-card"><div class="dh-stat-icon icon-blue"><i class='bx bxs-user-detail'></i></div><div class="dh-stat-info"><h3>12,500</h3><p>Total Alumni</p></div></div>
-                        <div class="dh-stat-card"><div class="dh-stat-icon icon-purple"><i class='bx bxs-building-house'></i></div><div class="dh-stat-info"><h3>6</h3><p>Departments</p></div></div>
-                        <div class="dh-stat-card"><div class="dh-stat-icon icon-green"><i class='bx bxs-user-voice'></i></div><div class="dh-stat-info"><h3>12</h3><p>Active Mentors</p></div></div>
-                        <div class="dh-stat-card"><div class="dh-stat-icon icon-amber"><i class='bx bxs-briefcase'></i></div><div class="dh-stat-info"><h3 id="pendingJobCount">2</h3><p>Pending Jobs</p></div></div>
-                    </div>
+                <!-- Global Stats -->
+                <div class="dash-stats-row">
+                    <div class="dash-stat-card"><div class="stat-icon blue"><i class='bx bxs-user-detail'></i></div><div class="stat-info"><h3>12,500</h3><p>Total Alumni</p></div></div>
+                    <div class="dash-stat-card"><div class="stat-icon purple"><i class='bx bxs-building-house'></i></div><div class="stat-info"><h3>6</h3><p>Departments</p></div></div>
+                    <div class="dash-stat-card"><div class="stat-icon green"><i class='bx bxs-user-voice'></i></div><div class="stat-info"><h3>12</h3><p>Active Mentors</p></div></div>
+                    <div class="dash-stat-card"><div class="stat-icon amber"><i class='bx bxs-briefcase'></i></div><div class="stat-info"><h3 id="pendingJobCount">2</h3><p>Pending Jobs</p></div></div>
+                </div>
 
                     <!-- Departments Overview -->
                     <div class="dash-section">
@@ -162,7 +164,6 @@
                         </div>
                     </div>
 
-                </div>
             </div>
         </main>
     </div>
