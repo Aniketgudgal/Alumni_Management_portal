@@ -8,9 +8,17 @@
     <link rel="stylesheet" href="../../assets/css/common.css">
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
     <style>
-        .coord-hero { background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); }
-        .coord-hero::before { background: url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="10" width="80" height="80" stroke="rgba(255,255,255,0.05)" stroke-width="2" fill="none" rx="8"/></svg>') left top repeat; }
-        .dept-title { display: inline-block; padding: 6px 14px; background: rgba(255,255,255,0.15); border-radius: 30px; font-size: 13px; font-weight: 700; margin-bottom: 12px; color: #fff; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); }
+        .coord-hero { background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); color: white; padding: 32px; border-radius: var(--radius-lg); margin-bottom: 24px; position: relative; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.4); }
+        .coord-hero::after { content: ''; position: absolute; top: 0; right: 0; width: 300px; height: 100%; background: url('https://www.transparenttextures.com/patterns/cubes.png'); opacity: 0.1; }
+        .dept-title { display: inline-block; padding: 6px 14px; background: rgba(255,255,255,0.15); border-radius: 30px; font-size: 13px; font-weight: 700; margin-bottom: 16px; color: #fff; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .hero-stats { display: flex; gap: 24px; margin-top: 24px; }
+        .h-stat { background: rgba(255,255,255,0.1); padding: 16px 24px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); flex: 1; }
+        .h-stat h3 { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+        .h-stat p { font-size: 13px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        
+        .coord-quickaction { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); padding:10px 20px; border-radius:8px; color:white; font-weight:600; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; gap:8px; }
+        .coord-quickaction:hover { background:rgba(255,255,255,0.25); transform:translateY(-2px); }
     </style>
 </head>
 <body>
@@ -63,27 +71,34 @@
             </header>
 
             <div class="dash-view" style="opacity:1; transform:translateY(0);">
-                <div class="dh-container" style="max-width:1400px; margin:0 auto; padding:10px 0 40px; display:flex; flex-direction:column; gap:25px; animation:fadeIn 0.4s ease;">
-                    
-                    <!-- Coordinator Hero -->
-                    <div class="dh-hero coord-hero" style="position:relative; overflow:hidden;">
-                        <div class="dh-hero-content" style="position:relative; z-index:2; color:#fff;">
-                            <span class="dept-title" id="heroDeptName">Computer Engineering</span>
-                            <h1 class="dh-hero-title">Department Overview</h1>
-                            <p class="dh-hero-subtitle">Manage your department's alumni network, mentoring programs, and job approvals.</p>
-                        </div>
-                        <div class="dh-hero-actions" style="position:relative; z-index:2;">
-                            <button class="dh-btn-white" style="color:#0f766e;" onclick="showToast('Exporting department report...','info')"><i class='bx bx-download'></i> Get Detailed Report</button>
+                
+                <!-- Coordinator Hero -->
+                <div class="coord-hero">
+                    <div style="position:relative; z-index:2;">
+                        <span class="dept-title" id="heroDeptName">Computer Engineering</span>
+                        <h1 style="font-size:32px;font-weight:800;margin-bottom:8px;">Department Overview</h1>
+                        <p style="font-size:16px;opacity:0.9;max-width:600px;line-height:1.5;margin-bottom:24px;">Manage your department's alumni network, mentoring programs, and oversee pending job board approvals.</p>
+                        
+                        <div class="hero-stats">
+                            <div class="h-stat">
+                                <h3 id="statAlumni">0</h3>
+                                <p>Verified Alumni</p>
+                            </div>
+                            <div class="h-stat">
+                                <h3 id="statMentors">0</h3>
+                                <p>Faculty Mentors</p>
+                            </div>
+                            <div class="h-stat">
+                                <h3 id="statJobs">0</h3>
+                                <p>Pending Jobs</p>
+                            </div>
+                            <div class="h-stat">
+                                <h3 id="statFeatured">2</h3>
+                                <p>Featured Alumni</p>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Dept Stats -->
-                    <div class="dh-stats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
-                        <div class="dh-stat-card"><div class="dh-stat-icon" style="background:#ccfbf1;color:#0d9488;"><i class='bx bxs-user-detail'></i></div><div class="dh-stat-info"><h3 id="statAlumni">3,200</h3><p>Dept. Alumni</p></div></div>
-                        <div class="dh-stat-card"><div class="dh-stat-icon" style="background:#dbeafe;color:#2563eb;"><i class='bx bxs-user-voice'></i></div><div class="dh-stat-info"><h3 id="statMentors">4</h3><p>Assigned Mentors</p></div></div>
-                        <div class="dh-stat-card"><div class="dh-stat-icon" style="background:#fef3c7;color:#d97706;"><i class='bx bxs-briefcase'></i></div><div class="dh-stat-info"><h3 id="statJobs">2</h3><p>Pending Job Approvals</p></div></div>
-                        <div class="dh-stat-card"><div class="dh-stat-icon" style="background:#f3e8ff;color:#9333ea;"><i class='bx bxs-trophy'></i></div><div class="dh-stat-info"><h3 id="statFeatured">2</h3><p>Featured Alumni</p></div></div>
-                    </div>
+                </div>
 
                     <div style="display:grid; grid-template-columns: 2fr 1fr; gap:25px;">
                         <!-- Recent Job Submissions -->
@@ -98,9 +113,7 @@
                             <div class="dash-section-body" id="mentorsList" style="display:flex;flex-direction:column;gap:16px;"></div>
                         </div>
                     </div>
-
                 </div>
-            </div>
         </main>
     </div>
 
