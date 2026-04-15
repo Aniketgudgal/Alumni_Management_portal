@@ -78,29 +78,54 @@
             
             <!-- Add Department Modal -->
             <div id="addDeptModal" class="dashboard-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
-                <div style="background:var(--bg-card);width:100%;max-width:450px;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-xl);position:relative;">
+                <div style="background:var(--bg-card);width:100%;max-width:550px;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-xl);position:relative;">
                     <button onclick="document.getElementById('addDeptModal').style.display='none'" style="position:absolute;top:20px;right:20px;background:none;border:none;font-size:24px;color:var(--text-muted);cursor:pointer;"><i class='bx bx-x'></i></button>
                     <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text-color);">Create New Department</h2>
-                    <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px;">Initialize a new academic faculty.</p>
+                    <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px;">Provision faculty nodes and onboard administration.</p>
+                    
+                    <div style="display:flex;gap:4px;background:var(--bg-body);padding:4px;border-radius:var(--radius-md);margin-bottom:24px;">
+                        <button type="button" class="pipeline-tab active" style="flex:1;" onclick="switchModalTab('add', 'c-dept', this)">Faculty Details</button>
+                        <button type="button" class="pipeline-tab" style="flex:1;" onclick="switchModalTab('add', 'c-coord', this)">Coordinator Setup</button>
+                    </div>
+
                     <form onsubmit="event.preventDefault(); showToast('Department provisioned successfully', 'success'); this.reset(); document.getElementById('addDeptModal').style.display='none';">
-                        <div class="edit-form-group" style="margin-bottom:16px;">
-                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Department Name</label>
-                            <input type="text" required placeholder="e.g. Civil Engineering" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                        
+                        <!-- Dept Details Pane -->
+                        <div id="add_c-dept" class="modal-pane active" style="animation:fadeIn 0.3s ease;">
+                            <div class="edit-form-group" style="margin-bottom:16px;">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Department Name</label>
+                                <input type="text" required placeholder="e.g. Computer Engineering" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                            </div>
+                            <div class="edit-form-group" style="margin-bottom:24px;">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Department Code</label>
+                                <input type="text" required placeholder="e.g. COMP" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                            </div>
+                            <div style="display:flex;justify-content:flex-end;">
+                                <button type="button" class="btn btn-secondary" onclick="document.querySelectorAll('#addDeptModal .pipeline-tab')[1].click()">Next Step <i class='bx bx-right-arrow-alt'></i></button>
+                            </div>
                         </div>
-                        <div class="edit-form-group" style="margin-bottom:16px;">
-                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Department Code</label>
-                            <input type="text" required placeholder="e.g. CE" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
-                        </div>
-                        <div class="edit-form-group" style="margin-bottom:24px;">
-                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Assign Initial Coordinator (Optional)</label>
-                            <select style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;color:var(--text-muted);">
-                                <option value="">Draft Assignment (Later)</option>
-                                <option value="new">Invite via Email</option>
-                            </select>
-                        </div>
-                        <div style="display:flex;gap:12px;">
-                            <button type="submit" class="btn btn-primary" style="flex:2;background:#ef4444;border-color:#ef4444;"><i class='bx bx-building-house'></i> Provision Faculty</button>
-                            <button type="button" class="btn btn-secondary" style="flex:1;" onclick="document.getElementById('addDeptModal').style.display='none'">Cancel</button>
+
+                        <!-- Coordinator Pane -->
+                        <div id="add_c-coord" class="modal-pane" style="display:none; animation:fadeIn 0.3s ease;">
+                            <div class="edit-form-group" style="margin-bottom:16px;">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Coordinator Name</label>
+                                <input type="text" placeholder="e.g. Dr. John Doe" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                            </div>
+                            <div class="edit-form-group" style="margin-bottom:16px;">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Coordinator Email</label>
+                                <input type="email" placeholder="e.g. john.doe@university.edu" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                            </div>
+                            <div class="edit-form-group" style="margin-bottom:24px;">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Access Permissions</label>
+                                <select style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                                    <option value="coord-standard">Standard Coordinator</option>
+                                    <option value="coord-admin">Elevated Coordinator (Can bypass approvals)</option>
+                                </select>
+                            </div>
+                            <div style="display:flex;gap:12px;">
+                                <button type="button" class="btn btn-secondary" style="flex:1;" onclick="document.getElementById('addDeptModal').style.display='none'">Cancel</button>
+                                <button type="submit" class="btn btn-primary" style="flex:2;background:#ef4444;border-color:#ef4444;"><i class='bx bx-building-house'></i> Provision Faculty</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -108,23 +133,46 @@
 
             <!-- Edit Department Modal -->
             <div id="editDeptModal" class="dashboard-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
-                <div style="background:var(--bg-card);width:100%;max-width:450px;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-xl);position:relative;">
+                <div style="background:var(--bg-card);width:100%;max-width:550px;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-xl);position:relative;">
                     <button onclick="document.getElementById('editDeptModal').style.display='none'" style="position:absolute;top:20px;right:20px;background:none;border:none;font-size:24px;color:var(--text-muted);cursor:pointer;"><i class='bx bx-x'></i></button>
-                    <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text-color);">Edit Department</h2>
-                    <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px;">Modify faculty records.</p>
+                    <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text-color);">Reconfigure Department</h2>
+                    <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px;">Update routing rules and coordinator links.</p>
+                    
+                    <div style="display:flex;gap:4px;background:var(--bg-body);padding:4px;border-radius:var(--radius-md);margin-bottom:24px;">
+                        <button type="button" class="pipeline-tab active" style="flex:1;" onclick="switchModalTab('edit', 'c-dept', this)">Metadata</button>
+                        <button type="button" class="pipeline-tab" style="flex:1;" onclick="switchModalTab('edit', 'c-coord', this)">Coordinator Links</button>
+                    </div>
+
                     <form onsubmit="event.preventDefault(); showToast('Department details updated dynamically', 'success'); document.getElementById('editDeptModal').style.display='none';">
-                        <div class="edit-form-group" style="margin-bottom:16px;">
-                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Department Name</label>
-                            <input type="text" id="editDeptName" required style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                        
+                        <div id="edit_c-dept" class="modal-pane active" style="animation:fadeIn 0.3s ease;">
+                            <div class="edit-form-group" style="margin-bottom:16px;">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Department Name</label>
+                                <input type="text" id="editDeptName" required style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                            </div>
+                            <div class="edit-form-group" style="margin-bottom:24px;">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Activity Status</label>
+                                <select id="editDeptStatus" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                                    <option value="active">Active (Processing Alumni)</option>
+                                    <option value="inactive">Inactive (Frozen)</option>
+                                </select>
+                            </div>
+                            <div style="display:flex;justify-content:flex-end;">
+                                <button type="submit" class="btn btn-primary" style="background:#ef4444;border-color:#ef4444;"><i class='bx bx-save'></i> Apply Delta</button>
+                            </div>
                         </div>
-                        <div class="edit-form-group" style="margin-bottom:24px;">
-                            <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Change Status</label>
-                            <select id="editDeptStatus" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
-                                <option value="active">Active (Processing Alumni)</option>
-                                <option value="inactive">Inactive (Frozen)</option>
-                            </select>
+
+                        <div id="edit_c-coord" class="modal-pane" style="display:none; animation:fadeIn 0.3s ease;">
+                            <div class="edit-form-group" style="margin-bottom:16px;">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Transfer Coordinator Seat</label>
+                                <input type="text" id="editCoordName" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                            </div>
+                            <p style="font-size:12px;color:var(--text-muted);margin-bottom:24px;"><i class='bx bx-info-circle'></i> Transferring a department to another coordinator will require them to accept the invitation via email.</p>
+                            <div style="display:flex;justify-content:flex-end;">
+                                <button type="submit" class="btn btn-primary" style="background:#ef4444;border-color:#ef4444;"><i class='bx bx-refresh'></i> Reassign Nodes</button>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width:100%;background:#ef4444;border-color:#ef4444;"><i class='bx bx-save'></i> Save Changes</button>
+
                     </form>
                 </div>
             </div>
@@ -157,16 +205,37 @@
                 <td>${d.totalMentors}</td>
                 <td><span class="dept-status ${d.status}">${d.status}</span></td>
                 <td><div class="action-btns">
-                    <button title="Edit Details" onclick="window.editDepartment('${d.name}', '${d.status}')"><i class='bx bx-edit'></i></button>
+                    <button title="Edit Details" onclick="window.editDepartment('${d.name}', '${d.status}', '${d.coordinator}')"><i class='bx bx-edit'></i></button>
                     <button title="Archive" class="delete" onclick="showToast('Cannot delete active department with processed Alumni arrays','error')"><i class='bx bx-trash'></i></button>
                 </div></td>
             </tr>`).join('');
             
-        window.editDepartment = function(name, status) {
+        window.editDepartment = function(name, status, coordName) {
             document.getElementById('editDeptName').value = name;
             document.getElementById('editDeptStatus').value = status;
+            document.getElementById('editCoordName').value = coordName;
+            
+            // Reset to first tab
+            document.querySelectorAll('#editDeptModal .pipeline-tab')[0].click();
             document.getElementById('editDeptModal').style.display = 'flex';
         };
+
+        window.switchModalTab = function(modalType, paneId, btnElem) {
+            const modal = document.getElementById(modalType + 'DeptModal');
+            modal.querySelectorAll('.pipeline-tab').forEach(b => b.classList.remove('active', 'focused-red'));
+            btnElem.classList.add('active');
+            
+            // Add red text specifically if it's currently active in admin context
+            btnElem.style.color = '#ef4444';
+            
+            modal.querySelectorAll('button.pipeline-tab:not(.active)').forEach(b => b.style.color = 'var(--text-muted)');
+            
+            modal.querySelectorAll('.modal-pane').forEach(p => p.style.display = 'none');
+            document.getElementById(modalType + '_' + paneId).style.display = 'block';
+        };
+        
+        // Initializer for the pipeline tab colors
+        document.querySelectorAll('.pipeline-tab.active').forEach(b => b.style.color = '#ef4444');
     </script>
 </body>
 </html>
