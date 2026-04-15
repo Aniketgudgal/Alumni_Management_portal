@@ -62,7 +62,7 @@
             <div class="dash-view" style="opacity:1;transform:translateY(0);">
                 <div class="page-title-bar">
                     <div><h1>🏫 Department Management</h1><p>Create, edit, and manage all academic departments.</p></div>
-                    <button class="btn btn-primary btn-sm" onclick="showToast('Create Department modal coming soon!', 'info')"><i class='bx bx-plus'></i> Add Department</button>
+                    <button class="btn btn-primary btn-sm" onclick="const newDept = prompt('Enter new department name:'); if(newDept) showToast('Department ' + newDept + ' created successfully!', 'success');"><i class='bx bx-plus'></i> Add Department</button>
                 </div>
                 <div class="dash-stats-row" id="deptStats"></div>
                 <div class="dept-table-card">

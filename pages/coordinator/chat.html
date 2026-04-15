@@ -51,7 +51,8 @@
                             <div class="chat-msg received"><div class="msg-bubble">Alumni registration updates needed for this month.</div><div class="msg-meta"><span class="msg-time">10:30 AM</span></div></div>
                         </div>
                         <div class="chat-input-area">
-                            <button class="topbar-icon-btn chat-attach-btn" onclick="showToast('Attach file coming soon!','info')"><i class='bx bx-paperclip'></i></button>
+                            <button class="topbar-icon-btn chat-attach-btn" onclick="document.getElementById('mockFileInput').click()"><i class='bx bx-paperclip'></i></button>
+                            <input type="file" id="mockFileInput" style="display:none;" onchange="showToast('File attached successfully', 'success')">
                             <input type="text" placeholder="Type a message..." id="chatInput" autocomplete="off">
                             <button class="send-btn" id="sendMsgBtn" style="background:#0d9488;"><i class='bx bxs-send'></i></button>
                         </div>

@@ -46,7 +46,8 @@
                             <p style="text-align:center;color:var(--text-muted);margin-top:24px;">Select a contact from the sidebar to begin messaging.</p>
                         </div>
                         <div class="chat-input-area">
-                            <button class="topbar-icon-btn chat-attach-btn" onclick="showToast('Attach file coming soon!','info')"><i class='bx bx-paperclip'></i></button>
+                            <button class="topbar-icon-btn chat-attach-btn" onclick="document.getElementById('mockFileInput').click()"><i class='bx bx-paperclip'></i></button>
+                            <input type="file" id="mockFileInput" style="display:none;" onchange="showToast('File attached successfully', 'success')">
                             <input type="text" placeholder="Type a message..." id="chatInput" autocomplete="off" disabled>
                             <button class="send-btn" id="sendMsgBtn" style="background:#4f46e5;" disabled><i class='bx bxs-send'></i></button>
                         </div>

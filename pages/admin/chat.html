@@ -81,7 +81,8 @@
                             <div class="chat-msg received"><div class="msg-bubble">Also, the placement data needs to be updated for the annual report.</div><div class="msg-meta"><span class="msg-time">10:35 AM</span></div></div>
                         </div>
                         <div class="chat-input-area">
-                            <button class="topbar-icon-btn chat-attach-btn" onclick="showToast('Attach file coming soon!','info')"><i class='bx bx-paperclip'></i></button>
+                            <button class="topbar-icon-btn chat-attach-btn" onclick="document.getElementById('mockFileInput').click()"><i class='bx bx-paperclip'></i></button>
+                            <input type="file" id="mockFileInput" style="display:none;" onchange="showToast('File attached successfully', 'success')">
                             <input type="text" placeholder="Type a message..." id="chatInput" autocomplete="off">
                             <button class="send-btn" id="sendMsgBtn"><i class='bx bxs-send'></i></button>
                         </div>

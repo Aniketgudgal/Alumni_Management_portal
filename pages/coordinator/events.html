@@ -35,7 +35,7 @@
             <div class="dash-view" style="opacity:1;transform:translateY(0);">
                 <div class="page-title-bar">
                     <div><h1>📅 Department Events</h1><p>Manage and create events specifically for <span id="pageDeptName" style="color:var(--primary);font-weight:700;"></span>.</p></div>
-                    <button class="btn btn-primary btn-sm" onclick="showToast('Create Event module coming soon!','info')"><i class='bx bx-plus'></i> Create New Event</button>
+                    <button class="btn btn-primary btn-sm" onclick="const name = prompt('Event title:'); if(name) showToast('Event created!', 'success');"><i class='bx bx-plus'></i> Create New Event</button>
                 </div>
                 
                 <div id="eventsContainer"></div>
