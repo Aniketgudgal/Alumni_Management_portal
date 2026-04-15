@@ -21,6 +21,9 @@
         .action-btns button { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--text-muted); cursor: pointer; transition: var(--transition-fast); }
         .action-btns button:hover { color: var(--primary); border-color: var(--primary); }
         .action-btns button.delete:hover { color: #ef4444; border-color: #ef4444; }
+        .pipeline-tab { padding: 12px 16px; border: none; background: transparent; font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; border-radius: var(--radius-md); transition: var(--transition-fast); }
+        .pipeline-tab:hover { color: var(--text-color); background: rgba(0,0,0,0.05); }
+        .pipeline-tab.active { background: var(--bg-card); color: #ef4444; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
@@ -164,12 +167,22 @@
 
                         <div id="edit_c-coord" class="modal-pane" style="display:none; animation:fadeIn 0.3s ease;">
                             <div class="edit-form-group" style="margin-bottom:16px;">
-                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Transfer Coordinator Seat</label>
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Coordinator Name</label>
                                 <input type="text" id="editCoordName" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
                             </div>
-                            <p style="font-size:12px;color:var(--text-muted);margin-bottom:24px;"><i class='bx bx-info-circle'></i> Transferring a department to another coordinator will require them to accept the invitation via email.</p>
+                            <div class="edit-form-group" style="margin-bottom:16px;">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Coordinator Email</label>
+                                <input type="email" id="editCoordEmail" placeholder="e.g. coord@university.edu" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                            </div>
+                            <div class="edit-form-group" style="margin-bottom:24px;">
+                                <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Access Permissions</label>
+                                <select id="editCoordPerms" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                                    <option value="coord-standard">Standard Coordinator</option>
+                                    <option value="coord-admin">Elevated Coordinator (Can bypass approvals)</option>
+                                </select>
+                            </div>
                             <div style="display:flex;justify-content:flex-end;">
-                                <button type="submit" class="btn btn-primary" style="background:#ef4444;border-color:#ef4444;"><i class='bx bx-refresh'></i> Reassign Nodes</button>
+                                <button type="submit" class="btn btn-primary" style="background:#ef4444;border-color:#ef4444;"><i class='bx bx-refresh'></i> Reassign Nodes & Update</button>
                             </div>
                         </div>
 
