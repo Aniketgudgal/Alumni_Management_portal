@@ -86,15 +86,15 @@
                     </div>
 
                     <div style="display:grid; grid-template-columns: 2fr 1fr; gap:25px;">
-                        <!-- Recent Job Submissions (For Coord native review) -->
+                        <!-- Recent Job Submissions -->
                         <div class="dash-section">
-                            <div class="dash-section-header"><h3>💼 Pending Job Approvals</h3><button class="btn btn-ghost btn-sm">Review All</button></div>
+                            <div class="dash-section-header"><h3>💼 Pending Job Approvals</h3><button class="btn btn-ghost btn-sm" onclick="window.location.href='jobs.html'">Review All <i class='bx bx-right-arrow-alt'></i></button></div>
                             <div class="dash-section-body" id="pendingJobsList" style="display:flex;flex-direction:column;gap:12px;"></div>
                         </div>
 
                         <!-- Department Mentors -->
                         <div class="dash-section">
-                            <div class="dash-section-header"><h3>🧑‍🏫 Your Mentors</h3></div>
+                            <div class="dash-section-header"><h3>🧑‍🏫 Your Mentors</h3><button class="btn btn-ghost btn-sm" onclick="window.location.href='mentors.html'">Manage <i class='bx bx-right-arrow-alt'></i></button></div>
                             <div class="dash-section-body" id="mentorsList" style="display:flex;flex-direction:column;gap:16px;"></div>
                         </div>
                     </div>
@@ -126,35 +126,56 @@
             document.getElementById('statMentors').textContent = dept.totalMentors;
         }
 
-        // Pending Jobs for this coordinator's department
-        const pendingJobs = APP_DATA.jobApprovals.filter(j => j.department === user.department && j.status === 'pending_coordinator');
-        document.getElementById('statJobs').textContent = pendingJobs.length;
-        document.getElementById('pendingJobsList').innerHTML = pendingJobs.length ? pendingJobs.map(j => `
-            <div style="padding:16px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg-body);">
-                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                    <h4 style="font-size:15px; font-weight:700;">${j.title}</h4>
-                    <span style="font-size:11px; color:#d97706; background:#fef3c7; padding:2px 8px; border-radius:12px; font-weight:700;">Needs Review</span>
+        // Pending Jobs Logic
+        window.approveDashJob = function(jobId) {
+            const jobIndex = APP_DATA.jobApprovals.findIndex(j => j.id === jobId);
+            if(jobIndex > -1) {
+                APP_DATA.jobApprovals[jobIndex].status = 'pending_admin';
+                showToast('Job approved & forwarded to Admin', 'success');
+                renderJobs();
+            }
+        };
+        window.rejectDashJob = function(jobId) {
+            const jobIndex = APP_DATA.jobApprovals.findIndex(j => j.id === jobId);
+            if(jobIndex > -1) {
+                APP_DATA.jobApprovals[jobIndex].status = 'rejected';
+                showToast('Job request securely rejected', 'error');
+                renderJobs();
+            }
+        };
+
+        function renderJobs() {
+            const pendingJobs = APP_DATA.jobApprovals.filter(j => j.department === user.department && j.status === 'pending_coordinator').slice(0, 3); // top 3
+            document.getElementById('statJobs').textContent = pendingJobs.length;
+            
+            document.getElementById('pendingJobsList').innerHTML = pendingJobs.length ? pendingJobs.map(j => `
+                <div style="padding:16px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg-body); transition:var(--transition);" onmouseover="this.style.borderColor='#0d9488'" onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <h4 style="font-size:15px; font-weight:700;">${j.title}</h4>
+                        <span style="font-size:11px; color:#d97706; background:#fef3c7; padding:2px 8px; border-radius:12px; font-weight:700;">Needs Review</span>
+                    </div>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;"><i class='bx bxs-business'></i> ${j.company} · By ${j.postedBy}</p>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-primary btn-sm" onclick="approveDashJob(${j.id})"><i class='bx bx-check'></i> Quick Approve</button>
+                        <button class="btn btn-secondary btn-sm" style="color:#ef4444;" onclick="rejectDashJob(${j.id})"><i class='bx bx-x'></i> Reject</button>
+                    </div>
                 </div>
-                <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">${j.company} · By ${j.postedBy}</p>
-                <div style="display:flex; gap:8px;">
-                    <button class="btn btn-primary btn-sm" onclick="showToast('Job approved and sent to Admin','success'); this.parentElement.parentElement.style.display='none';"><i class='bx bx-check'></i> Approve</button>
-                    <button class="btn btn-secondary btn-sm" style="color:#ef4444;" onclick="showToast('Job rejected','error'); this.parentElement.parentElement.style.display='none';"><i class='bx bx-x'></i> Reject</button>
-                </div>
-            </div>
-        `).join('') : '<p style="color:var(--text-muted);font-size:14px;padding:20px;text-align:center;">No pending jobs to review.</p>';
+            `).join('') : '<div style="padding:40px 20px; border:1px dashed var(--border); border-radius:var(--radius-md); text-align:center;"><i class="bx bx-check-circle" style="font-size:32px;color:#10b981;margin-bottom:8px;"></i><p style="color:var(--text-muted);font-size:14px;font-weight:600;">Queue Empty</p><p style="font-size:12px;color:var(--text-secondary);">No pending jobs require your review right now.</p></div>';
+        }
+        renderJobs();
 
         // Department Mentors list
-        const mentors = APP_DATA.mentors.filter(m => m.department === user.department);
-        document.getElementById('mentorsList').innerHTML = mentors.map(m => `
-            <div style="display:flex; align-items:center; gap:12px;">
-                <img src="${m.avatar}" alt="${m.name}" style="width:40px;height:40px;border-radius:50%;">
+        const mentors = APP_DATA.mentors.filter(m => m.department === user.department).slice(0, 4); // Only show top 4 on dash
+        document.getElementById('mentorsList').innerHTML = mentors.length ? mentors.map(m => `
+            <div style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:var(--radius-md); transition:background 0.2s;" onmouseover="this.style.background='var(--bg-body)'" onmouseout="this.style.background='transparent'">
+                <img src="${m.avatar}" alt="${m.name}" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--border);">
                 <div style="flex:1;">
-                    <h5 style="font-size:14px;font-weight:600;">${m.name}</h5>
-                    <p style="font-size:12px;color:var(--text-muted);">Batches: ${m.batches.join(', ')}</p>
+                    <h5 style="font-size:14px;font-weight:700;color:var(--text-color);">${m.name}</h5>
+                    <p style="font-size:12px;color:#0d9488;font-weight:600;">Batches: ${m.batches.join(', ')}</p>
                 </div>
-                <button class="topbar-icon-btn" onclick="showToast('Messaging ${m.name}','info')"><i class='bx bx-message-rounded'></i></button>
+                <button class="topbar-icon-btn" onclick="window.location.href='chat.html'" title="Direct Message"><i class='bx bx-message-rounded'></i></button>
             </div>
-        `).join('');
+        `).join('') : '<p style="font-size:13px; color:var(--text-muted);">No mentors assigned to this department yet.</p>';
 
         // Sidebar mobile
         const sidebar = document.getElementById('dashSidebar');
