@@ -7,6 +7,20 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="../../assets/css/common.css">
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .list-table-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+        .list-table-card table { width: 100%; border-collapse: collapse; }
+        .list-table-card th { padding: 14px 20px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.2px; border-bottom: 2px solid var(--border); background: var(--bg-body); }
+        .list-table-card td { padding: 16px 20px; font-size: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        .list-table-card tbody tr { transition: var(--transition-fast); }
+        .list-table-card tbody tr:hover { background: rgba(239,68,68,0.03); }
+        .list-table-card tbody tr:last-child td { border-bottom: none; }
+        .alumni-table-avatar { display:flex; align-items:center; gap:12px; }
+        .alumni-table-avatar img { width:40px; height:40px; border-radius:50%; object-fit:cover; border:1px solid var(--border); }
+        .alumni-table-avatar .at-info h4 { font-size:14px; font-weight:700; margin-bottom:2px; color:var(--text-color); }
+        .alumni-table-avatar .at-info p { font-size:12px; color:var(--text-muted); }
+        .badge-pill { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(239,68,68,0.1); color: #ef4444; display: inline-block; white-space: nowrap; }
+    </style>
 </head>
 <body>
     <div class="dashboard-layout">
@@ -63,7 +77,24 @@
                     <select id="deptFilterAlumni" onchange="filterAlumniAdmin()"><option value="">All Departments</option></select>
                     <select id="batchFilterAlumni" onchange="filterAlumniAdmin()"><option value="">All Batches</option></select>
                 </div>
-                <div class="network-grid" id="alumniGrid"></div>
+                <div style="margin-bottom:24px;">
+                    <div class="list-table-card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Alumni Profile</th>
+                                    <th>Current Role</th>
+                                    <th>Batch Core</th>
+                                    <th>Faculty Node</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alumniListBody">
+                                <!-- Rendered dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
             </div>
         </main>
@@ -126,20 +157,31 @@
         batches.forEach(b => document.getElementById('batchFilterAlumni').innerHTML += `<option value="${b}">${b}</option>`);
 
         function renderAlumniCards(list) {
-            document.getElementById('alumniGrid').innerHTML = list.map(a => `
-                <div class="network-card" data-name="${a.name.toLowerCase()}" data-company="${a.company}" data-batch="${a.batch}">
-                    <img src="${a.avatar}" alt="${a.name}" style="width:48px;height:48px;border-radius:50%;">
-                    <div class="nc-info" style="flex:1;">
-                        <h4>${a.name}</h4>
-                        <p>${a.role} at ${a.company}</p>
-                        <span class="nc-batch">Batch ${a.batch}</span>
-                    </div>
-                    <div style="display:flex;gap:6px;">
-                        <button class="topbar-icon-btn" title="View Details" onclick="viewAlumniDetailsAdmin(${a.id})"><i class='bx bx-user-pin'></i></button>
-                        <button class="topbar-icon-btn" title="Direct Actions" onclick="showToast('Locking profile features','warning')"><i class='bx bx-lock-alt'></i></button>
-                    </div>
-                </div>
+            document.getElementById('alumniListBody').innerHTML = list.map(a => `
+                <tr data-name="${a.name.toLowerCase()}" data-company="${a.company}" data-batch="${a.batch}">
+                    <td>
+                        <div class="alumni-table-avatar">
+                            <img src="${a.avatar}" alt="${a.name}">
+                            <div class="at-info">
+                                <h4>${a.name}</h4>
+                                <p><i class='bx bx-envelope'></i> Linked Identity</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-weight:600;font-size:13px;color:var(--text-color);">${a.role}</div>
+                        <div style="font-size:12px;color:var(--text-muted);"><i class='bx bx-buildings'></i> ${a.company}</div>
+                    </td>
+                    <td><span class="badge-pill">Batch ${a.batch}</span></td>
+                    <td style="font-size:13px;color:var(--text-secondary);font-weight:600;">${a.department}</td>
+                    <td style="text-align:right;">
+                        <button class="btn btn-secondary btn-sm" onclick="viewAlumniDetailsAdmin(${a.id})" title="Inspect Details"><i class='bx bx-show'></i> View Details</button>
+                    </td>
+                </tr>
             `).join('');
+            if(list.length === 0) {
+                document.getElementById('alumniListBody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted);">No matching alumni directories found.</td></tr>';
+            }
         }
         renderAlumniCards(APP_DATA.topAlumni);
 
