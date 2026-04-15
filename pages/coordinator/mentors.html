@@ -35,7 +35,10 @@
             <div class="dash-view" style="opacity:1;transform:translateY(0);">
                 <div class="page-title-bar">
                     <div><h1>🧑‍🏫 Department Mentors</h1><p>Manage mentors assigned to <span id="pageDeptName" style="font-weight:700;color:var(--primary);"></span>.</p></div>
-                    <button class="btn btn-primary" style="background:#0d9488;border-color:#0d9488;" onclick="window.location.href='chat.html'"><i class='bx bxs-paper-plane'></i> Message All Mentors</button>
+                    <div style="display:flex;gap:12px;">
+                        <button class="btn btn-secondary" onclick="window.location.href='chat.html'"><i class='bx bx-message-rounded'></i> Message Mentors</button>
+                        <button class="btn btn-primary" style="background:#0d9488;border-color:#0d9488;" onclick="document.getElementById('addMentorModal').style.display='flex'"><i class='bx bx-plus'></i> Add New Mentor</button>
+                    </div>
                 </div>
                 
                 <div class="mentor-grid" id="mentorGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;"></div>
@@ -86,13 +89,79 @@
                 </div>
 
                 <div style="margin-top:24px;display:flex;gap:12px;">
-                    <button class="btn btn-primary" style="flex:1;background:#0d9488;border-color:#0d9488;" onclick="showToast('Opening Direct Chat...','info')"><i class='bx bxs-message-rounded-dots'></i> Direct Message</button>
-                    <button class="btn btn-secondary" style="flex:1;" onclick="showToast('Opening Reassignment Flow...','info')"><i class='bx bx-transfer'></i> Reassign Batches</button>
+                    <button class="btn btn-primary" style="flex:1;background:#0d9488;border-color:#0d9488;" onclick="showToast('Opening Direct Chat...','info'); document.getElementById('mentorDetailModal').style.display='none';"><i class='bx bxs-message-rounded-dots'></i> Direct Message</button>
+                    <button class="btn btn-secondary" style="flex:1;" onclick="document.getElementById('mentorDetailModal').style.display='none'; document.getElementById('reassignBatchesModal').style.display='flex';"><i class='bx bx-transfer'></i> Reassign Batches</button>
                 </div>
 
             </div>
         </div>
     </div>
+
+    <!-- Add New Mentor Modal -->
+    <div id="addMentorModal" class="dashboard-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+        <div style="background:var(--bg-card);width:100%;max-width:500px;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-xl);position:relative;">
+            <button onclick="document.getElementById('addMentorModal').style.display='none'" style="position:absolute;top:20px;right:20px;background:none;border:none;font-size:24px;color:var(--text-muted);cursor:pointer;"><i class='bx bx-x'></i></button>
+            <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text-color);">Add New Mentor</h2>
+            <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px;">Register a new faculty member as a Batch Mentor.</p>
+            
+            <form id="addMentorForm" onsubmit="event.preventDefault(); showToast('New Mentor successfully registered!', 'success'); this.reset(); document.getElementById('addMentorModal').style.display='none';">
+                <div class="edit-form-group" style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Full Name <span style="color:#ef4444">*</span></label>
+                    <input type="text" required placeholder="e.g. Prof. A. B. Smith" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                </div>
+                
+                <div class="edit-form-group" style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Specialization <span style="color:#ef4444">*</span></label>
+                    <input type="text" required placeholder="e.g. Artificial Intelligence" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+                    <div class="edit-form-group">
+                        <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Email</label>
+                        <input type="email" required placeholder="name@college.edu" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                    </div>
+                    <div class="edit-form-group">
+                        <label style="display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-secondary);">Phone</label>
+                        <input type="tel" required placeholder="+91 9999999999" style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;">
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:12px;">
+                    <button type="submit" class="btn btn-primary" style="flex:2;background:#0d9488;border-color:#0d9488;"><i class='bx bx-user-plus'></i> Register Mentor</button>
+                    <button type="button" class="btn btn-secondary" style="flex:1;" onclick="document.getElementById('addMentorModal').style.display='none'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reassign Batches Modal -->
+    <div id="reassignBatchesModal" class="dashboard-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+        <div style="background:var(--bg-card);width:100%;max-width:400px;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-xl);position:relative;">
+            <button onclick="document.getElementById('reassignBatchesModal').style.display='none'" style="position:absolute;top:20px;right:20px;background:none;border:none;font-size:24px;color:var(--text-muted);cursor:pointer;"><i class='bx bx-x'></i></button>
+            <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text-color);">Reassign Batches</h2>
+            <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px;">Select the graduation batches this mentor will oversee.</p>
+            
+            <form id="reassignBatchesForm" onsubmit="event.preventDefault(); showToast('Batches successfully updated!', 'success'); document.getElementById('reassignBatchesModal').style.display='none';">
+                <div class="edit-form-group" style="margin-bottom:24px;">
+                    <label style="display:block;margin-bottom:12px;font-weight:600;font-size:13px;color:var(--text-secondary);">Select Batches (Hold Ctrl/Cmd to multi-select)</label>
+                    <select id="reassignSelect" multiple required style="width:100%;padding:10px 14px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-body);font-size:14px;height:120px;">
+                        <option value="2026">Batch 2026</option>
+                        <option value="2025">Batch 2025</option>
+                        <option value="2024">Batch 2024</option>
+                        <option value="2023">Batch 2023</option>
+                        <option value="2022">Batch 2022</option>
+                        <option value="2021">Batch 2021</option>
+                    </select>
+                </div>
+
+                <div style="display:flex;gap:12px;">
+                    <button type="submit" class="btn btn-primary" style="flex:2;background:#0d9488;border-color:#0d9488;"><i class='bx bx-save'></i> Apply Changes</button>
+                    <button type="button" class="btn btn-secondary" style="flex:1;" onclick="document.getElementById('reassignBatchesModal').style.display='none'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../../assets/js/data.js"></script>
     <script src="../../assets/js/common.js"></script>
     <script>
