@@ -41,14 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ===== TRUSTED BY AVATARS =====
-    var trustedAvatars = document.getElementById('hpTrustedAvatars');
-    if (trustedAvatars && D.topAlumni) {
-        trustedAvatars.innerHTML = D.topAlumni.slice(0, 6).map(function(a) {
-            return '<img src="' + a.avatar + '" alt="' + a.name + '" title="' + a.name + ' - ' + a.company + '">';
-        }).join('');
-    }
-
+    // (Dynamic Hero visual elements have been removed to preserve a static college aesthetic)
     // ===== ALUMNI AVATAR MARQUEE =====
     var amTrack = document.getElementById('hpAMTrack');
     if (amTrack && D.topAlumni) {
@@ -195,31 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (track) track.scrollBy({ left: dir * 380, behavior: 'smooth' });
     };
 
-    // ===== ANIMATED COUNTERS =====
-    var counterObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (!entry.isIntersecting) return;
-            var el = entry.target;
-            var text = el.textContent;
-            var numMatch = text.match(/[\d,]+/);
-            if (numMatch) {
-                var target = parseInt(numMatch[0].replace(/,/g, ''));
-                var suffix = text.replace(numMatch[0], '');
-                var current = 0;
-                var increment = Math.max(1, target / 60);
-                var timer = setInterval(function() {
-                    current += increment;
-                    if (current >= target) { current = target; clearInterval(timer); }
-                    el.textContent = Math.floor(current).toLocaleString() + suffix;
-                }, 25);
-            }
-            counterObserver.unobserve(el);
-        });
-    }, { threshold: 0.5 });
-    // Observe counter elements after a tick (so dynamic ones are rendered)
-    setTimeout(function() {
-        document.querySelectorAll('.stat-number').forEach(function(el) { counterObserver.observe(el); });
-    }, 100);
+    // The Animated Counters effect was removed per user request. Stats will display statically.
+
 
     // ===== FADE UP ANIMATIONS =====
     var fadeObserver = new IntersectionObserver(function(entries) {
