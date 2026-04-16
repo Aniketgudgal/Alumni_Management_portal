@@ -27,11 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
             : "<i class='bx bx-menu'></i>";
     };
 
-    // ===== HERO STATS (from stats) =====
+    // ===== HERO METRICS (populate from stats) =====
     if (D.stats) {
         var heroStatMap = [
             { id: 'hpStatAlumni', val: D.stats.totalAlumni, suffix: '+' },
             { id: 'hpStatCompanies', val: D.stats.companiesHiring, suffix: '+' },
+            { id: 'hpStatPlaced', val: D.stats.studentsPlaced, suffix: '+' },
             { id: 'hpStatMentors', val: D.stats.activeMentors, suffix: '' }
         ];
         heroStatMap.forEach(function(s) {
@@ -40,21 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ===== HERO SHOWCASE CARD (Top Alumni spotlight instead of activity feed) =====
-    var heroShowcase = document.getElementById('hpHeroShowcase');
-    if (heroShowcase && D.topAlumni && D.topAlumni.length >= 3) {
-        var spotlightAlumni = D.topAlumni.slice(0, 3);
-        heroShowcase.innerHTML = spotlightAlumni.map(function(a, i) {
-            var colors = ['#4f46e5', '#06b6d4', '#10b981'];
-            var badges = ['Top Engineer', 'Product Leader', 'Entrepreneur'];
-            return '<div class="hp-showcase-row">'
-                + '<img src="' + a.avatar + '" alt="' + a.name + '">'
-                + '<div style="flex:1;min-width:0;">'
-                + '<div class="sc-name">' + a.name + '</div>'
-                + '<div class="sc-role">' + a.role + ' at ' + a.company + '</div>'
-                + '</div>'
-                + '<span class="sc-badge" style="background:' + colors[i] + '22;color:' + colors[i] + ';">' + badges[i] + '</span>'
-                + '</div>';
+    // ===== TRUSTED BY AVATARS =====
+    var trustedAvatars = document.getElementById('hpTrustedAvatars');
+    if (trustedAvatars && D.topAlumni) {
+        trustedAvatars.innerHTML = D.topAlumni.slice(0, 6).map(function(a) {
+            return '<img src="' + a.avatar + '" alt="' + a.name + '" title="' + a.name + ' - ' + a.company + '">';
         }).join('');
     }
 
