@@ -1,8 +1,11 @@
 // ============================================
 // ALUMNI PORTAL - HOMEPAGE ENGINE (Light Theme)
+// Uses APP_DATA from data.js as single source of truth
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
+
+    var D = window.APP_DATA || {};
 
     // ===== NAVBAR SCROLL =====
     var navbar = document.getElementById('hpNavbar');
@@ -23,31 +26,53 @@ document.addEventListener('DOMContentLoaded', function() {
             : "<i class='bx bx-menu'></i>";
     };
 
-    // ===== HERO FEED =====
-    var feedData = [
-        { img: 'https://i.pravatar.cc/150?img=11', name: 'Aarav Patel', action: 'joined as Senior Engineer', sub: 'Google - Batch 2015', tag: 'New', tagBg: 'rgba(16,185,129,0.1)', tagColor: '#10b981' },
-        { img: 'https://i.pravatar.cc/150?img=5', name: 'Sneha Kulkarni', action: 'posted a job opening', sub: 'Microsoft - Batch 2016', tag: 'Job', tagBg: 'rgba(79,70,229,0.1)', tagColor: '#4f46e5' },
-        { img: 'https://i.pravatar.cc/150?img=8', name: 'Vikram Joshi', action: 'shared an event update', sub: 'Amazon - Batch 2018', tag: 'Event', tagBg: 'rgba(245,158,11,0.1)', tagColor: '#f59e0b' }
-    ];
+    // ===== HERO STATS (populate from APP_DATA.stats) =====
+    if (D.stats) {
+        var statEls = {
+            hpStatAlumni: { val: D.stats.totalAlumni, suffix: '+' },
+            hpStatCompanies: { val: D.stats.companiesHiring, suffix: '+' },
+            hpStatMentors: { val: D.stats.activeMentors, suffix: '' }
+        };
+        Object.keys(statEls).forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.textContent = statEls[id].val.toLocaleString() + statEls[id].suffix;
+        });
+    }
+
+    // ===== HERO FEED (built from real alumni + activities) =====
     var heroFeed = document.getElementById('hpHeroFeed');
-    if (heroFeed) {
-        heroFeed.innerHTML = feedData.map(function(f) {
+    if (heroFeed && D.activities) {
+        var tagColors = {
+            purple: { bg: 'rgba(139,92,246,0.1)', fg: '#8b5cf6', label: 'New' },
+            green: { bg: 'rgba(16,185,129,0.1)', fg: '#10b981', label: 'Event' },
+            blue: { bg: 'rgba(79,70,229,0.1)', fg: '#4f46e5', label: 'Job' },
+            amber: { bg: 'rgba(245,158,11,0.1)', fg: '#f59e0b', label: 'Alert' },
+            red: { bg: 'rgba(239,68,68,0.1)', fg: '#ef4444', label: 'Chat' }
+        };
+        heroFeed.innerHTML = D.activities.slice(0, 3).map(function(a) {
+            var tc = tagColors[a.color] || tagColors.purple;
+            var avatar = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(a.title.substring(0,2)) + '&background=4f46e5&color=fff';
+            // Try to match with a topAlumni avatar
+            if (D.topAlumni) {
+                D.topAlumni.forEach(function(al) {
+                    if (a.desc.indexOf(al.name) !== -1) avatar = al.avatar;
+                });
+            }
             return '<div class="hp-feed-row">'
-                + '<img src="' + f.img + '" alt="' + f.name + '">'
+                + '<img src="' + avatar + '" alt="activity">'
                 + '<div style="flex:1;min-width:0;">'
-                + '<div class="fr-name">' + f.name + ' <span class="fr-action">' + f.action + '</span></div>'
-                + '<div class="fr-sub">' + f.sub + '</div>'
+                + '<div class="fr-name">' + a.title + '</div>'
+                + '<div class="fr-sub">' + a.desc + '</div>'
                 + '</div>'
-                + '<span class="fr-tag" style="background:' + f.tagBg + ';color:' + f.tagColor + ';">' + f.tag + '</span>'
+                + '<span class="fr-tag" style="background:' + tc.bg + ';color:' + tc.fg + ';">' + tc.label + '</span>'
                 + '</div>';
         }).join('');
     }
 
-    // ===== ALUMNI AVATAR MARQUEE =====
+    // ===== ALUMNI AVATAR MARQUEE (from topAlumni) =====
     var amTrack = document.getElementById('hpAMTrack');
-    if (amTrack && window.APP_DATA && APP_DATA.topAlumni) {
-        var allAlumni = APP_DATA.topAlumni;
-        var amItems = allAlumni.map(function(a) {
+    if (amTrack && D.topAlumni) {
+        var amItems = D.topAlumni.map(function(a) {
             var safeName = a.name.replace(/'/g, "\\'");
             return '<div class="hp-am-item" onclick="openHpAlumniModal(\'' + safeName + '\')">'
                 + '<img src="' + a.avatar + '" alt="' + a.name + '">'
@@ -55,34 +80,53 @@ document.addEventListener('DOMContentLoaded', function() {
                 + '<div class="hp-am-company">' + a.company + '</div>'
                 + '</div>';
         });
-        // Duplicate for seamless infinite scroll
         amTrack.innerHTML = amItems.join('') + amItems.join('');
     }
 
-    // ===== WHY JOIN =====
-    var benefits = [
-        { icon: 'bxs-network-chart', color: '#4f46e5', bg: 'rgba(79,70,229,0.08)', title: 'Professional Network', desc: 'Connect with 12,500+ verified alumni across 350+ companies worldwide. Build lifelong professional bonds.' },
-        { icon: 'bxs-briefcase-alt-2', color: '#06b6d4', bg: 'rgba(6,182,212,0.08)', title: 'Exclusive Job Board', desc: 'Access alumni-sourced job postings. Every opportunity is verified, relevant, and from your own trusted network.' },
-        { icon: 'bxs-user-voice', color: '#10b981', bg: 'rgba(16,185,129,0.08)', title: 'Expert Mentorship', desc: 'Get matched with senior alumni who guide you through your career with personalized, one-on-one mentorship.' },
-        { icon: 'bxs-calendar-event', color: '#f59e0b', bg: 'rgba(245,158,11,0.08)', title: 'Events & Reunions', desc: 'Reunions, tech talks, placement drives, and industry summits. Stay connected and keep growing.' },
-        { icon: 'bxs-message-dots', color: '#8b5cf6', bg: 'rgba(139,92,246,0.08)', title: 'Real-time Messaging', desc: 'Direct messaging with batchmates, mentors, and coordinators. Group chats for your entire batch community.' },
-        { icon: 'bxs-trophy', color: '#ef4444', bg: 'rgba(239,68,68,0.08)', title: 'Alumni Spotlight', desc: 'Celebrate achievements of distinguished graduates and nominate rising stars from your batch to be featured.' }
+    // ===== WHY JOIN (from APP_DATA.whyJoin) =====
+    var whyColors = [
+        { color: '#4f46e5', bg: 'rgba(79,70,229,0.08)' },
+        { color: '#06b6d4', bg: 'rgba(6,182,212,0.08)' },
+        { color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
+        { color: '#f59e0b', bg: 'rgba(245,158,11,0.08)' },
+        { color: '#8b5cf6', bg: 'rgba(139,92,246,0.08)' },
+        { color: '#ef4444', bg: 'rgba(239,68,68,0.08)' }
     ];
     var whyGrid = document.getElementById('hpWhyGrid');
-    if (whyGrid) {
-        whyGrid.innerHTML = benefits.map(function(b, i) {
+    if (whyGrid && D.whyJoin) {
+        whyGrid.innerHTML = D.whyJoin.map(function(b, i) {
+            var c = whyColors[i % whyColors.length];
             return '<div class="hp-why-card fade-up" style="transition-delay:' + (i * 0.08) + 's;">'
-                + '<div class="hp-why-icon" style="background:' + b.bg + ';color:' + b.color + ';"><i class="bx ' + b.icon + '"></i></div>'
+                + '<div class="hp-why-icon" style="background:' + c.bg + ';color:' + c.color + ';"><i class="bx ' + b.icon + '"></i></div>'
                 + '<h3>' + b.title + '</h3>'
                 + '<p>' + b.desc + '</p>'
                 + '</div>';
         }).join('');
     }
 
-    // ===== ALUMNI GRID =====
+    // ===== STATS BANNER (from APP_DATA.stats) =====
+    var statsBanner = document.getElementById('hpStatsBanner');
+    if (statsBanner && D.stats) {
+        var bannerData = [
+            { emoji: '&#127891;', val: D.stats.totalAlumni.toLocaleString() + '+', label: 'Total Alumni' },
+            { emoji: '&#127970;', val: D.stats.companiesHiring.toLocaleString() + '+', label: 'Hiring Companies' },
+            { emoji: '&#128188;', val: D.stats.studentsPlaced.toLocaleString() + '+', label: 'Students Placed' },
+            { emoji: '&#127914;', val: D.stats.eventsConducted.toLocaleString() + '+', label: 'Events Conducted' }
+        ];
+        var delays = ['', 'fade-up-d1', 'fade-up-d2', 'fade-up-d3'];
+        statsBanner.innerHTML = bannerData.map(function(s, i) {
+            return '<div class="hp-stat-item fade-up ' + delays[i] + '">'
+                + '<span class="stat-emoji">' + s.emoji + '</span>'
+                + '<span class="stat-number">' + s.val + '</span>'
+                + '<span class="stat-label">' + s.label + '</span>'
+                + '</div>';
+        }).join('');
+    }
+
+    // ===== ALUMNI GRID (from topAlumni) =====
     var alumniGrid = document.getElementById('hpAlumniGrid');
-    if (alumniGrid && window.APP_DATA && APP_DATA.topAlumni) {
-        alumniGrid.innerHTML = APP_DATA.topAlumni.slice(0, 8).map(function(a) {
+    if (alumniGrid && D.topAlumni) {
+        alumniGrid.innerHTML = D.topAlumni.slice(0, 8).map(function(a) {
             var safeName = a.name.replace(/'/g, "\\'");
             return '<div class="hp-alumni-card fade-up" onclick="openHpAlumniModal(\'' + safeName + '\')">'
                 + '<img class="ac-avatar" src="' + a.avatar + '" alt="' + a.name + '">'
@@ -96,11 +140,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
     }
 
-    // ===== JOBS GRID =====
+    // ===== JOBS GRID (from APP_DATA.jobs) =====
     var jobsGrid = document.getElementById('hpJobsGrid');
-    if (jobsGrid && window.APP_DATA && APP_DATA.jobs) {
+    if (jobsGrid && D.jobs) {
         var badgeMap = { 'Full-time': 'ft', 'Internship': 'intern', 'Part-time': 'pt' };
-        jobsGrid.innerHTML = APP_DATA.jobs.slice(0, 6).map(function(j) {
+        jobsGrid.innerHTML = D.jobs.slice(0, 6).map(function(j) {
             var bc = badgeMap[j.type] || 'ft';
             return '<div class="hp-job-card fade-up">'
                 + '<div class="hp-jc-header">'
@@ -119,11 +163,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
     }
 
-    // ===== EVENTS GRID =====
+    // ===== EVENTS GRID (from APP_DATA.events) =====
     var eventsGrid = document.getElementById('hpEventsGrid');
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    if (eventsGrid && window.APP_DATA && APP_DATA.events) {
-        eventsGrid.innerHTML = APP_DATA.events.slice(0, 4).map(function(ev) {
+    if (eventsGrid && D.events) {
+        eventsGrid.innerHTML = D.events.slice(0, 4).map(function(ev) {
             var d = new Date(ev.date);
             var day = isNaN(d.getTime()) ? '?' : d.getDate();
             var month = isNaN(d.getTime()) ? 'TBA' : months[d.getMonth()];
@@ -148,24 +192,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
     }
 
-    // ===== TESTIMONIALS =====
-    var testimonials = [
-        { name: 'Aarav Patel', role: 'Senior Engineer, Google', batch: 'Batch 2015', img: 'https://i.pravatar.cc/150?img=11', quote: 'The alumni network helped me land my dream job at Google. The mentorship I received from senior alumni was absolutely invaluable to my career journey.' },
-        { name: 'Sneha Kulkarni', role: 'Product Manager, Microsoft', batch: 'Batch 2016', img: 'https://i.pravatar.cc/150?img=5', quote: 'Within weeks of joining, I connected with mentors who guided me through my PM transition. This portal is a game-changer for DVVPCOE graduates.' },
-        { name: 'Rohit Sharma', role: 'Founder, TechNova Solutions', batch: 'Batch 2013', img: 'https://i.pravatar.cc/150?img=12', quote: 'I found my first two employees through this network. The alumni here are incredibly supportive and the platform makes networking effortless.' },
-        { name: 'Priya Deshmukh', role: 'Data Scientist, Flipkart', batch: 'Batch 2019', img: 'https://i.pravatar.cc/150?img=9', quote: 'The job board is full of legitimate opportunities from people who genuinely care about our college. Got placed within 3 weeks of registering!' }
-    ];
+    // ===== TESTIMONIALS (from APP_DATA.testimonials) =====
     var tTrack = document.getElementById('hpTestTrack');
-    if (tTrack) {
-        tTrack.innerHTML = testimonials.map(function(t) {
+    if (tTrack && D.testimonials) {
+        tTrack.innerHTML = D.testimonials.map(function(t) {
+            var stars = '';
+            for (var i = 0; i < (t.rating || 5); i++) stars += '<i class="bx bxs-star"></i>';
+            for (var j = (t.rating || 5); j < 5; j++) stars += '<i class="bx bx-star"></i>';
             return '<div class="hp-test-card">'
-                + '<div class="hp-tc-stars"><i class="bx bxs-star"></i><i class="bx bxs-star"></i><i class="bx bxs-star"></i><i class="bx bxs-star"></i><i class="bx bxs-star"></i></div>'
-                + '<p class="hp-tc-quote">"' + t.quote + '"</p>'
+                + '<div class="hp-tc-stars">' + stars + '</div>'
+                + '<p class="hp-tc-quote">"' + t.text + '"</p>'
                 + '<div class="hp-tc-author">'
-                + '<img src="' + t.img + '" alt="' + t.name + '">'
+                + '<img src="' + t.avatar + '" alt="' + t.name + '">'
                 + '<div>'
                 + '<div class="hp-tc-author-name">' + t.name + '</div>'
-                + '<div class="hp-tc-author-role">' + t.role + ' - ' + t.batch + '</div>'
+                + '<div class="hp-tc-author-role">' + t.role + '</div>'
                 + '</div></div></div>';
         }).join('');
     }
@@ -186,16 +227,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 var target = parseInt(numMatch[0].replace(/,/g, ''));
                 var suffix = text.replace(numMatch[0], '');
                 var current = 0;
-                var increment = target / 50;
+                var increment = target / 60;
                 var timer = setInterval(function() {
                     current += increment;
                     if (current >= target) { current = target; clearInterval(timer); }
                     el.textContent = Math.floor(current).toLocaleString() + suffix;
-                }, 30);
+                }, 25);
             }
             counterObserver.unobserve(el);
         });
-    }, { threshold: 0.6 });
+    }, { threshold: 0.5 });
     document.querySelectorAll('.stat-number').forEach(function(el) { counterObserver.observe(el); });
 
     // ===== FADE UP ANIMATIONS =====
@@ -209,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
     document.querySelectorAll('.fade-up').forEach(function(el) { fadeObserver.observe(el); });
 
-    // Run hero fades immediately
+    // Hero fades immediately
     setTimeout(function() {
         document.querySelectorAll('.hp-hero .fade-up').forEach(function(el, i) {
             setTimeout(function() { el.classList.add('visible'); }, 100 + i * 80);
@@ -218,8 +259,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== ALUMNI MODAL =====
     window.openHpAlumniModal = function(name) {
-        if (!window.APP_DATA || !APP_DATA.topAlumni) return;
-        var a = APP_DATA.topAlumni.find(function(x) { return x.name === name; });
+        if (!D.topAlumni) return;
+        var a = D.topAlumni.find(function(x) { return x.name === name; });
         if (!a) return;
         var mc = document.getElementById('hpModalContent');
         if (!mc) return;
@@ -247,21 +288,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-
-
     // ===== GALLERY =====
     var galleryGrid = document.getElementById('hpGalleryGrid');
     var galleryFilters = document.getElementById('hpGalleryFilters');
-    var currentGalleryFilter = 'All';
-    var galleryItemsData = [];
+    var galleryItemsData = (D.galleryItems || []);
 
-    if (galleryGrid && window.APP_DATA && APP_DATA.galleryItems) {
-        galleryItemsData = APP_DATA.galleryItems;
+    if (galleryGrid && galleryItemsData.length) {
         renderGallery(galleryItemsData);
 
-        // Build filter buttons
-        if (galleryFilters && APP_DATA.galleryCategories) {
-            galleryFilters.innerHTML = APP_DATA.galleryCategories.map(function(cat) {
+        if (galleryFilters && D.galleryCategories) {
+            galleryFilters.innerHTML = D.galleryCategories.map(function(cat) {
                 return '<button class="hp-gf-btn' + (cat === 'All' ? ' active' : '') + '" data-cat="' + cat + '">' + cat + '</button>';
             }).join('');
 
@@ -270,8 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!btn) return;
                 galleryFilters.querySelectorAll('.hp-gf-btn').forEach(function(b) { b.classList.remove('active'); });
                 btn.classList.add('active');
-                currentGalleryFilter = btn.getAttribute('data-cat');
-                var filtered = currentGalleryFilter === 'All' ? galleryItemsData : galleryItemsData.filter(function(g) { return g.category === currentGalleryFilter; });
+                var cat = btn.getAttribute('data-cat');
+                var filtered = cat === 'All' ? galleryItemsData : galleryItemsData.filter(function(g) { return g.category === cat; });
                 renderGallery(filtered);
             });
         }
@@ -288,11 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 + '<span>' + g.category + '</span>'
                 + '</div></div></div>';
         }).join('');
-        // Re-trigger fade observer for new items
-        galleryGrid.querySelectorAll('.fade-up').forEach(function(el) {
-            fadeObserver.observe(el);
-        });
-        // Store filtered items for lightbox navigation
+        galleryGrid.querySelectorAll('.fade-up').forEach(function(el) { fadeObserver.observe(el); });
         window._hpLBItems = items;
     }
 
@@ -328,7 +360,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== KEYBOARD SHORTCUTS =====
     document.addEventListener('keydown', function(e) {
-        // Lightbox nav
         var lb = document.getElementById('hpLightbox');
         if (lb && lb.classList.contains('active')) {
             if (e.key === 'Escape') { closeHpLightbox(); return; }
