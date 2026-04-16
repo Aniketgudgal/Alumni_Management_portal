@@ -43,15 +43,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
     }
 
-    // ===== MARQUEE =====
-    var companies = ['Google', 'Microsoft', 'Amazon', 'Infosys', 'Wipro', 'TCS', 'Tech Mahindra', 'Cognizant', 'HDFC Bank', 'Reliance', 'Flipkart'];
-    var icons = ['bxl-google', 'bxl-microsoft', 'bxl-amazon', 'bx-code-alt', 'bx-chip', 'bx-server', 'bx-cloud', 'bx-brain', 'bx-credit-card', 'bx-atom', 'bx-store'];
-    var marquee = document.getElementById('hpMarqueeTrack');
-    if (marquee) {
-        var items = companies.map(function(c, i) {
-            return '<div class="hp-marquee-item"><i class="bx ' + icons[i % icons.length] + '"></i>' + c + '</div>';
+    // ===== ALUMNI AVATAR MARQUEE =====
+    var amTrack = document.getElementById('hpAMTrack');
+    if (amTrack && window.APP_DATA && APP_DATA.topAlumni) {
+        var allAlumni = APP_DATA.topAlumni;
+        var amItems = allAlumni.map(function(a) {
+            var safeName = a.name.replace(/'/g, "\\'");
+            return '<div class="hp-am-item" onclick="openHpAlumniModal(\'' + safeName + '\')">'
+                + '<img src="' + a.avatar + '" alt="' + a.name + '">'
+                + '<div class="hp-am-name">' + a.name + '</div>'
+                + '<div class="hp-am-company">' + a.company + '</div>'
+                + '</div>';
         });
-        marquee.innerHTML = items.join('') + items.join('');
+        // Duplicate for seamless infinite scroll
+        amTrack.innerHTML = amItems.join('') + amItems.join('');
     }
 
     // ===== WHY JOIN =====
@@ -289,8 +294,92 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ===== GALLERY =====
+    var galleryGrid = document.getElementById('hpGalleryGrid');
+    var galleryFilters = document.getElementById('hpGalleryFilters');
+    var currentGalleryFilter = 'All';
+    var galleryItemsData = [];
+
+    if (galleryGrid && window.APP_DATA && APP_DATA.galleryItems) {
+        galleryItemsData = APP_DATA.galleryItems;
+        renderGallery(galleryItemsData);
+
+        // Build filter buttons
+        if (galleryFilters && APP_DATA.galleryCategories) {
+            galleryFilters.innerHTML = APP_DATA.galleryCategories.map(function(cat) {
+                return '<button class="hp-gf-btn' + (cat === 'All' ? ' active' : '') + '" data-cat="' + cat + '">' + cat + '</button>';
+            }).join('');
+
+            galleryFilters.addEventListener('click', function(e) {
+                var btn = e.target.closest('.hp-gf-btn');
+                if (!btn) return;
+                galleryFilters.querySelectorAll('.hp-gf-btn').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                currentGalleryFilter = btn.getAttribute('data-cat');
+                var filtered = currentGalleryFilter === 'All' ? galleryItemsData : galleryItemsData.filter(function(g) { return g.category === currentGalleryFilter; });
+                renderGallery(filtered);
+            });
+        }
+    }
+
+    function renderGallery(items) {
+        if (!galleryGrid) return;
+        galleryGrid.innerHTML = items.map(function(g, i) {
+            return '<div class="hp-gallery-item fade-up scale-in" style="animation-delay:' + (i * 0.06) + 's;" onclick="openHpLightbox(' + i + ')">'
+                + '<div class="gi-inner" style="background:' + g.color + ';">'
+                + '<button class="gi-zoom"><i class="bx bx-expand"></i></button>'
+                + '<div class="gi-overlay">'
+                + '<h4>' + (g.title || 'Gallery Image') + '</h4>'
+                + '<span>' + g.category + '</span>'
+                + '</div></div></div>';
+        }).join('');
+        // Re-trigger fade observer for new items
+        galleryGrid.querySelectorAll('.fade-up').forEach(function(el) {
+            fadeObserver.observe(el);
+        });
+        // Store filtered items for lightbox navigation
+        window._hpLBItems = items;
+    }
+
+    // ===== LIGHTBOX =====
+    window._hpLBIndex = 0;
+    window._hpLBItems = galleryItemsData;
+
+    window.openHpLightbox = function(index) {
+        var items = window._hpLBItems || [];
+        if (index < 0 || index >= items.length) return;
+        window._hpLBIndex = index;
+        var g = items[index];
+        var lb = document.getElementById('hpLightbox');
+        if (!lb) return;
+        lb.querySelector('.hp-lb-visual').style.background = g.color;
+        lb.querySelector('.hp-lb-visual').innerHTML = '<i class="bx bxs-image"></i>';
+        lb.querySelector('.hp-lb-title').textContent = g.title || 'Gallery Image';
+        lb.querySelector('.hp-lb-cat').textContent = g.category;
+        lb.querySelector('.hp-lb-counter').textContent = (index + 1) + ' / ' + items.length;
+        lb.classList.add('active');
+    };
+    window.closeHpLightbox = function() {
+        var lb = document.getElementById('hpLightbox');
+        if (lb) lb.classList.remove('active');
+    };
+    window.navigateHpLB = function(dir) {
+        var items = window._hpLBItems || [];
+        var newIdx = window._hpLBIndex + dir;
+        if (newIdx < 0) newIdx = items.length - 1;
+        if (newIdx >= items.length) newIdx = 0;
+        openHpLightbox(newIdx);
+    };
+
     // ===== KEYBOARD SHORTCUTS =====
     document.addEventListener('keydown', function(e) {
+        // Lightbox nav
+        var lb = document.getElementById('hpLightbox');
+        if (lb && lb.classList.contains('active')) {
+            if (e.key === 'Escape') { closeHpLightbox(); return; }
+            if (e.key === 'ArrowLeft') { navigateHpLB(-1); return; }
+            if (e.key === 'ArrowRight') { navigateHpLB(1); return; }
+        }
         if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA')) {
             e.preventDefault();
             openHpSearch();

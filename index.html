@@ -51,11 +51,9 @@
             <a href="#network">Network</a>
             <a href="#jobs">Careers</a>
             <a href="#events">Events</a>
+            <a href="#gallery">Gallery</a>
         </div>
         <div class="hp-nav-actions">
-            <button class="hp-search-trigger" onclick="openHpSearch()">
-                <i class="bx bx-search" style="font-size:16px;"></i> Search <kbd>Ctrl K</kbd>
-            </button>
             <a href="pages/auth/login.html" class="hp-nav-login">Log In</a>
             <a href="pages/auth/register.html" class="hp-btn hp-btn-primary hp-btn-sm">Join Free</a>
         </div>
@@ -66,6 +64,7 @@
         <a href="#network" onclick="toggleHpMobile()">Network</a>
         <a href="#jobs" onclick="toggleHpMobile()">Careers</a>
         <a href="#events" onclick="toggleHpMobile()">Events</a>
+        <a href="#gallery" onclick="toggleHpMobile()">Gallery</a>
         <div class="hp-mobile-cta">
             <a href="pages/auth/login.html" class="hp-btn hp-btn-outline" style="width:100%;justify-content:center;">Log In</a>
             <a href="pages/auth/register.html" class="hp-btn hp-btn-primary" style="width:100%;justify-content:center;">Join Free</a>
@@ -141,9 +140,10 @@
     </div>
 </section>
 
-<!-- ========== MARQUEE ========== -->
-<div class="hp-marquee">
-    <div class="hp-marquee-track" id="hpMarqueeTrack"></div>
+<!-- ========== ALUMNI AVATAR MARQUEE ========== -->
+<div class="hp-alumni-marquee">
+    <div class="hp-alumni-marquee-label">Trusted by Alumni at Top Companies Worldwide</div>
+    <div class="hp-am-track" id="hpAMTrack"></div>
 </div>
 
 <!-- ========== WHY JOIN ========== -->
@@ -230,6 +230,35 @@
         <div class="hp-events-grid" id="hpEventsGrid"></div>
     </div>
 </section>
+
+<!-- ========== GALLERY ========== -->
+<section class="hp-section" id="gallery">
+    <div class="hp-container">
+        <div class="hp-section-header">
+            <div>
+                <div class="hp-section-label fade-up"><i class="bx bx-images"></i> Campus Life</div>
+                <h2 class="hp-section-title fade-up">Photo <span>Gallery</span></h2>
+                <p class="hp-section-sub fade-up">Explore moments from campus life, events, reunions, and more.</p>
+            </div>
+            <a href="pages/alumni/gallery.html" class="hp-btn hp-btn-outline fade-up" style="white-space:nowrap;"><i class="bx bx-expand"></i> Full Gallery</a>
+        </div>
+        <div class="hp-gallery-filters" id="hpGalleryFilters"></div>
+        <div class="hp-gallery-grid" id="hpGalleryGrid"></div>
+    </div>
+</section>
+
+<!-- Gallery Lightbox -->
+<div class="hp-lightbox" id="hpLightbox" onclick="if(event.target===this)closeHpLightbox()">
+    <button class="hp-lb-close" onclick="closeHpLightbox()"><i class="bx bx-x"></i></button>
+    <button class="hp-lb-nav prev" onclick="navigateHpLB(-1)"><i class="bx bx-chevron-left"></i></button>
+    <button class="hp-lb-nav next" onclick="navigateHpLB(1)"><i class="bx bx-chevron-right"></i></button>
+    <div class="hp-lb-content">
+        <div class="hp-lb-visual"></div>
+        <div class="hp-lb-title"></div>
+        <div class="hp-lb-cat"></div>
+    </div>
+    <div class="hp-lb-counter"></div>
+</div>
 
 <!-- ========== TESTIMONIALS ========== -->
 <section class="hp-section">
