@@ -247,52 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ===== SEARCH OVERLAY =====
-    window.openHpSearch = function() {
-        document.getElementById('hpSearchOverlay').classList.add('active');
-        setTimeout(function() {
-            var input = document.getElementById('hpSearchInput');
-            if (input) input.focus();
-        }, 100);
-        renderHpSearchResults(APP_DATA.topAlumni.slice(0, 5));
-    };
-    window.closeHpSearch = function() {
-        document.getElementById('hpSearchOverlay').classList.remove('active');
-    };
-    window.closeHpSearchBg = function(e) {
-        if (e.target.id === 'hpSearchOverlay') closeHpSearch();
-    };
 
-    function renderHpSearchResults(list) {
-        var r = document.getElementById('hpSearchResults');
-        if (!r) return;
-        if (!list || list.length === 0) {
-            r.innerHTML = '<div style="padding:30px 24px;text-align:center;color:#94a3b8;font-size:14px;">No alumni found matching your search.</div>';
-            return;
-        }
-        r.innerHTML = list.map(function(a) {
-            var safeName = a.name.replace(/'/g, "\\'");
-            return '<div class="hp-sr-item" onclick="openHpAlumniModal(\'' + safeName + '\');closeHpSearch();">'
-                + '<img src="' + a.avatar + '" alt="' + a.name + '">'
-                + '<div><h5>' + a.name + '</h5><p>' + a.role + ' at ' + a.company + ' - Batch ' + a.batch + '</p></div>'
-                + '</div>';
-        }).join('');
-    }
-
-    var searchInput = document.getElementById('hpSearchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            var q = e.target.value.toLowerCase();
-            if (!window.APP_DATA || !APP_DATA.topAlumni) return;
-            var filtered = q ? APP_DATA.topAlumni.filter(function(a) {
-                return a.name.toLowerCase().indexOf(q) !== -1
-                    || a.company.toLowerCase().indexOf(q) !== -1
-                    || a.role.toLowerCase().indexOf(q) !== -1
-                    || a.batch.indexOf(q) !== -1;
-            }) : APP_DATA.topAlumni.slice(0, 5);
-            renderHpSearchResults(filtered);
-        });
-    }
 
     // ===== GALLERY =====
     var galleryGrid = document.getElementById('hpGalleryGrid');
@@ -380,12 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === 'ArrowLeft') { navigateHpLB(-1); return; }
             if (e.key === 'ArrowRight') { navigateHpLB(1); return; }
         }
-        if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA')) {
-            e.preventDefault();
-            openHpSearch();
-        }
         if (e.key === 'Escape') {
-            closeHpSearch();
             closeHpAlumniModal();
         }
     });
