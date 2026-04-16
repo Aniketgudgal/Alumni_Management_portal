@@ -3,7 +3,7 @@
 // ============================================
 // This data will be replaced by real API calls when the backend is connected.
 
-const APP_DATA = {
+var APP_DATA = {
 
     // College Info
     college: {

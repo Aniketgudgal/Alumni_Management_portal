@@ -218,20 +218,21 @@ img { max-width: 100%; }
 }
 .hp-live-dot span { width: 7px; height: 7px; border-radius: 50%; background: #10b981; animation: hpPulse 1.5s ease-in-out infinite; }
 @keyframes hpPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-.hp-vc-feed { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
-.hp-feed-row {
+.hp-vc-showcase { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.hp-showcase-row {
     display: flex; align-items: center; gap: 14px;
     padding: 12px 14px; border-radius: var(--hp-radius-md);
     background: var(--hp-bg-alt); transition: var(--hp-transition);
+    cursor: pointer;
 }
-.hp-feed-row:hover { background: var(--hp-primary-light); }
-.hp-feed-row img { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #fff; box-shadow: var(--hp-shadow-sm); flex-shrink: 0; }
-.hp-feed-row .fr-name { font-size: 14px; font-weight: 600; color: var(--hp-text); }
-.hp-feed-row .fr-action { font-weight: 400; color: var(--hp-text-muted); font-size: 13px; }
-.hp-feed-row .fr-sub { font-size: 12px; color: var(--hp-text-muted); }
-.hp-feed-row .fr-tag {
-    margin-left: auto; font-size: 11px; font-weight: 700;
-    padding: 3px 10px; border-radius: 12px; flex-shrink: 0;
+.hp-showcase-row:hover { background: var(--hp-primary-light); transform: translateX(4px); }
+.hp-showcase-row img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #fff; box-shadow: var(--hp-shadow-sm); flex-shrink: 0; object-fit: cover; }
+.hp-showcase-row .sc-name { font-size: 14px; font-weight: 700; color: var(--hp-text); margin-bottom: 2px; }
+.hp-showcase-row .sc-role { font-size: 12px; color: var(--hp-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hp-showcase-row .sc-badge {
+    margin-left: auto; font-size: 10px; font-weight: 800;
+    padding: 4px 10px; border-radius: 12px; flex-shrink: 0;
+    text-transform: uppercase; letter-spacing: 0.5px;
 }
 .hp-vc-cta {
     background: linear-gradient(135deg, var(--hp-primary), var(--hp-accent));

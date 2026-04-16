@@ -5,9 +5,10 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    var D = window.APP_DATA || {};
+    // Safely grab the global data
+    var D = (typeof APP_DATA !== 'undefined') ? APP_DATA : {};
 
-    // ===== NAVBAR SCROLL =====
+    // ===== NAVBAR SCROLL + SCROLL-TOP =====
     var navbar = document.getElementById('hpNavbar');
     window.addEventListener('scroll', function() {
         if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 50);
@@ -26,50 +27,38 @@ document.addEventListener('DOMContentLoaded', function() {
             : "<i class='bx bx-menu'></i>";
     };
 
-    // ===== HERO STATS (populate from APP_DATA.stats) =====
+    // ===== HERO STATS (from stats) =====
     if (D.stats) {
-        var statEls = {
-            hpStatAlumni: { val: D.stats.totalAlumni, suffix: '+' },
-            hpStatCompanies: { val: D.stats.companiesHiring, suffix: '+' },
-            hpStatMentors: { val: D.stats.activeMentors, suffix: '' }
-        };
-        Object.keys(statEls).forEach(function(id) {
-            var el = document.getElementById(id);
-            if (el) el.textContent = statEls[id].val.toLocaleString() + statEls[id].suffix;
+        var heroStatMap = [
+            { id: 'hpStatAlumni', val: D.stats.totalAlumni, suffix: '+' },
+            { id: 'hpStatCompanies', val: D.stats.companiesHiring, suffix: '+' },
+            { id: 'hpStatMentors', val: D.stats.activeMentors, suffix: '' }
+        ];
+        heroStatMap.forEach(function(s) {
+            var el = document.getElementById(s.id);
+            if (el) el.textContent = s.val.toLocaleString() + s.suffix;
         });
     }
 
-    // ===== HERO FEED (built from real alumni + activities) =====
-    var heroFeed = document.getElementById('hpHeroFeed');
-    if (heroFeed && D.activities) {
-        var tagColors = {
-            purple: { bg: 'rgba(139,92,246,0.1)', fg: '#8b5cf6', label: 'New' },
-            green: { bg: 'rgba(16,185,129,0.1)', fg: '#10b981', label: 'Event' },
-            blue: { bg: 'rgba(79,70,229,0.1)', fg: '#4f46e5', label: 'Job' },
-            amber: { bg: 'rgba(245,158,11,0.1)', fg: '#f59e0b', label: 'Alert' },
-            red: { bg: 'rgba(239,68,68,0.1)', fg: '#ef4444', label: 'Chat' }
-        };
-        heroFeed.innerHTML = D.activities.slice(0, 3).map(function(a) {
-            var tc = tagColors[a.color] || tagColors.purple;
-            var avatar = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(a.title.substring(0,2)) + '&background=4f46e5&color=fff';
-            // Try to match with a topAlumni avatar
-            if (D.topAlumni) {
-                D.topAlumni.forEach(function(al) {
-                    if (a.desc.indexOf(al.name) !== -1) avatar = al.avatar;
-                });
-            }
-            return '<div class="hp-feed-row">'
-                + '<img src="' + avatar + '" alt="activity">'
+    // ===== HERO SHOWCASE CARD (Top Alumni spotlight instead of activity feed) =====
+    var heroShowcase = document.getElementById('hpHeroShowcase');
+    if (heroShowcase && D.topAlumni && D.topAlumni.length >= 3) {
+        var spotlightAlumni = D.topAlumni.slice(0, 3);
+        heroShowcase.innerHTML = spotlightAlumni.map(function(a, i) {
+            var colors = ['#4f46e5', '#06b6d4', '#10b981'];
+            var badges = ['Top Engineer', 'Product Leader', 'Entrepreneur'];
+            return '<div class="hp-showcase-row">'
+                + '<img src="' + a.avatar + '" alt="' + a.name + '">'
                 + '<div style="flex:1;min-width:0;">'
-                + '<div class="fr-name">' + a.title + '</div>'
-                + '<div class="fr-sub">' + a.desc + '</div>'
+                + '<div class="sc-name">' + a.name + '</div>'
+                + '<div class="sc-role">' + a.role + ' at ' + a.company + '</div>'
                 + '</div>'
-                + '<span class="fr-tag" style="background:' + tc.bg + ';color:' + tc.fg + ';">' + tc.label + '</span>'
+                + '<span class="sc-badge" style="background:' + colors[i] + '22;color:' + colors[i] + ';">' + badges[i] + '</span>'
                 + '</div>';
         }).join('');
     }
 
-    // ===== ALUMNI AVATAR MARQUEE (from topAlumni) =====
+    // ===== ALUMNI AVATAR MARQUEE =====
     var amTrack = document.getElementById('hpAMTrack');
     if (amTrack && D.topAlumni) {
         var amItems = D.topAlumni.map(function(a) {
@@ -83,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
         amTrack.innerHTML = amItems.join('') + amItems.join('');
     }
 
-    // ===== WHY JOIN (from APP_DATA.whyJoin) =====
+    // ===== WHY JOIN (from whyJoin data) =====
     var whyColors = [
         { color: '#4f46e5', bg: 'rgba(79,70,229,0.08)' },
         { color: '#06b6d4', bg: 'rgba(6,182,212,0.08)' },
@@ -104,18 +93,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
     }
 
-    // ===== STATS BANNER (from APP_DATA.stats) =====
+    // ===== STATS BANNER (dynamic) =====
     var statsBanner = document.getElementById('hpStatsBanner');
     if (statsBanner && D.stats) {
         var bannerData = [
-            { emoji: '&#127891;', val: D.stats.totalAlumni.toLocaleString() + '+', label: 'Total Alumni' },
-            { emoji: '&#127970;', val: D.stats.companiesHiring.toLocaleString() + '+', label: 'Hiring Companies' },
-            { emoji: '&#128188;', val: D.stats.studentsPlaced.toLocaleString() + '+', label: 'Students Placed' },
-            { emoji: '&#127914;', val: D.stats.eventsConducted.toLocaleString() + '+', label: 'Events Conducted' }
+            { emoji: '&#127891;', val: D.stats.totalAlumni.toLocaleString() + '+', label: 'Total Alumni', delay: '' },
+            { emoji: '&#127970;', val: D.stats.companiesHiring.toLocaleString() + '+', label: 'Hiring Companies', delay: 'fade-up-d1' },
+            { emoji: '&#128188;', val: D.stats.studentsPlaced.toLocaleString() + '+', label: 'Students Placed', delay: 'fade-up-d2' },
+            { emoji: '&#127914;', val: D.stats.eventsConducted.toLocaleString() + '+', label: 'Events Conducted', delay: 'fade-up-d3' }
         ];
-        var delays = ['', 'fade-up-d1', 'fade-up-d2', 'fade-up-d3'];
-        statsBanner.innerHTML = bannerData.map(function(s, i) {
-            return '<div class="hp-stat-item fade-up ' + delays[i] + '">'
+        statsBanner.innerHTML = bannerData.map(function(s) {
+            return '<div class="hp-stat-item fade-up ' + s.delay + '">'
                 + '<span class="stat-emoji">' + s.emoji + '</span>'
                 + '<span class="stat-number">' + s.val + '</span>'
                 + '<span class="stat-label">' + s.label + '</span>'
@@ -123,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
     }
 
-    // ===== ALUMNI GRID (from topAlumni) =====
+    // ===== ALUMNI GRID =====
     var alumniGrid = document.getElementById('hpAlumniGrid');
     if (alumniGrid && D.topAlumni) {
         alumniGrid.innerHTML = D.topAlumni.slice(0, 8).map(function(a) {
@@ -140,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
     }
 
-    // ===== JOBS GRID (from APP_DATA.jobs) =====
+    // ===== JOBS GRID =====
     var jobsGrid = document.getElementById('hpJobsGrid');
     if (jobsGrid && D.jobs) {
         var badgeMap = { 'Full-time': 'ft', 'Internship': 'intern', 'Part-time': 'pt' };
@@ -163,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
     }
 
-    // ===== EVENTS GRID (from APP_DATA.events) =====
+    // ===== EVENTS GRID =====
     var eventsGrid = document.getElementById('hpEventsGrid');
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     if (eventsGrid && D.events) {
@@ -192,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }).join('');
     }
 
-    // ===== TESTIMONIALS (from APP_DATA.testimonials) =====
+    // ===== TESTIMONIALS (from data) =====
     var tTrack = document.getElementById('hpTestTrack');
     if (tTrack && D.testimonials) {
         tTrack.innerHTML = D.testimonials.map(function(t) {
@@ -227,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 var target = parseInt(numMatch[0].replace(/,/g, ''));
                 var suffix = text.replace(numMatch[0], '');
                 var current = 0;
-                var increment = target / 60;
+                var increment = Math.max(1, target / 60);
                 var timer = setInterval(function() {
                     current += increment;
                     if (current >= target) { current = target; clearInterval(timer); }
@@ -237,7 +225,10 @@ document.addEventListener('DOMContentLoaded', function() {
             counterObserver.unobserve(el);
         });
     }, { threshold: 0.5 });
-    document.querySelectorAll('.stat-number').forEach(function(el) { counterObserver.observe(el); });
+    // Observe counter elements after a tick (so dynamic ones are rendered)
+    setTimeout(function() {
+        document.querySelectorAll('.stat-number').forEach(function(el) { counterObserver.observe(el); });
+    }, 100);
 
     // ===== FADE UP ANIMATIONS =====
     var fadeObserver = new IntersectionObserver(function(entries) {
@@ -268,7 +259,8 @@ document.addEventListener('DOMContentLoaded', function() {
             '<img src="' + a.avatar + '" style="width:90px;height:90px;border-radius:50%;margin-bottom:16px;border:3px solid #eef2ff;box-shadow:0 4px 20px rgba(79,70,229,0.2);">'
             + '<h2 style="font-size:22px;font-weight:800;margin-bottom:6px;color:#0f172a;">' + a.name + '</h2>'
             + '<p style="color:#4f46e5;font-weight:700;font-size:14px;margin-bottom:4px;">' + a.role + '</p>'
-            + '<p style="color:#94a3b8;font-size:13px;margin-bottom:18px;">' + a.company + ' - Batch ' + a.batch + '</p>'
+            + '<p style="color:#94a3b8;font-size:13px;margin-bottom:6px;">' + a.company + ' &bull; Batch ' + a.batch + '</p>'
+            + '<p style="color:#94a3b8;font-size:12px;margin-bottom:18px;">' + (a.department || '') + '</p>'
             + '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px;">'
             + (a.tags || []).map(function(t) { return '<span style="background:#eef2ff;color:#4f46e5;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:700;">' + t + '</span>'; }).join('')
             + '</div>'
@@ -279,7 +271,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('hpAlumniModal').classList.add('active');
     };
     window.closeHpAlumniModal = function() {
-        document.getElementById('hpAlumniModal').classList.remove('active');
+        var m = document.getElementById('hpAlumniModal');
+        if (m) m.classList.remove('active');
     };
     var modalOverlay = document.getElementById('hpAlumniModal');
     if (modalOverlay) {
