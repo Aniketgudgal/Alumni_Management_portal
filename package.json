@@ -1,11 +1,15 @@
 {
-  "name": "alumni-management-portal",
+  "name": "alumni-management-portal-v2",
   "version": "2.0.0",
-  "description": "A modern, full-stack, distributed platform designed to connect graduates.",
+  "description": "An enterprise-grade, glassmorphic full-stack ecosystem engineered for role-based academic networking, mentorship, and career growth.",
   "main": "index.html",
   "scripts": {
-    "start": "npx serve .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:frontend": "npx serve . -p 3000",
+    "start:backend": "cd backend && python manage.py runserver",
+    "setup:backend": "cd backend && python -m venv venv && pip install -r requirements.txt",
+    "db:migrate": "cd backend && python manage.py makemigrations && python manage.py migrate",
+    "db:admin": "cd backend && python manage.py createsuperuser",
+    "dev": "echo \"Please run 'npm run start:frontend' and 'npm run start:backend' in separate terminals.\""
   },
   "repository": {
     "type": "git",
@@ -15,19 +19,41 @@
     "alumni",
     "portal",
     "management",
-    "html",
-    "css",
+    "university",
+    "networking",
+    "mentorship",
+    "html5",
+    "css3",
+    "glassmorphism",
     "vanilla-js",
     "frontend",
     "django",
     "python",
     "postgresql",
+    "drf",
+    "jwt",
     "fullstack"
   ],
-  "author": "Shubham, Yadnesh, Aniket, ",
+  "author": {
+    "name": "Shubham Kulkarni, Yadnesh, Aniket & Team",
+    "email": "contact@example.com",
+    "url": "https://github.com/kulkarnishub377"
+  },
+  "contributors": [
+    "Shubham Kulkarni",
+    "Yadnesh",
+    "Aniket"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kulkarnishub377/Alumni_Management_portal/issues"
+    "url": "https://github.com/kulkarnishub377/Alumni_Management_portal/issues",
+    "email": "support@example.com"
   },
-  "homepage": "https://kulkarnishub377.github.io/Alumni_Management_portal/"
+  "homepage": "https://kulkarnishub377.github.io/Alumni_Management_portal/",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0",
+    "python": ">=3.11"
+  },
+  "private": true
 }
