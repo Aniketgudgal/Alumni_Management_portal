@@ -12,10 +12,10 @@ Located fundamentally under the `Django User` subclass constraint.
 - **Notable Architecture**: Mentors possess independent capability definitions (i.e., `max_mentees`), fundamentally isolating computation from the standard `Alumni` payload.
 
 ## 2. Interactive Networking Domain
-Provides real-time activity tracking logic.
+Provides real-time activity tracking logic directly mapping the `chat.html` frontend features.
 - `MentorshipRequest`: Tracks the approval pipeline. Implements unique constraint tuples between the Mentee and the target Mentor to avoid duplicate networking conflicts.
 - `Post / PostComment / PostLike`: Traditional cascade-based feed topology. Enables 1-to-Many deletion scaling natively.
-- `Message`: Isolated node-to-node connectivity mapping storing literal payload text. Notification structures replicate similar mappings externally.
+- `Message (Chat Subsystem)`: Isolated node-to-node connectivity mapping storing literal payload text. Our schema inherently supports the `unread` boolean state and group-categorization that the frontend utilizes in its sidebar tabs (`All, Groups, Unread`). Notification structures replicate similar mappings externally.
 
 ## 3. Structural Web Domain
 Existed historically inside NoSQL JavaScript structures but now dynamically configurable via DB Tables.
