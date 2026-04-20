@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from .models import (
     Department, AlumniProfile, MentorProfile, UserSocialLink,
     UserExperience, Post, PostLike, PostComment, Job, Event,
-    EventAttendee, Message, Notification, GalleryItem
+    EventAttendee, Message, Notification, GalleryItem,
+    JobApplication, MentorshipRequest, Announcement, Testimonial, WhyJoin
 )
 
 User = get_user_model()
@@ -112,4 +113,30 @@ class NotificationSerializer(serializers.ModelSerializer):
 class GalleryItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = GalleryItem
+        fields = '__all__'
+
+class JobApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobApplication
+        fields = '__all__'
+
+class MentorshipRequestSerializer(serializers.ModelSerializer):
+    mentee_details = UserSerializer(source='mentee', read_only=True)
+    class Meta:
+        model = MentorshipRequest
+        fields = '__all__'
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Announcement
+        fields = '__all__'
+
+class TestimonialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Testimonial
+        fields = '__all__'
+
+class WhyJoinSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WhyJoin
         fields = '__all__'
