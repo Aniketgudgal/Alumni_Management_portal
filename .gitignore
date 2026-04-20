@@ -1,9 +1,22 @@
-*.__pycache__/
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
 venv/
-*.pyc
-node_modules/
+env/
 .env
-.env.local
-.env.example
-.env.production
+db.sqlite3
 
+# Node / JS
+node_modules/
+.npm
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Media & Static
+backend/media/
+backend/staticfiles/
