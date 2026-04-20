@@ -35,19 +35,18 @@
     "fullstack"
   ],
   "author": {
-    "name": "Shubham Kulkarni, Yadnesh, Aniket & Team",
-    "email": "contact@example.com",
+    "name": "Shubham Kulkarni",
+    "email": "kulkarnishub377@gmail.com",
     "url": "https://github.com/kulkarnishub377"
   },
   "contributors": [
-    "Shubham Kulkarni",
-    "Yadnesh",
-    "Aniket"
+    "Yadnynesh Dhangar <yadnyneshdhangar@gmail.com>",
+    "Aniket Gudgal <aniketgudgal5867@gmail.com>"
   ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kulkarnishub377/Alumni_Management_portal/issues",
-    "email": "support@example.com"
+    "email": "kulkarnishub377@gmail.com"
   },
   "homepage": "https://kulkarnishub377.github.io/Alumni_Management_portal/",
   "engines": {
