@@ -1,4 +1,5 @@
 from django.contrib import admin
+from .models import (
     Department, User, AlumniProfile, MentorProfile, UserSocialLink,
     UserExperience, Post, PostLike, PostComment, Job, Event,
     EventAttendee, Message, Notification, GalleryItem,
