@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import (
     Department, User, AlumniProfile, MentorProfile, UserSocialLink,
     UserExperience, Post, PostLike, PostComment, Job, Event,
-    EventAttendee, Message, Notification, GalleryItem
+    EventAttendee, Message, Notification, GalleryItem,
+    JobApplication, MentorshipRequest, Announcement, Testimonial, WhyJoin
 )
 
 # Customize User Admin to show custom fields
@@ -47,6 +47,11 @@ admin.site.register(EventAttendee)
 admin.site.register(Message)
 admin.site.register(Notification)
 admin.site.register(GalleryItem)
+admin.site.register(JobApplication)
+admin.site.register(MentorshipRequest)
+admin.site.register(Announcement)
+admin.site.register(Testimonial)
+admin.site.register(WhyJoin)
 
 # Change Admin Titles
 admin.site.site_header = "Alumni Portal Superadmin"
