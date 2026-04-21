@@ -2,256 +2,427 @@
 
 # 🎓 Alumni Management Portal
 
-**An enterprise-grade, full-stack ecosystem engineered specifically for complex, role-based academic networking, targeted mentorship, and institutional career growth.**
+**A full-stack, role-based alumni networking platform built for academic institutions.**
+*Connect graduates, coordinate mentorship, manage placements, and build lasting professional communities.*
 
-[![Status](https://img.shields.io/badge/Status-Active-success.svg)]()
-[![Frontend](https://img.shields.io/badge/Frontend-ES6%20Vanilla%20JS%20%7C%20Glassmorphism-blue)]()
-[![Backend](https://img.shields.io/badge/Backend-Django%205.2%20%7C%20REST%20Framework-green)]()
-[![Authentication](https://img.shields.io/badge/Auth-SimpleJWT%20Tokens-purple)]()
-[![Database](https://img.shields.io/badge/Database-PostgreSQL%20(15%20Tables)-blue)]()
+[![Status](https://img.shields.io/badge/Status-Active%20Development-success?style=flat-square)]()
+[![Frontend](https://img.shields.io/badge/Frontend-Vanilla%20JS%20·%20ES6%20Modules-F7DF1E?style=flat-square&logo=javascript&logoColor=black)]()
+[![Backend](https://img.shields.io/badge/Backend-Django%205.2%20·%20DRF-092E20?style=flat-square&logo=django&logoColor=white)]()
+[![Database](https://img.shields.io/badge/Database-PostgreSQL%20·%2019%20Tables-4169E1?style=flat-square&logo=postgresql&logoColor=white)]()
+[![Auth](https://img.shields.io/badge/Auth-JWT%20(SimpleJWT)-7C3AED?style=flat-square&logo=jsonwebtokens&logoColor=white)]()
+[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)]()
 
-**[⭐ View Repository](https://github.com/kulkarnishub377/Alumni_Management_portal)** &nbsp;&bull;&nbsp; **[🚀 Open Frontend Demo](https://kulkarnishub377.github.io/Alumni_Management_portal/)**
+[**🚀 Live Demo**](https://kulkarnishub377.github.io/Alumni_Management_portal/) &nbsp;·&nbsp; [**📖 API Docs**](docs/API_REFERENCE.md) &nbsp;·&nbsp; [**🗄️ DB Schema**](docs/DATABASE_SCHEMA.md) &nbsp;·&nbsp; [**⚙️ Backend Setup**](docs/BACKEND_SETUP.md)
 
 </div>
 
 ---
 
+## 📋 Table of Contents
+
+- [Problem Statement](#-problem-statement)
+- [Solution &amp; Architecture](#-solution--architecture)
+- [Feature Highlights](#-feature-highlights)
+- [Tech Stack](#-tech-stack)
+- [Screenshots](#-screenshots)
+- [Quick Start](#-quick-start)
+- [Project Structure](#-project-structure)
+- [API Overview](#-api-overview)
+- [Environment Variables](#-environment-variables)
+- [Role-Based Access Matrix](#-role-based-access-matrix)
+- [Engineering Decisions](#-engineering-decisions)
+- [Known Limitations &amp; Roadmap](#-known-limitations--roadmap)
+- [Contributing](#-contributing)
+- [Authors &amp; License](#-authors--license)
+
+---
+
 ## 🧠 Problem Statement
 
-Most universities completely lose track of the granular technical skillsets, career trajectories, and networking power of their graduates. Traditional directories are static "Black Holes." Consequently:
-1. Current students lack direct, structured mentorship from industry veterans.
-2. Coordinators and faculty cannot easily track longitudinal placement statistics.
-3. Alumni miss out on peer-to-peer job sharing because the platform lacks interactive social layers.
+Most universities lose track of their alumni after graduation. Traditional alumni directories are static and offer zero engagement. This creates three critical gaps:
+
+| Gap                                  | Impact                                                            |
+| ------------------------------------ | ----------------------------------------------------------------- |
+| **No structured mentorship**   | Students lack direct access to experienced industry professionals |
+| **No placement analytics**     | Coordinators can't track longitudinal career data by department   |
+| **No peer-to-peer networking** | Alumni miss out on batch-level job sharing and community building |
 
 ---
 
-## 💡 Solution
+## 💡 Solution & Architecture
 
-The **Alumni Management Portal** solves this by operating entirely as a **unified, interactive 15-table relational application**. 
+The Alumni Management Portal solves this by providing a **unified, role-segregated platform** where each user type gets a purpose-built dashboard from the moment they register.
 
-By natively sandboxing users into deeply segregated workflows right at registration—**Alumni, Mentors, Coordinators, and SuperAdmins**—the platform ensures extreme dashboard relevance. It actively drives engagement through custom Job Application endpoints, workload-balanced mentorship pipelines, and deeply nested user experience timelines mimicking global professional networks.
+```
+┌──────────────────────────────────────────────────────────┐
+│                    PUBLIC HOMEPAGE                        │
+│              (index.html — no auth required)              │
+└──────────────┬───────────────────────────┬───────────────┘
+               │ Login / Register          │
+               ▼                           ▼
+┌──────────────────────┐    ┌──────────────────────────────┐
+│   FRONTEND (Port 3000)│    │  BACKEND API (Port 8000)     │
+│                       │    │                              │
+│  Vanilla JS + ES6     │◄──►│  Django 5.2 + DRF            │
+│  Multi-Page App       │    │  JWT Auth (SimpleJWT)        │
+│  Glassmorphism CSS    │    │  Role-Based Permissions      │
+│  Mock Fallback System │    │  Aggregated API Views        │
+└──────────┬────────────┘    └──────────────┬───────────────┘
+           │                                │
+           │        ┌───────────────┐       │
+           └────────┤  PostgreSQL   ├───────┘
+                    │  19 Tables    │
+                    │  ACID + FK    │
+                    └───────────────┘
+```
+
+**Key architectural decisions:**
+
+- **Frontend and backend are fully decoupled** — the frontend works independently with mock data (`data.js`) and can be integrated with the live API by replacing `apiFetch` calls.
+- **Aggregated API endpoints** (e.g., `HomepageAPIView`) combine 5+ queries into a single response to eliminate frontend waterfall loading.
+- **Role-based route guard** — the frontend checks `getUser().role` and routes to the correct dashboard (`/alumni/`, `/mentor/`, `/coordinator/`, `/admin/`).
 
 ---
 
-## 🎯 Value Proposition
+## ✨ Feature Highlights
 
-* **Lightning-Fast Decoupled UI (Zero Bloat)**: Engineered exclusively with ES6 Vanilla JavaScript and modular DOM injections. We completely bypass heavy JavaScript framework (React/Vue) initial load times while retaining complex state management via isolated custom `apiFetch` engines.
-* **Aggregated API Master-Endpoints**: Dramatically reduced frontend DOM waterfall-loading constraints. Our custom `HomepageAPIView` combines dynamic University Stats, Top Mentor Listings, Job limits, and Live Events instantly into **one secure JSON payload**.
-* **Constraint-Based Logic**: Mentorship is serious. Mentors define granular `max_mentees` constraints in the PostgreSQL backend which our Django Views rigorously enforce upon application.
+### 🎓 Alumni Hub
+
+| Feature                         | Description                                                             |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| **Interactive Dashboard** | Personalized overview with stats, events, jobs, and activity feed       |
+| **Profile Management**    | Full CRUD with AI resume parser (drag-and-drop PDF auto-fill)           |
+| **Alumni Network**        | Searchable directory with filters by batch, company, role, and name     |
+| **Job Board**             | Browse, apply, and post job opportunities with type/experience filters  |
+| **Real-time Chat**        | 1:1 messaging and batch group conversations with typing indicators      |
+| **Event Registration**    | Browse upcoming events and register with one click                      |
+| **Photo Gallery**         | Filterable gallery with lightbox viewer                                 |
+| **Mentorship Program**    | View assigned mentor, session schedule, and shared resources            |
+| **Notifications**         | Categorized alerts (social, events, jobs, system) with dismiss controls |
+| **Settings**              | Toggle notifications, privacy controls, and account security            |
+
+### 💡 Mentor Features
+
+- View and manage mentorship requests (approve/reject with capacity constraints)
+- Track active mentees and session schedules
+- Post announcements to assigned batches
+
+### ⚙️ Coordinator Features
+
+- Department-scoped analytics and placement tracking
+- Job posting approval workflow (pending → approved pipeline)
+- Pending alumni registration verification
+
+### 👑 Admin Features
+
+- Platform-wide user management with approve/reject actions
+- System health metrics and engagement analytics
+- Department, event, and announcement management
+- Full CRUD access across all entities
+
+### 🔐 Security & Auth
+
+- JWT-based authentication with automatic token refresh and retry logic
+- XSS sanitization via `escapeHTML()` utility
+- CSRF protection and CORS whitelist configuration
+- Role-based permission classes on all API endpoints
+- Password hashing with Django's built-in PBKDF2 algorithm
+- Secure environment variable management via `python-decouple`
 
 ---
 
-## 🖼️ Demo / Preview
+## 🧱 Tech Stack
 
-**[🚀 Experience the Live Frontend Demo Here!](https://kulkarnishub377.github.io/Alumni_Management_portal/)**
+| Layer                | Technology                                  | Purpose                            |
+| -------------------- | ------------------------------------------- | ---------------------------------- |
+| **Frontend**   | HTML5, Vanilla JS (ES6 Modules), CSS3       | UI rendering, SPA-like navigation  |
+| **Styling**    | Custom Glassmorphism CSS                    | Premium dark-mode aesthetic        |
+| **Icons**      | Boxicons 2.1.4                              | UI iconography                     |
+| **Fonts**      | Outfit + Inter (Google Fonts)               | Modern typography                  |
+| **Backend**    | Python 3.11+, Django 5.2, DRF               | REST API, business logic           |
+| **Auth**       | djangorestframework-simplejwt               | JWT token management               |
+| **Database**   | PostgreSQL 14+                              | 19-table relational schema         |
+| **Security**   | django-cors-headers, python-decouple        | CORS, env secrets                  |
+| **Dev Tools**  | concurrently, eslint, prettier              | Parallel dev servers, code quality |
+| **Deployment** | Netlify (frontend), any WSGI host (backend) | Static + API hosting               |
 
-*(Navigate safely via our `Mock Demo Fallback` logic baked into our `/assets/js/modules/api.js` gateway even if the backend spins down!)*
+---
+
+## 🖼️ Screenshots
 
 <p align="center">
-  <img src="Demo_images/home.png" alt="Home Page" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-  <img src="Demo_images/login.png" alt="Login Page" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="Demo_images/home.png" alt="Homepage — Public landing page with hero section, alumni marquee, and feature highlights" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="Demo_images/login.png" alt="Login — Role-based authentication with demo credential hints" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
 </p>
 <p align="center">
-  <img src="Demo_images/Registration_alumni.jpeg" alt="Alumni Registration" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-  <img src="Demo_images/Alumni_dashbord.png" alt="Alumni Dashboard" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="Demo_images/Registration_alumni.jpeg" alt="Registration — Multi-step form with AI resume parser drag-and-drop" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="Demo_images/Alumni_dashbord.png" alt="Alumni Dashboard — Personalized overview with activity feed, events, and quick actions" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
 </p>
 
----
-
-## ⚙️ How It Works (Deep Dive)
-
-1. **Authentication Gateway**: Users authenticate via the `/auth/token/` DRF SimpleJWT pipeline. The frontend global wrapper (`apiFetch`) intercepts and mounts `Bearer` tokens securely to `localStorage`, protecting all HTTP instances.
-2. **Dynamic UI Rendering**: Upon verifying roles (`role: 'alumni' | 'mentor' | 'admin'`), the user's dashboard requests specific aggregated payloads. 
-3. **Integrated Action Layers**: When a user applies for a job naturally in the UI, a custom Django `@action(methods=['post'])` named `apply()` catches it, seamlessly attaching the user's relational `cover_letter` directly to their pre-uploaded PostgreSQL `resume_url` profile blob.
-4. **Resilient Error Catching**: Core UI features auto-refresh locally but immediately intercept `401 Unauthorized` API responses to safely flush auth and re-route intelligently.
+> 💡 **Tip:** Visit the [Live Demo](https://kulkarnishub377.github.io/Alumni_Management_portal/) to explore all pages. The frontend runs fully with mock data — no backend needed.
 
 ---
 
-## ✨ Exhaustive Features Breakdown
+## 🚀 Quick Start
 
-### 👑 SuperAdmin Interface & Database Management
-* **Platform Health & Metrics**: Direct live calculations charting system engagement.
-* **Verification Queues**: Registrants remain in strict `pending` sandbox phases until manually verified and categorized by department IDs.
+### Prerequisites
 
-### 🎓 Alumni Experience Hub
-* **Interactive Activity Feed (`posts`, `post_likes`, `post_comments`)**: A robust social wall where users publish multimedia datasets. Engaging with a post triggers seamless backend boolean toggles to maintain state dynamically.
-* **Advanced Portfolio Structure**: Users define deeply nested `user_experiences` maps and scalable technical `skills` arrays, establishing enterprise profiles.
-* **Native Job Application Engine**: Instantly track and apply to `Full-time`, `Part-time`, or `Internship` opportunities explicitly targeted by recruiters.
+- **Node.js** v18.0+ and **npm** v8.0+
+- **Python** v3.11+
+- **PostgreSQL** 14+ (running on port 5432)
 
-### 💡 Mentor Command Center
-* **Kanban Workload Board**: Automatically halts applications if a mentor hits their `max_mentees` threshold. 
-* **Dual Action Pipelines**: Accepting a mentee dynamically constructs a mapped relationship inside `MentorshipRequests`, initiating permissions for localized direct 1-to-1 communication channels.
+### 1. Clone & Install
 
-### ⚙️ Coordinator Workflow
-* **Institution-Wide Moderation**: Job postings intentionally fall into a `pending_coordinator` state. Only upon faculty approval do jobs hit global API distribution.
-* **Department-Locked Scopes**: Coordinators view analytics constrained strictly to their own faculty (e.g., Computer Science placements vs. Mechanical placements).
-
----
-
-## 🧱 Comprehensive Tech Stack
-
-### Frontend Architecture
-* **Core Engine**: HTML5 Semantic structuring with raw modular `.css` Glassmorphism stylesheets.
-* **Logic/State Module**: **Vanilla ES6 JavaScript** securely interacting with the backend via a centralized `api.js` fetch-wrapper factory.
-
-### Backend Infrastructure
-* **API Framework**: Python 3.11+ running **Django 5.2** connected flawlessly to **Django REST Framework (DRF)**.
-* **Business Logic Mapping**: Extensive custom `APIView` sets combining `@action` decorators and `@method_decorator(cache_page)` for massive data caching optimizations.
-* **Security Layer**: `djangorestframework-simplejwt` handling rigid `IsAuthenticated` ViewSet protection.
-
-### Database Architecture
-* **PostgreSQL (15 Highly Relational Tables)**: Designed strictly around ACID architecture mapping arrays natively. Key tables encompass:
-  * **Core**: `users`, `departments`, `roles`.
-  * **Profiles**: `alumni_profiles`, `mentor_profiles`, `user_experiences`, `user_social_links`.
-  * **Engagement**: `posts`, `post_likes`, `post_comments`, `messages`, `notifications`, `gallery_items`.
-  * **Institution**: `jobs`, `events`, `event_attendees`, `job_applications`.
-
----
-
-## 🚀 Installation & Setup
-
-### 1. Requirements Prep
-* **Node.js** (v18.0+)
-* **Python** (v3.11+)
-* **PostgreSQL Engine** (Running locally on default Port 5432)
-
-### 2. Full-Stack Initialization
 ```bash
-# 1. Clone the master repository
 git clone https://github.com/kulkarnishub377/Alumni_Management_portal.git
 cd Alumni_Management_portal
 
-# 2. Install general scripts and NPM dependencies (Used for CLI tooling)
+# Install frontend tooling
 npm install
 
-# 3. Secure backend setup (Generates a Python `venv` & installs `requirements.txt`)
+# Setup backend (creates venv + installs dependencies)
 npm run setup:backend
+```
 
-# 4. Generate the massive 15-Table Schema on PostgreSQL 
-# Ensure a database named `alumni_db` exists on your system!
+### 2. Configure Database
+
+```bash
+# Create the database in PostgreSQL
+psql -U postgres -c "CREATE DATABASE alumni_db;"
+
+# Copy environment template and edit with your credentials
+cp backend/.env.example backend/.env
+
+# Run migrations
 npm run db:migrate
 
-# 5. Bootstrap your SuperAdmin account to take executive control
+# Create admin account
 npm run db:admin
 ```
 
----
-
-## ▶️ Usage Execution
-
-Booting the entire platform is handled cleanly through `concurrently` using our NPM scripting:
+### 3. Start Development
 
 ```bash
-# Spin up both frontend (Port 3000) and backend (Port 8000) instantly
+# Run both frontend (port 3000) and backend (port 8000)
 npm run dev
 
-# Or spin them individually:
-npm run backend
+# Or individually:
+npm run frontend   # http://localhost:3000
+npm run backend    # http://localhost:8000/api/
+```
+
+### 4. Frontend-Only Mode (No Backend Required)
+
+```bash
 npm run frontend
-```
-
-Navigate to `http://localhost:3000/` to log in via your newly minted SuperAdmin!
-
----
-
-## 🔐 Environment & Config Mapping
-
-For secure execution, verify your Database configuration aligns. Either implement a `.env` in the `./backend/` directory or assert settings explicitly:
-
-```env
-# Database Credentials Expected
-DB_NAME=alumni_db
-DB_USER=postgres
-DB_PASSWORD=password
-DB_HOST=127.0.0.1
-DB_PORT=5432
+# Navigate to http://localhost:3000
+# Use demo credentials on the login page — mock fallback handles everything
 ```
 
 ---
 
-## 📁 System Architecture Structure
+## 📁 Project Structure
 
-```bash
-📦 Alumni_Management_portal
- ┣ 📂 assets/           # ✨ UI Glassmorphism (css/) & logic modules (js/) via api.js
- ┣ 📂 backend/          # ⚙️ Django API Gateway
- ┃ ┣ 📂 api/            # Complete Logic (views.py, serializers.py, models.py)
- ┃ ┣ 📂 config/         # Systemwide endpoints (urls.py) and core Settings
- ┣ 📂 database/         # 🗄️ Raw schema.sql 15-table architecture definitions
- ┣ 📂 docs/             # 📚 Advanced Technical documentation directories
- ┣ 📂 pages/            # 🛡️ Role-Based Segregation UI Sandbox Views
- ┣ 📜 index.html        # App Landing Context
- ┗ 📜 package.json      # NPM Runner script definitions
+```
+Alumni_Management_portal/
+│
+├── assets/                     # Frontend static assets
+│   ├── css/
+│   │   ├── homepage.css        # Landing page styles
+│   │   ├── auth.css            # Login/register styles
+│   │   ├── dashboard.css       # Dashboard layout styles
+│   │   └── common.css          # Shared design tokens & utilities
+│   └── js/
+│       ├── homepage.js         # Landing page dynamic rendering
+│       ├── dashboard.js        # Full SPA engine (all dashboard views)
+│       ├── auth.js             # Login/register/password logic
+│       ├── common.js           # Shared utilities (toast, modal, escapeHTML)
+│       ├── data.js             # Mock data store for demo mode
+│       └── modules/
+│           ├── api.js          # JWT fetch wrapper with token refresh
+│           └── router.js       # Hash-based SPA router
+│
+├── pages/                      # Role-segregated UI pages
+│   ├── auth/                   # login.html, register.html
+│   ├── alumni/                 # dashboard, profile, network, chat, etc.
+│   ├── mentor/                 # Mentor-specific dashboard
+│   ├── coordinator/            # Coordinator-specific dashboard
+│   └── admin/                  # Admin panel pages
+│
+├── backend/                    # Django REST API
+│   ├── api/
+│   │   ├── models.py           # 19 Django models (custom User, profiles, etc.)
+│   │   ├── views.py            # ViewSets + aggregated API views
+│   │   ├── serializers.py      # DRF serializers with computed fields
+│   │   ├── urls.py             # Router + custom endpoint mappings
+│   │   ├── admin.py            # Django admin configuration
+│   │   └── tests.py            # Test suite (20+ tests)
+│   ├── config/
+│   │   ├── settings.py         # Django settings (env-var based)
+│   │   ├── urls.py             # Root URL configuration
+│   │   └── wsgi.py             # WSGI entry point
+│   ├── requirements.txt        # Python dependencies
+│   └── .env.example            # Environment variable template
+│
+├── database/
+│   └── schema.sql              # Reference SQL schema
+│
+├── docs/                       # Technical documentation
+│   ├── API_REFERENCE.md        # Complete API endpoint reference
+│   ├── DATABASE_SCHEMA.md      # ER diagrams & table documentation
+│   └── BACKEND_SETUP.md        # Backend installation guide
+│
+├── Demo_images/                # Screenshots for README
+├── index.html                  # Public landing page
+├── package.json                # NPM scripts & dependencies
+├── netlify.toml                # Netlify deployment config
+├── CHANGELOG.md                # Version history
+└── README.md                   # This file
 ```
 
 ---
 
-## 🐛 Core Engineering Challenges Faced
+## 🔌 API Overview
 
-1. **API Waterfall Latency Saturation**: 
-   * **Problem**: Initially, populating massive dashboards caused the frontend to shoot off 5-8 unique GET requests instantly, destroying render speeds.
-   * **Solution**: Engineered combined Django endpoint logic like `HomepageAPIView`. It executes batch Queries returning complex nested JSON matrices (Top Alumni + Limits + Feeds + Jobs) all efficiently packed into a single network cycle.
-   
-2. **Mentorship Load Balancing Escalation**: 
-   * **Problem**: Popular Mentors were getting spammed with 100+ requests. 
-   * **Solution**: Developed dynamic API constraints directly connected to a Mentor's `max_mentees` payload. The `MentorshipRequestViewSet.approve()` custom action actively verifies limits before modifying PostgreSQL relationships.
+The backend exposes **50+ RESTful endpoints** organized into 5 categories:
 
-3. **Vanilla JS Authentication Resiliency**: 
-   * **Problem**: Managing rigid JWT expiries without heavy generic Webpack libraries.
-   * **Solution**: Configured the central `apiFetch` in `api.js` to catch any `401` gracefully across every module ping, natively clear the DOM `localStorage`, and instantly revert the UI to the explicit `/pages/auth/login.html` directory context.
+| Category                  | Endpoints                                                 | Auth   | Description                      |
+| ------------------------- | --------------------------------------------------------- | ------ | -------------------------------- |
+| **Authentication**  | `/auth/token/`, `/auth/token/refresh/`                | No     | JWT login & token refresh        |
+| **Page Aggregates** | `/pages/homepage/`, `/pages/dashboard/{role}/`        | Varies | Combined data for specific pages |
+| **User Management** | `/users/`, `/users/me/`, `/users/{id}/approve/`     | Yes    | CRUD + role actions              |
+| **Job Board**       | `/jobs/`, `/jobs/{id}/apply/`, `/job-applications/` | Yes    | Job CRUD + application pipeline  |
+| **Mentorship**      | `/mentorship-requests/`, `/{id}/approve/`             | Yes    | Request + approval workflow      |
+| **Social Feed**     | `/feed/`, `/feed/{id}/like/`, `/comments/`          | Yes    | Posts, likes, comments           |
+| **Messaging**       | `/messages/`, `/{id}/mark_read/`                      | Yes    | 1:1 messaging with read receipts |
+| **Content**         | `/events/`, `/gallery/`, `/announcements/`          | Varies | Platform content management      |
 
----
-
-## 🧪 Testing Validation
-
-The platform's relational logic allows easy local manual visual verification. However, to debug complex permission flows quickly across roles:
-```bash
-# Force-flush the whole PostgreSQL map for an instantaneous clean slate
-npm run db:flush
-```
+> 📖 See [**API_REFERENCE.md**](docs/API_REFERENCE.md) for complete endpoint documentation with payloads and response examples.
 
 ---
 
-## 🗺️ Roadmap / Future Improvements
+## 🔐 Environment Variables
 
-* **[ ] Bi-Directional WebSockets**: Graduate the current HTTP-based polling of the `messages` Relational table into true WebSockets for absolute Live notifications.
-* **[ ] Seamless WebRTC API Expansion**: Direct deep-link API connections allowing mentors & mentees to spin up WebRTC video conferences exclusively from the pipeline instead of relying on generic Zoom URLs. 
-* **[ ] AI Resume Extractor**: Attach an orchestration pipeline using basic LLM toolsets on the `resume_url` input sequence, automatically filling the `alumni_profiles` DB values and `skills` Arrays without manual data entry.
+Create a `.env` file in the `backend/` directory (see [`.env.example`](backend/.env.example)):
 
----
-
-## 🤝 Contributing Architecture
-
-We adore scalable contributions designed properly. 
-1. **Fork** via GitHub.
-2. Initialize an isolated **Feature Branch** (`git checkout -b build/SuperFeature`).
-3. Commit logical units securely (`git commit -m 'Added the backend route for SuperFeature'`).
-4. **Push** into the origin Branch (`git push origin build/SuperFeature`).
-5. Transmit an official open **Pull Request**.
-
----
-
-## 📜 Legal License
-
-Managed directly under the **MIT License**. Examine `LICENSE` deeply for structural distributions. 
+| Variable                       | Default                   | Description                                        |
+| ------------------------------ | ------------------------- | -------------------------------------------------- |
+| `DJANGO_SECRET_KEY`          | (generated)               | Django secret key —**change in production** |
+| `DJANGO_DEBUG`               | `True`                  | Debug mode toggle                                  |
+| `DJANGO_ALLOWED_HOSTS`       | `localhost,127.0.0.1`   | Comma-separated allowed hosts                      |
+| `DB_NAME`                    | `alumni_db`             | PostgreSQL database name                           |
+| `DB_USER`                    | `postgres`              | Database user                                      |
+| `DB_PASSWORD`                | `password`              | Database password                                  |
+| `DB_HOST`                    | `localhost`             | Database host                                      |
+| `DB_PORT`                    | `5432`                  | Database port                                      |
+| `CORS_ALLOWED_ORIGINS`       | `http://localhost:3000` | Frontend URLs allowed to call the API              |
+| `JWT_ACCESS_TOKEN_LIFETIME`  | `60`                    | Access token lifetime in minutes                   |
+| `JWT_REFRESH_TOKEN_LIFETIME` | `1440`                  | Refresh token lifetime in minutes                  |
 
 ---
 
-## 🙌 Dedicated Acknowledgements
+## 🛡️ Role-Based Access Matrix
 
-* Core architectural capabilities generated through **Django Core Documentation**.
-* Structuring elements via modern ES6 paradigms. 
-* Beautiful aesthetics born natively via the rise of zero-framework **Glassmorphism CSS**.
+| Feature                      | Alumni | Mentor | Coordinator | Admin |
+| ---------------------------- | :----: | :----: | :---------: | :---: |
+| View/edit own profile        |   ✅   |   ✅   |     ✅     |  ✅  |
+| Browse alumni network        |   ✅   |   ✅   |     ✅     |  ✅  |
+| Apply to jobs                |   ✅   |   ✅   |     —     |  —  |
+| Post jobs                    |   ✅   |   ✅   |     ✅     |  ✅  |
+| Approve job postings         |   —   |   —   |     ✅     |  ✅  |
+| Send/receive messages        |   ✅   |   ✅   |     ✅     |  ✅  |
+| Register for events          |   ✅   |   ✅   |     ✅     |  ✅  |
+| Create events                |   —   |   —   |     ✅     |  ✅  |
+| Request mentorship           |   ✅   |   —   |     —     |  —  |
+| Approve/reject mentees       |   —   |   ✅   |     —     |  ✅  |
+| Approve/reject registrations |   —   |   ✅   |     —     |  ✅  |
+| Manage departments           |   —   |   —   |     —     |  ✅  |
+| View system-wide analytics   |   —   |   —   | Dept-scoped |  ✅  |
+| Post announcements           |   —   |   —   |     ✅     |  ✅  |
 
 ---
 
-## 📞 Platform Engineering Authors
+## 🐛 Engineering Decisions
 
-* **Core Developers**: Shubham Kulkarni, Yadnynesh Dhangar, and Aniket Gudgal
-* **GitHub Operations**: [@kulkarnishub377](https://github.com/kulkarnishub377)
-* **Direct Network**: kulkarnishub377@gmail.com
-* **Official Repository**: [Alumni Management Portal](https://github.com/kulkarnishub377/Alumni_Management_portal)
+### 1. Aggregated API Endpoints
+
+**Problem:** The original design required 5–8 API calls to populate a single dashboard page, causing visible waterfall loading.
+**Solution:** Custom `APIView` classes (`HomepageAPIView`, `AlumniDashboardAPIView`, etc.) combine multiple queries into a single JSON response. One request hydrates an entire page.
+
+### 2. Mentorship Capacity Constraints
+
+**Problem:** Popular mentors were overwhelmed with unlimited mentorship requests.
+**Solution:** `MentorProfile.max_mentees` is enforced server-side — the `MentorshipRequestViewSet.approve()` action checks capacity before allowing approval and returns a `400` error if the limit is reached.
+
+### 3. JWT Token Refresh with Race-Condition Handling
+
+**Problem:** Multiple concurrent API calls could all detect a 401 and simultaneously attempt token refresh.
+**Solution:** The `api.js` module uses a subscriber pattern — only the first 401 triggers a refresh; subsequent requests queue and replay once the new token is available.
+
+### 4. Mock Fallback System
+
+**Problem:** The frontend team needed to develop and demo without a running backend.
+**Solution:** The `apiFetch()` wrapper catches network errors and returns structured mock responses for critical endpoints (login, user profile, registration). This allows the entire frontend to function with `npm run frontend` alone.
 
 ---
 
-<p align="center"><b>Engineered systematically with ❤️ to build robust, scalable Alumni Network Operations.</b></p>
+## 🗺️ Known Limitations & Roadmap
+
+### Current Limitations
+
+- **Frontend–Backend integration is pending** — the frontend currently uses `data.js` mock data. All API endpoints are built and ready, but the `apiFetch()` calls need to replace `APP_DATA` references.
+- **Chat is HTTP-based** — real-time messaging uses mock auto-replies, not WebSockets.
+- **AI Resume Parser is simulated** — the drag-and-drop PDF parser uses mock data extraction (a real LLM integration is planned).
+- **No file upload storage** — avatar and resume URLs are stored as strings; actual file upload to S3/media storage is not yet implemented.
+
+### Roadmap
+
+- [ ] **WebSocket messaging** — Upgrade chat from HTTP polling to Django Channels
+- [ ] **Real AI resume parser** — Integrate an LLM pipeline for PDF extraction
+- [ ] **WebRTC video calls** — Mentor–mentee video conferencing from the dashboard
+- [ ] **Email notifications** — SMTP integration for event reminders and job alerts
+- [ ] **File uploads** — S3 or local media storage for avatars and resumes
+- [ ] **Automated CI/CD** — GitHub Actions pipeline for testing and deployment
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. **Fork** the repository
+2. Create a feature branch: `git checkout -b feature/your-feature-name`
+3. Make your changes with descriptive commits
+4. Ensure backend tests pass: `npm run test:backend`
+5. Push your branch: `git push origin feature/your-feature-name`
+6. Open a **Pull Request** with a clear description of changes
+
+### Code Style Guidelines
+
+- **JavaScript:** ES6+ with modular imports; use `escapeHTML()` for all user-rendered content
+- **Python:** Follow PEP 8; add docstrings to views and serializers
+- **CSS:** Use CSS custom properties from `common.css` for colors and spacing
+- **Commits:** Use conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`)
+
+---
+
+## 📜 Authors & License
+
+### Core Team
+
+| Name                        | Role           | Contact                                                                             |
+| --------------------------- | -------------- | ----------------------------------------------------------------------------------- |
+| **Shubham Kulkarni**  | Lead Developer | [GitHub](https://github.com/kulkarnishub377) · [Email](mailto:kulkarnishub377@gmail.com) |
+| **Yadnynesh Dhangar** | Developer      | [Email](mailto:yadnyneshdhangar@gmail.com)                                             |
+| **Aniket Gudgal**     | Developer      | [Email](mailto:aniketgudgal5867@gmail.com)                                             |
+
+### License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  <b>Built with ❤️ at DVVPCOE Ahmednagar</b><br>
+  <sub>Dr. Vithalrao Vikhe Patil College of Engineering</sub>
+</p>
