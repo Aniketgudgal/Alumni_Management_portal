@@ -50,10 +50,21 @@ export async function apiFetch(endpoint, options = {}) {
         
         // Mock fallback for Login/Auth so the demo data UI still works smoothly
         if (endpoint === '/auth/token/') {
+            let requestedRole = 'alumni';
+            try {
+                if (options.body) {
+                    const payload = JSON.parse(options.body);
+                    if (payload.email.includes('mentor')) requestedRole = 'mentor';
+                    else if (payload.email.includes('coordinator')) requestedRole = 'coordinator';
+                    else if (payload.email.includes('admin')) requestedRole = 'admin';
+                }
+            } catch(e) {}
+            localStorage.setItem('demo_mock_role', requestedRole);
             return { ok: true, data: { access: 'mock_demo_jwt_token', refresh: 'mock_demo_refresh' } };
         }
         if (endpoint === '/users/me/') {
-            return { ok: true, data: { role: 'alumni', email: 'demo@alumni.com', name: 'Demo Alumni' } };
+            const demoRole = localStorage.getItem('demo_mock_role') || 'alumni';
+            return { ok: true, data: { role: demoRole, email: `demo@${demoRole}.com`, name: `Demo ${demoRole.charAt(0).toUpperCase() + demoRole.slice(1)}` } };
         }
         if (endpoint === '/users/') {
             return { ok: true, data: { id: 999, message: 'Mock Registration Success' } };

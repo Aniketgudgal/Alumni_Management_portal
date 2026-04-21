@@ -144,7 +144,7 @@ window.validateStep = function(step) {
         }
     });
 
-    if (!valid) showToast('Please fill in all required fields', 'error');
+    if (!valid && window.showToast) window.showToast('Please fill in all required fields', 'error');
     return valid;
 }
 
@@ -180,12 +180,12 @@ window.handleRegistration = async function(e) {
     const confirmPassword = document.getElementById('regConfirmPassword');
 
     if (password && confirmPassword && password.value !== confirmPassword.value) {
-        showToast('Passwords do not match!', 'error');
+        if(window.showToast) window.showToast('Passwords do not match!', 'error');
         return;
     }
 
     if (password && password.value.length < 8) {
-        showToast('Password must be at least 8 characters', 'error');
+        if(window.showToast) window.showToast('Password must be at least 8 characters', 'error');
         return;
     }
 
@@ -196,21 +196,44 @@ window.handleRegistration = async function(e) {
         btn.disabled = true;
     }
 
-    // Capture registration data from all steps
-    const first_name = document.querySelector('#step1 input[type="text"]:nth-of-type(1)')?.value || 'User';
-    const last_name = document.querySelector('#step1 input[type="text"]:nth-of-type(2)')?.value || 'Test';
-    const email = document.querySelector('#step1 input[type="email"]')?.value;
+    // Capture FULL registration data from all 3 steps using strict indexing
+    const inputs_step1 = document.querySelectorAll('#step1 input[type="text"]');
+    const first_name = inputs_step1[0]?.value || 'User';
+    const last_name = inputs_step1[1]?.value || 'Test';
+    const email = document.querySelector('#step1 input[type="email"]')?.value || '';
     const phone = document.querySelector('#step1 input[type="tel"]')?.value || '';
-    const passValue = password.value;
+    const dob = document.querySelector('#step1 input[type="date"]')?.value || null;
     
-    // We default to alumni since this form is the general registration
+    // Step 2 Academic
+    const selects_step2 = document.querySelectorAll('#step2 select');
+    const department = selects_step2[0]?.value || '';
+    const batch_year = selects_step2[1]?.value || null;
+    const role_type = selects_step2[2]?.value || 'alumni';
+    const roll_number = document.querySelector('#step2 input[type="text"]')?.value || '';
+
+    // Step 3 Professional
+    const inputs_step3 = document.querySelectorAll('#step3 input[type="text"]');
+    const current_job_title = inputs_step3[0]?.value || '';
+    const company = inputs_step3[1]?.value || '';
+    const skills = inputs_step3[2]?.value || '';
+    const location = `${inputs_step3[3]?.value || ''}, ${inputs_step3[4]?.value || ''}`;
+    const experience_years = document.querySelector('#step3 select')?.value || '';
+    
+    const links_step3 = document.querySelectorAll('#step3 input[type="url"]');
+    const linkedin_url = links_step3[0]?.value || '';
+    const github_url = links_step3[1]?.value || '';
+    const portfolio_url = links_step3[2]?.value || '';
+
+    const passValue = password.value || '';
+    
+    // Construct massive payload ensuring no data loss
     const userData = {
-        first_name,
-        last_name,
-        email,
-        phone,
-        password: passValue,
-        role: 'alumni'
+        first_name, last_name, email, phone, date_of_birth: dob,
+        department, batch_year, roll_number,
+        role: role_type,
+        current_job_title, company, skills, location, experience_years,
+        linkedin_url, github_url, portfolio_url,
+        password: passValue
     };
 
     const response = await register(userData);
@@ -243,7 +266,7 @@ window.previewPhoto = function(input) {
     if (input.files && input.files[0]) {
         // Validate file size (max 2MB)
         if (input.files[0].size > 2 * 1024 * 1024) {
-            showToast('Photo must be less than 2MB', 'error');
+            if(window.showToast) window.showToast('Photo must be less than 2MB', 'error');
             return;
         }
         const reader = new FileReader();
@@ -265,7 +288,7 @@ window.handleResumeDrop = function(e) {
     const file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
     if(!file) return;
     if(file.type !== 'application/pdf') {
-        showToast('Please upload a PDF document for best AI parsing.', 'error');
+        if(window.showToast) window.showToast('Please upload a PDF document for best AI parsing.', 'error');
         box.style.borderColor = 'var(--border)';
         return;
     }
@@ -303,6 +326,6 @@ window.handleResumeDrop = function(e) {
         const prof_selects = document.querySelectorAll('#step3 select');
         if(prof_selects[0]) prof_selects[0].value = '2-5 years';
         
-        showToast('AI successfully populated your profile details!', 'success');
+        if(window.showToast) window.showToast('AI successfully populated your profile details!', 'success');
     }, 2000);
 }
