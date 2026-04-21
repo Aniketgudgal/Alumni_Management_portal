@@ -47,6 +47,15 @@ By natively sandboxing users into deeply segregated workflows right at registrat
 
 *(Navigate safely via our `Mock Demo Fallback` logic baked into our `/assets/js/modules/api.js` gateway even if the backend spins down!)*
 
+<p align="center">
+  <img src="Demo_images/home.png" alt="Home Page" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="Demo_images/login.png" alt="Login Page" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+</p>
+<p align="center">
+  <img src="Demo_images/Registration_alumni.jpeg" alt="Alumni Registration" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="Demo_images/Alumni_dashbord.png" alt="Alumni Dashboard" width="45%" style="margin: 5px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+</p>
+
 ---
 
 ## ⚙️ How It Works (Deep Dive)
