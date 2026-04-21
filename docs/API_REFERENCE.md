@@ -1,25 +1,64 @@
-# 🔌 API Reference Document
+# 🔌 API Reference — Alumni Management Portal
 
-This document outlines the core interactions mapping the Vanilla Frontend to the Python Django REST Backend.
+> Complete endpoint documentation for the Django REST Framework backend.  
+> **Base URL**: `http://localhost:8000/api/`
 
-## Authentication & Securty
+---
+
+## 🔐 Authentication & Security
+
 All private endpoints require an `Authorization` header containing a valid Bearer Token.
 
-### Token Generation
+### Token Generation (Login)
 **`POST /api/auth/token/`**
-- **Payload:** `{ "email": "user@example.com", "password": "secure123" }`
-- **Returns:** `{ "access": "eyJhb...", "refresh": "eyJhb..." }`
+- **Auth Required:** No
+- **Payload:**
+```json
+{ "email": "user@example.com", "password": "secure123" }
+```
+- **Returns:**
+```json
+{ "access": "eyJhb...", "refresh": "eyJhb..." }
+```
+
+### Token Refresh
+**`POST /api/auth/token/refresh/`**
+- **Auth Required:** No (uses refresh token)
+- **Payload:**
+```json
+{ "refresh": "eyJhb..." }
+```
+- **Returns:**
+```json
+{ "access": "new_eyJhb..." }
+```
+
+### Password Change
+**`POST /api/users/change_password/`**
+- **Auth Required:** Yes (Bearer)
+- **Payload:**
+```json
+{ "old_password": "current123", "new_password": "newsecure456" }
+```
+- **Returns:**
+```json
+{ "detail": "Password changed successfully." }
+```
+
+---
 
 ## 📊 Page-Wise Aggregate Endpoints
-Designed specifically to prevent the frontend from executing heavy Promise.all waterfalls.
 
-### `GET /api/pages/homepage/`
-**Auth Required:** `False`
-**Purpose:** Delivers all variables necessary to hydrate `index.html`.
-**Returns:**
+These endpoints combine multiple queries into a single response to prevent frontend waterfall loading.
+
+### Homepage
+**`GET /api/pages/homepage/`**
+- **Auth Required:** No
+- **Purpose:** Delivers all data for `index.html`
+- **Returns:**
 ```json
 {
-  "stats": {"totalAlumni": 12500, "studentsPlaced": 8700, ...},
+  "stats": { "totalAlumni": 125, "companiesHiring": 35, "eventsConducted": 18, "activeMentors": 12, "studentsPlaced": 87, "jobPostings": 24 },
   "topAlumni": [ ... ],
   "jobs": [ ... ],
   "events": [ ... ],
@@ -28,22 +67,24 @@ Designed specifically to prevent the frontend from executing heavy Promise.all w
 }
 ```
 
-### `GET /api/pages/dashboard/alumni/`
-**Auth Required:** `True (Bearer)`
-**Purpose:** Hydrates `pages/alumni/dashboard.html` for standard network users.
-**Returns:**
+### Alumni Dashboard
+**`GET /api/pages/dashboard/alumni/`**
+- **Auth Required:** Yes (Bearer)
+- **Returns:**
 ```json
 {
   "announcements": [...],
   "upcoming_events": [...],
-  "recommended_jobs": [...]
+  "recommended_jobs": [...],
+  "unread_messages": 3,
+  "unread_notifications": 5
 }
 ```
 
-### `GET /api/pages/dashboard/mentor/`
-**Auth Required:** `True (Bearer)`
-**Purpose:** Hydrates `pages/mentor/dashboard.html` and populates the notification badges.
-**Returns:**
+### Mentor Dashboard
+**`GET /api/pages/dashboard/mentor/`**
+- **Auth Required:** Yes (Bearer)
+- **Returns:**
 ```json
 {
   "pending_requests_count": 4,
@@ -53,49 +94,157 @@ Designed specifically to prevent the frontend from executing heavy Promise.all w
 }
 ```
 
-## 🛠️ Interactive Actions (Business Logic)
+### Coordinator Dashboard
+**`GET /api/pages/dashboard/coordinator/`**
+- **Auth Required:** Yes (Coordinator or Admin role)
+- **Returns:**
+```json
+{
+  "pending_jobs_count": 3,
+  "pending_jobs": [...],
+  "department_alumni_count": 45,
+  "pending_alumni_count": 2,
+  "department_mentors_count": 5,
+  "announcements": [...]
+}
+```
 
-### Mentorship Approval Pipeline
-**`POST /api/mentorship-requests/`**
-- **Payload:** `{ "mentor_id": 4, "message": "I'd love career advice..." }`
-- **Result:** Queues request for the mentor.
+### Admin Dashboard
+**`GET /api/pages/dashboard/admin/`**
+- **Auth Required:** Yes (Admin role)
+- **Returns:**
+```json
+{
+  "total_users": 500,
+  "total_alumni": 400,
+  "total_mentors": 20,
+  "total_coordinators": 10,
+  "pending_registrations": 5,
+  "total_jobs": 100,
+  "approved_jobs": 80,
+  "pending_jobs": 12,
+  "total_events": 25,
+  "total_departments": 6,
+  "announcements": [...]
+}
+```
 
-**`POST /api/mentorship-requests/{id}/approve/`**
-- **Auth:** Mentor Only.
-- **Result:** Converts pending request to active mentee status and updates counters.
+---
 
-### Job Board Actions
-**`POST /api/jobs/{id}/apply/`**
-- **Payload:** `{ "cover_letter": "I have 3 years in python..." }`
-- **Result:** Generates a JobApplication tied to the authorized user.
+## 👤 User Management
 
-### Network Feed
-**`POST /api/feed/{id}/like/`**
-- **Toggle Endpoint:** Liking an unliked post adds a like. Liking an already liked post removes the like.
+### User CRUD
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/users/` | No | Register a new user |
+| `GET` | `/api/users/` | Yes | List all users (paginated) |
+| `GET` | `/api/users/{id}/` | Yes | Get user by ID |
+| `PATCH` | `/api/users/{id}/` | Yes (Owner/Admin) | Update user |
+| `DELETE` | `/api/users/{id}/` | Yes (Owner/Admin) | Delete user |
 
-## 💬 Chat & Direct Messaging (`chat.html`)
-The frontend messaging system features standalone filtering (All, Groups, Unread).
-**`GET /api/messages/`**
-- **Query Params:** `?filter=unread` or `?filter=groups`
-- **Purpose:** Hydrates the `chatData` object responsible for rendering the `sc-sidebar` contacts list.
+### User Actions
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET/PATCH` | `/api/users/me/` | Yes | Get or update the authenticated user |
+| `POST` | `/api/users/change_password/` | Yes | Change password |
+| `POST` | `/api/users/{id}/approve/` | Yes (Mentor/Admin) | Approve pending user |
+| `POST` | `/api/users/{id}/reject/` | Yes (Mentor/Admin) | Reject pending user |
 
-**`PATCH /api/messages/{id}/read/`**
-- **Purpose:** Whenever a user clicks an active contact in `chat.html`, this clears the `sc-unread` badge natively in Django.
+---
 
-## 🪪 Profile Subsystems (`profile.html`)
-The Profile relies heavily on a `modal-overlay` subsystem (Personal Info, Social Links, Skills, Experience) rather than generic tabs.
+## 💼 Job Board
 
-**`PATCH /api/users/me/`**
-- **Purpose:** Save structural details (Name, DOB, Gender, Bio Summary).
+### Job CRUD
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/jobs/` | Optional | List all jobs |
+| `POST` | `/api/jobs/` | Yes | Create a job posting |
+| `GET` | `/api/jobs/{id}/` | Optional | Get job details |
+| `PATCH` | `/api/jobs/{id}/` | Yes | Update a job |
+| `DELETE` | `/api/jobs/{id}/` | Yes | Delete a job |
 
-**`POST /api/experiences/`**
-- **Purpose:** Ties directly into `#experienceModal` adding chronological ticks to the `exp-timeline`.
+### Job Actions
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/jobs/{id}/apply/` | Yes | Apply to a job (creates `JobApplication`) |
+| `POST` | `/api/jobs/{id}/approve_job/` | Yes (Coordinator/Admin) | Approve job posting |
+| `POST` | `/api/jobs/{id}/reject_job/` | Yes (Coordinator/Admin) | Reject job posting |
 
-**`POST /api/social-links/`**
-- **Purpose:** Dynamically saves the looping input fields generated inside `#contactModal` (LinkedIn, GitHub).
+### Job Applications
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/job-applications/` | Yes | List your applications (admin sees all) |
 
-## Modifying Existing Objects
-Standard CRUD Rest interfaces are exposed for data modification via standard HTTP Verbs (GET, POST, PATCH, DELETE) at the following routings:
-- `/api/profiles/alumni/` (Managing dynamic skills arrays & Max Mentees)
-- `/api/events/`
-- `/api/jobs/`
+---
+
+## 🤝 Mentorship
+
+### Mentorship Request CRUD
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/mentorship-requests/` | Yes | Create a mentorship request |
+| `GET` | `/api/mentorship-requests/` | Yes | List mentorship requests |
+
+### Mentorship Actions
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/mentorship-requests/{id}/approve/` | Yes (Assigned Mentor) | Approve request (checks `max_mentees`) |
+| `POST` | `/api/mentorship-requests/{id}/reject/` | Yes (Assigned Mentor) | Reject request |
+
+---
+
+## 📝 Network Feed
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/feed/` | Optional | List all posts |
+| `POST` | `/api/feed/` | Yes | Create a post |
+| `POST` | `/api/feed/{id}/like/` | Yes | Toggle like on a post |
+| `POST` | `/api/comments/` | Yes | Add a comment to a post |
+
+---
+
+## 💬 Messaging
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/messages/` | Yes | List user's messages |
+| `POST` | `/api/messages/` | Yes | Send a message |
+| `PATCH` | `/api/messages/{id}/mark_read/` | Yes | Mark a message as read |
+| `POST` | `/api/messages/mark_all_read/` | Yes | Mark all messages as read |
+
+---
+
+## 🔔 Notifications
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/notifications/` | Yes | List user's notifications |
+| `PATCH` | `/api/notifications/{id}/mark_read/` | Yes | Mark notification as read |
+| `POST` | `/api/notifications/mark_all_read/` | Yes | Mark all as read |
+
+---
+
+## 📅 Events
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/events/` | Optional | List all events |
+| `POST` | `/api/events/` | Yes (Coordinator/Admin) | Create an event |
+| `POST` | `/api/event-attendees/` | Yes | Register for an event |
+
+---
+
+## 🖼️ Other Endpoints
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/gallery/` | No | List gallery items |
+| `GET` | `/api/departments/` | Yes | List departments |
+| `GET` | `/api/profiles/alumni/` | Yes | List alumni profiles |
+| `GET` | `/api/profiles/mentors/` | Yes | List mentor profiles |
+| `GET/POST` | `/api/social-links/` | Yes | Manage social links |
+| `GET/POST` | `/api/experiences/` | Yes | Manage work experience |
+| `GET` | `/api/announcements/` | Yes | List announcements |
+| `GET` | `/api/testimonials/` | No | List testimonials |
+| `GET` | `/api/why-join/` | No | List "Why Join" items |
