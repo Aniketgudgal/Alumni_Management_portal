@@ -3,6 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from .models import (
     Department, AlumniProfile, MentorProfile, UserSocialLink,
     UserExperience, Post, PostLike, PostComment, Job, Event,
@@ -27,6 +29,7 @@ User = get_user_model()
 class HomepageAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
+    @method_decorator(cache_page(60 * 15))
     def get(self, request, *args, **kwargs):
         stats = {
             "totalAlumni": User.objects.filter(role='alumni').count() + 12500,
@@ -139,7 +142,7 @@ class MentorshipRequestViewSet(viewsets.ModelViewSet):
         return Response({"detail": "Rejected."})
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by('-created_at')
+    queryset = Post.objects.select_related('user').prefetch_related('comments', 'likes').order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -156,7 +159,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response({"detail": "Liked."})
 
 class PostCommentViewSet(viewsets.ModelViewSet):
-    queryset = PostComment.objects.all()
+    queryset = PostComment.objects.select_related('user').all()
     serializer_class = PostCommentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
