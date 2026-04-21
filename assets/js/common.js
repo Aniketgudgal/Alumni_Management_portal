@@ -11,7 +11,7 @@ window.showToast = function(message, type = 'info') {
     toast.className = `toast-notification toast-${type}`;
     const icons = { success: 'bx-check-circle', error: 'bx-error-circle', info: 'bx-info-circle', warning: 'bx-error' };
     const colors = { success: '#10b981', error: '#ef4444', info: '#3b82f6', warning: '#f59e0b' };
-    toast.innerHTML = `<i class='bx ${icons[type] || icons.info}'></i><span>${message}</span>`;
+    toast.innerHTML = `<i class='bx ${icons[type] || icons.info}'></i><span>${escapeHTML(message)}</span>`;
     Object.assign(toast.style, {
         position: 'fixed', bottom: '24px', right: '24px', padding: '14px 24px',
         borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px',
@@ -58,32 +58,34 @@ window.animateCounter = function(el, target, suffix = '') {
 }
 
 // ===== LOCAL STORAGE HELPERS =====
+// Standardized on `user_info` as the single source of truth
 window.getUser = function() {
     try { 
-        let user = JSON.parse(localStorage.getItem('user_info'));
+        const user = JSON.parse(localStorage.getItem('user_info'));
         if (user) return { ...user, loggedIn: true };
-        return JSON.parse(localStorage.getItem('alumni_portal_user')) || null;
+        return null;
     }
     catch { return null; }
 }
-window.setUser = function(data) { localStorage.setItem('alumni_portal_user', JSON.stringify(data)); }
+window.setUser = function(data) { 
+    localStorage.setItem('user_info', JSON.stringify(data)); 
+}
 window.clearUser = function() { 
-    localStorage.removeItem('alumni_portal_user'); 
     localStorage.removeItem('user_info');
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('demo_mock_role');
 }
 
-// ===== SCROLL TO TOP =====
+// ===== SCROLL TO TOP — Auto-initializes on DOMContentLoaded =====
 function initScrollTop() {
-    const btn = document.getElementById('scrollTopBtn');
+    const btn = document.getElementById('scrollTopBtn') || document.getElementById('hpScrollTop');
     if (btn) {
         window.addEventListener('scroll', () => btn.classList.toggle('visible', window.scrollY > 600));
-        btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }
 }
 
-// ===== PRELOADER =====
+// ===== PRELOADER — Auto-initializes on DOMContentLoaded =====
 function initPreloader() {
     const p = document.getElementById('preloader');
     if (p) {
@@ -93,7 +95,7 @@ function initPreloader() {
 }
 
 // ===== XSS SANITIZATION HELPER =====
-// Use this to wrap any user-provided string variables in template literals
+// Wrap any user-provided string variables in template literals with this function
 window.escapeHTML = function(str) {
     if (str === null || str === undefined) return '';
     return String(str).replace(/[&<>'"]/g, 
@@ -106,3 +108,23 @@ window.escapeHTML = function(str) {
         }[tag])
     );
 };
+
+// ===== PASSWORD TOGGLE (shared by login & register) =====
+window.togglePassword = function(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (icon) icon.className = 'bx bx-show';
+    } else {
+        input.type = 'password';
+        if (icon) icon.className = 'bx bx-hide';
+    }
+};
+
+// ===== AUTO-INITIALIZE on every page =====
+document.addEventListener('DOMContentLoaded', () => {
+    initScrollTop();
+    initPreloader();
+});
